@@ -1,7 +1,5 @@
-<<<<<<< HEAD
 import ExRateComponent from "@/components/ExrateComponent";
 import Image from "next/image";
-=======
 // app/page.js
 import Link from 'next/link';
 import React from 'react';
@@ -24,16 +22,9 @@ async function getGames() {
  */
 export default async function Home() {
   const games = await getGames();
->>>>>>> 98ebf81c00470af5946bee1fef49db38626ab0d5
 
   return (
-<<<<<<< HEAD
-    <div>
-      <h1>메인화면입니다다</h1>
-      <Image src="/dice.jpg" alt="dice" width={500} height={500} />
-      <ExRateComponent/>
-    </div>
-=======
+   
       <main className="container mx-auto p-4">
         <h1 className="text-4xl font-bold mb-6">Game List</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -59,6 +50,5 @@ export default async function Home() {
           ))}
         </div>
       </main>
->>>>>>> 98ebf81c00470af5946bee1fef49db38626ab0d5
   );
 }
