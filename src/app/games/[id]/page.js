@@ -1,6 +1,6 @@
 // app/games/[id]/page.js
 import React from 'react';
-
+import Image from 'next/image';
 export default async function GameDetailPage({ params }) {
     // params가 promise인 경우 await해서 해결합니다.
     const { id } = await params;
@@ -17,13 +17,17 @@ export default async function GameDetailPage({ params }) {
             <h1 className="text-3xl font-bold mb-4">{game.gameName}</h1>
             <div className="flex flex-col md:flex-row gap-4">
                 {/* 이미지 표시 */}
-                {game.img && (
-                    <div className="md:w-1/2, max-h-2">
-                        <img
-                            src={`http://localhost:8080${game.img}`}
-                            alt={game.gameName}
-                            className="w-full rounded shadow"
-                        />
+                {game.img && game.img !== "" ? (
+                    <Image
+                        src={`http://localhost:8080${game.img}`} // ✅ 올바른 상대경로 사용
+                        alt={game.gameName}
+                        width={200}
+                        height={200}
+                        className="rounded-md"
+                    />
+                ) : (
+                    <div className="h-[200px] flex items-center justify-center bg-gray-200 text-gray-500">
+                        이미지 없음
                     </div>
                 )}
 
