@@ -8,3 +8,13 @@ export const getList = async () => {
 
     return res.data
 }
+
+export const create = async (formData) => {
+    const response = await axios.post(`${host}/rulebook/create`, formData, {
+
+    });
+
+    return response.data;
+
+}
+
