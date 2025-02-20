@@ -1,5 +1,5 @@
 import EditorComponent from "@/components/common/EditorComponent";
-
+import CKEditorComponent from "@/components/common/CKEditorComponent";
 
 const Newpage = () => {
     return (
@@ -7,7 +7,7 @@ const Newpage = () => {
             <div>
                 에디터
             </div>
-            <EditorComponent></EditorComponent>
+            <CKEditorComponent />
         </div>
     );
 }

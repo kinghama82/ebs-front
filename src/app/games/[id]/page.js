@@ -16,13 +16,14 @@ export default async function GameDetailPage({ params }) {
         <div className="container mx-auto p-4">
             <h1 className="text-3xl font-bold mb-4">{game.gameName}</h1>
             <div className="flex flex-col md:flex-row gap-4">
+
                 {/* 이미지 표시 */}
                 {game.img && game.img !== "" ? (
                     <Image
                         src={`http://localhost:8080${game.img}`} // ✅ 올바른 상대경로 사용
                         alt={game.gameName}
-                        width={200}
-                        height={200}
+                        width={300}
+                        height={300}
                         className="rounded-md"
                     />
                 ) : (
