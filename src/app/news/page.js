@@ -1,9 +1,10 @@
+import BasicMenu from "@/components/menus/BasicMenu";
 import Navbar from "@/components/menus/BasicMenu";
 
 const NewsPage = () => {
     return (
         <>
-        <Navbar></Navbar>
+        <BasicMenu></BasicMenu>
         <div>
         <h1>뉴스페이지</h1>
         </div>

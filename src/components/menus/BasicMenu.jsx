@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { Menu, X, Search, Dices } from "lucide-react";
 
-const Navbar = () => {
+const BasicMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const searchRef = useRef(null);
@@ -89,7 +89,7 @@ const Navbar = () => {
     </nav>
   );
 };
-export default Navbar;
+export default BasicMenu;
 
 // 네비게이션 링크 컴포넌트
 function NavLink({ href, children, onClick }) {
