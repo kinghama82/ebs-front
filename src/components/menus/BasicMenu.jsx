@@ -1,105 +1,105 @@
-"use client"
+"use client";
 
-import React from 'react';
-import styled from 'styled-components';
+import { useState, useRef, useEffect } from "react";
+import Link from "next/link";
+import { Menu, X, Search, Dices } from "lucide-react";
 
-const BasicMenu = () => {
+const Navbar = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const searchRef = useRef(null);
+
+  // 검색창 바깥 클릭 시 닫히도록 설정
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setIsSearchOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
-    <StyledWrapper>
-      <div className="tab-container">
-        <input type="radio" name="tab" id="tab1" className="tab tab--1" />
-        <label className="tab_label" htmlFor="tab1">뉴스</label>
-        <input type="radio" name="tab" id="tab2" className="tab tab--2" />
-        <label className="tab_label" htmlFor="tab2">자유</label>
-        <input type="radio" name="tab" id="tab3" className="tab tab--3" />
-        <label className="tab_label" htmlFor="tab3">질문</label>
-        <div className="indicator" />
+    <nav className="bg-white shadow-md sticky-top w-full top-0 left-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          
+          {/* 🔹 로고 - 왼쪽 */}
+          <div className="flex items-center space-x-6">
+            <Link href="/" className="text-xl font-bold text-amber-800">
+            <Dices/>
+            </Link>
+
+            {/* 🔹 네비게이션 메뉴 - 왼쪽 정렬 */}
+            <div className="hidden md:flex space-x-6">
+              <NavLink href="/news">뉴스</NavLink>
+              <NavLink href="/free">자유</NavLink>
+              <NavLink href="/question">질문</NavLink>
+              <NavLink href="/rulebook">룰북</NavLink>
+              <NavLink href="/games">게임정보</NavLink>
+              <NavLink href="/history">게임기록</NavLink>
+            </div>
+          </div>
+
+          {/* 🔹 검색창 - 오른쪽 정렬 */}
+          <div className="relative ml-auto" ref={searchRef}>
+            {isSearchOpen ? (
+              <input
+                type="text"
+                placeholder="검색어 입력..."
+                className="border border-gray-300 rounded-md px-3 py-1 w-48 focus:outline-none focus:ring-2 focus:ring-amber-800 transition-all duration-300"
+                autoFocus
+              />
+            ) : (
+              <button
+                onClick={() => setIsSearchOpen(true)}
+                className="p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+              >
+                <Search size={24} />
+              </button>
+            )}
+          </div>
+
+          {/* 🔹 모바일 메뉴 버튼 */}
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="md:hidden p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+          >
+            {isOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </div>
-    </StyledWrapper>
+
+      {/* 🔹 모바일 메뉴 */}
+      {isOpen && (
+        <div className="md:hidden bg-white shadow-lg">
+          <div className="flex flex-col space-y-4 p-4">
+            <NavLink href="/news" onClick={() => setIsOpen(false)}>뉴스</NavLink>
+            <NavLink href="/free" onClick={() => setIsOpen(false)}>자유</NavLink>
+            <NavLink href="/question" onClick={() => setIsOpen(false)}>질문</NavLink>
+            <NavLink href="/rulebook" onClick={() => setIsOpen(false)}>룰북</NavLink>
+            <NavLink href="/games" onClick={() => setIsOpen(false)}>게임정보</NavLink>
+            <NavLink href="/history" onClick={() => setIsOpen(false)}>게임기록</NavLink>
+          </div>
+        </div>
+      )}
+    </nav>
+  );
+};
+export default Navbar;
+
+// 네비게이션 링크 컴포넌트
+function NavLink({ href, children, onClick }) {
+  return (
+    <Link
+      href={href}
+      className="text-amber-800 hover:text-blue-500 transition font-medium"
+      onClick={onClick}
+    >
+      {children}
+    </Link>
   );
 }
-
-const StyledWrapper = styled.div`
-  .component-title {
-    width: 100%;
-    position: absolute;
-    z-index: 999;
-    top: 30px;
-    left: 0;
-    padding: 0;
-    margin: 0;
-    font-size: 1rem;
-    font-weight: 700;
-    color: #888;
-    text-align: center;
-  }
-
-  .tab-container {
-    position: relative;
-
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-
-    padding: 2px;
-
-    background-color: #dadadb;
-    border-radius: 9px;
-  }
-
-  .indicator {
-    content: "";
-    width: 130px;
-    height: 28px;
-    background: #ffffff;
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    z-index: 9;
-    border: 0.5px solid rgba(0, 0, 0, 0.04);
-    box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.12), 0px 3px 1px rgba(0, 0, 0, 0.04);
-    border-radius: 7px;
-    transition: all 0.2s ease-out;
-  }
-
-  .tab {
-    width: 130px;
-    height: 28px;
-    position: absolute;
-    z-index: 99;
-    outline: none;
-    opacity: 0;
-  }
-
-  .tab_label {
-    width: 130px;
-    height: 28px;
-
-    position: relative;
-    z-index: 999;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border: 0;
-
-    font-size: 0.75rem;
-    opacity: 0.6;
-
-    cursor: pointer;
-  }
-
-  .tab--1:checked ~ .indicator {
-    left: 2px;
-  }
-
-  .tab--2:checked ~ .indicator {
-    left: calc(130px + 2px);
-  }
-
-  .tab--3:checked ~ .indicator {
-    left: calc(130px * 2 + 2px);
-  }`;
-
-export default BasicMenu;

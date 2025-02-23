@@ -1,3 +1,4 @@
+import Navbar from "@/components/menus/BasicMenu";
 
 export default function Home() {
   
@@ -7,6 +8,8 @@ export default function Home() {
       <div className="p-6 text-4xl font-bold text-center text-amber-800">
 
           Board ParaDice
+          
+          
 
       </div>
       
