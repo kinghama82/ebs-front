@@ -1,8 +1,10 @@
+import BasicMenu from "@/components/menus/BasicMenu";
+
 const freePage = () => {
   return (
-    <div>
+    <><BasicMenu></BasicMenu><div>
       <h1>자유게시판 화면입니다</h1>
-    </div>
+    </div></>
   );
 }
 export default freePage;
