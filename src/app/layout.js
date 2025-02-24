@@ -1,6 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import BootstrapProvider from "@/components/BootstrapProvider"; // 추가
+import BootstrapProvider from "@/components/BootstrapProvider";
+import BasicMenu from "@/components/menus/BasicMenu"; // 추가
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -19,10 +20,13 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
     return (
-        <html lang="en">
+        <html lang="ko">
+        <meta charSet="utf-8"/>
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <BootstrapProvider> {/* BootstrapProvider로 감싸기 */}
+
             {children}
+
         </BootstrapProvider>
         </body>
         </html>
