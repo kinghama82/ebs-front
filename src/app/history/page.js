@@ -1,12 +1,24 @@
 import BasicMenu from "@/components/menus/BasicMenu";
 import Navbar from "@/components/menus/BasicMenu";
+import { Card } from "@/components/ui/card";
 
 const HistoryPage = () => {
-    return (
-        <div>
-            <BasicMenu></BasicMenu>
-        <h1>게임기록 화면입니다</h1>
+    return ( <>
+        <BasicMenu/>
+        <div className="container">
+            <div className="border-r-2 flex flex-wrap max-w-5xl mx-auto top-2 border-1 h-full border-black">
+                <div className="w-2/5 border-r border-black">aaaaaa</div>
+                <div className="w-1/5"></div>
+                <div className="w-2/5 border-r border-black">bbbbbb</div>
+            </div>
+          
+        
         </div>
-    );
+        
+    </>);
     }
     export default HistoryPage;
+
+<style>
+    
+</style>    
