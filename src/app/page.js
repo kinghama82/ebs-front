@@ -1,5 +1,4 @@
 import BasicMenu from "@/components/menus/BasicMenu";
-import Navbar from "@/components/menus/BasicMenu";
 
 export default function Home() {
   
