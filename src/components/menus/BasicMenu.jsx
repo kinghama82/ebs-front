@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { Dices, Menu, Search, X } from "lucide-react";
 import Link from "next/link";
-import { Menu, X, Search, Dices } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 const BasicMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -31,7 +31,7 @@ const BasicMenu = () => {
   }, [isSearchOpen]);
 
   return (
-    <nav className="bg-white shadow-md border border-black border-opacity-100 rounded-md sticky-top max-w-5xl mx-auto top-0 left-0 z-50">
+    <nav className="bg-white shadow-md border border-black border-opacity-100 rounded-md sticky-top max-w-6xl mx-auto top-0 left-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           
