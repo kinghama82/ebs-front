@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { newgamer } from "../api/gamerApi";
+import { newgamer } from "../../../../src/api/gamerApi";
 
 const SignupPage = () => {
     const [formData, setFormData] = useState({
