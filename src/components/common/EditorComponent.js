@@ -7,6 +7,7 @@ import { Image } from '@tiptap/extension-image'
 import { Link } from '@tiptap/extension-link'
 import { Node } from '@tiptap/core'
 import axios from 'axios'
+import { Youtube } from 'lucide-react'
 
 const YouTube = Node.create({
   name: 'youtube',
@@ -88,28 +89,54 @@ const TiptapEditor = () => {
     editor.chain().focus().setImage({ src: imageUrl }).run()
   }
 
+  // 유튜브 링크를 입력받아 에디터에 유튜브 콘텐츠 삽입
+  const insertYouTube = (link) => {
+    if (link) {
+      const videoId = extractVideoId(link)
+      if (videoId) {
+        const youtubeEmbedUrl = `https://www.youtube.com/embed/${videoId}`;
+        editor.chain().focus().setYouTube(youtubeEmbedUrl).run();
+      } else {
+        alert('유효한 유튜브 URL을 입력해주세요.');
+      }
+    }
+  }
+
+  // 유튜브 링크에서 비디오 ID 추출하는 함수
+  const extractVideoId = (url) => {
+    const match = url.match(/(?:https?:\/\/(?:www\.)?youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=))([^"&?\/\s]{11})/);
+    return match ? match[1] : null;
+  }
+
   // 게시글 작성 함수
   const submitPost = async () => {
-    const content = editor.getHTML()
+    const content = editor.getHTML();
     if (!title) {
-      alert('제목을 입력해주세요.')
-      return
+      alert('제목을 입력해주세요.');
+      return;
     }
-
+  
     const formData = {
       title,
       content,
-    }
+    };
 
+    console.log(formData)
+  
     try {
-      await axios.post('http://localhost:8080/rulebook/create/', formData)  // 서버로 게시글 저장 요청
-      alert('게시글 작성 완료')
-      // 추가적으로 성공 후 초기화 등의 작업 가능
+      // 서버 요청 시 content-type을 명시적으로 설정하여 전송
+      const response = await axios.post(
+        'http://localhost:8080/rulebook', formData, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+      alert('게시글 작성 완료');
     } catch (error) {
-      console.error('게시글 작성 오류', error)
-      alert('게시글 작성에 실패했습니다.')
+      console.error('게시글 작성 오류', error.response || error);
+      alert('게시글 작성에 실패했습니다.');
     }
-  }
+  };
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px', backgroundColor: '#f9f9f9', borderRadius: '8px' }}>
@@ -129,7 +156,7 @@ const TiptapEditor = () => {
         <button onClick={() => editor.chain().focus().toggleBold().run()} style={buttonStyle}><strong>B</strong></button>
         <button onClick={() => editor.chain().focus().toggleItalic().run()} style={buttonStyle}><em>I</em></button>
         <button onClick={() => editor.chain().focus().toggleStrike().run()} style={buttonStyle}><s>S</s></button>
-        <button onClick={() => insertYouTube(prompt('유튜브 링크를 입력하세요:'))} style={buttonStyle}>🎥</button>
+        <button onClick={() => insertYouTube(prompt('유튜브 링크를 입력하세요:'))} style={buttonStyle}><Youtube/></button>
         <button onClick={() => fileInputRef.current.click()} style={buttonStyle}>📸</button>
       </div>
 
