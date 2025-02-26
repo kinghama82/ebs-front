@@ -1,33 +1,163 @@
-/*
-'use client';
+'use client'
 
-import React from 'react';
-import { Editor } from '@tinymce/tinymce-react';
+import React, { useRef, useState } from 'react'
+import { useEditor, EditorContent } from '@tiptap/react'
+import { StarterKit } from '@tiptap/starter-kit'
+import { Image } from '@tiptap/extension-image'
+import { Link } from '@tiptap/extension-link'
+import { Node } from '@tiptap/core'
+import axios from 'axios'
 
-export default function EditorComponent() {
-    return (
-        <Editor
-            apiKey='hg6tj2lkvzar9u2rcw9roswlyjw5dhza2c8h51rd1b7cfu9x'
-            init={{
-                plugins: [
-                    // Core editing features
-                    'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
-                    // Your account includes a free trial of TinyMCE premium features
-                    // Try the most popular premium features until Feb 20, 2025:
-                    'checklist', 'mediaembed', 'casechange', 'export', 'formatpainter', 'pageembed', 'a11ychecker', 'tinymcespellchecker', 'permanentpen', 'powerpaste', 'advtable', 'advcode', 'editimage', 'advtemplate', 'ai', 'mentions', 'tinycomments', 'tableofcontents', 'footnotes', 'mergetags', 'autocorrect', 'typography', 'inlinecss', 'markdown','importword', 'exportword', 'exportpdf'
-                ],
-                toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
-                tinycomments_mode: 'embedded',
-                tinycomments_author: 'Author name',
-                mergetags_list: [
-                    { value: 'First.Name', title: 'First Name' },
-                    { value: 'Email', title: 'Email' },
-                ],
-                ai_request: (request, respondWith) => respondWith.string(() => Promise.reject('See docs to implement AI Assistant')),
-            }}
-            initialValue="Welcome to TinyMCE!"
-        />
-    );
+const YouTube = Node.create({
+  name: 'youtube',
+  group: 'block',
+  inline: false,
+  content: 'text*',
+  draggable: true,
+  addAttributes() {
+    return {
+      src: {
+        default: null,
+      },
+    }
+  },
+  parseHTML() {
+    return [
+      {
+        tag: 'iframe[src^="https://www.youtube.com/embed/"]',
+      },
+    ]
+  },
+  renderHTML({ HTMLAttributes }) {
+    return [
+      'iframe',
+      {
+        ...HTMLAttributes,
+        width: '100%',
+        height: '315',
+        frameborder: '0',
+        allow: 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture',
+        allowFullScreen: true,
+      },
+    ]
+  },
+  addCommands() {
+    return {
+      setYouTube: (src) => ({ chain }) => {
+        return chain().insertContent(`<iframe src="${src}" />`).run()
+      },
+    }
+  },
+})
+
+const TiptapEditor = () => {
+  const fileInputRef = useRef(null)
+  const [title, setTitle] = useState('')  // 게시글 제목을 입력 받을 상태 추가
+  const editor = useEditor({
+    extensions: [
+      StarterKit,
+      Image.configure({
+        uploadImage: async (file) => {
+          const imageUrl = await uploadImageToServer(file)
+          return imageUrl
+        },
+      }),
+      Link,
+      YouTube,
+    ],
+    content:[],
+  })
+
+  // 서버에 이미지를 업로드하고 URL 반환
+  const uploadImageToServer = async (file) => {
+    const formData = new FormData()
+    formData.append('file', file)
+    const response = await fetch('/upload', {
+      method: 'POST',
+      body: formData,
+    })
+    const data = await response.json()
+    return data.url
+  }
+
+  // 이미지 업로드 처리 함수
+  const handleImageUpload = async (event) => {
+    const file = event.target.files[0]
+    if (!file) return
+    const imageUrl = await uploadImageToServer(file)
+    editor.chain().focus().setImage({ src: imageUrl }).run()
+  }
+
+  // 게시글 작성 함수
+  const submitPost = async () => {
+    const content = editor.getHTML()
+    if (!title) {
+      alert('제목을 입력해주세요.')
+      return
+    }
+
+    const formData = {
+      title,
+      content,
+    }
+
+    try {
+      await axios.post('http://localhost:8080/rulebook/create/', formData)  // 서버로 게시글 저장 요청
+      alert('게시글 작성 완료')
+      // 추가적으로 성공 후 초기화 등의 작업 가능
+    } catch (error) {
+      console.error('게시글 작성 오류', error)
+      alert('게시글 작성에 실패했습니다.')
+    }
+  }
+
+  return (
+    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px', backgroundColor: '#f9f9f9', borderRadius: '8px' }}>
+      <h1 style={{ textAlign: 'center', fontSize: '24px', marginBottom: '20px' }}>Tiptap 에디터</h1>
+
+      {/* 제목 입력 */}
+      <input
+        type="text"
+        placeholder="게시글 제목을 입력하세요"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        style={{ width: '100%', padding: '10px', fontSize: '16px', marginBottom: '20px' }}
+      />
+
+      {/* 에디터 툴바 */}
+      <div style={{ marginBottom: '10px' }}>
+        <button onClick={() => editor.chain().focus().toggleBold().run()} style={buttonStyle}><strong>B</strong></button>
+        <button onClick={() => editor.chain().focus().toggleItalic().run()} style={buttonStyle}><em>I</em></button>
+        <button onClick={() => editor.chain().focus().toggleStrike().run()} style={buttonStyle}><s>S</s></button>
+        <button onClick={() => insertYouTube(prompt('유튜브 링크를 입력하세요:'))} style={buttonStyle}>🎥</button>
+        <button onClick={() => fileInputRef.current.click()} style={buttonStyle}>📸</button>
+      </div>
+
+      {/* 파일 입력 엘리먼트 */}
+      <input ref={fileInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleImageUpload} />
+
+      {/* 에디터 콘텐츠 */}
+      <div style={{ outline: '2px solid #D97706', padding: '10px', borderRadius: '5px' }}>
+        <EditorContent editor={editor} />
+      </div>
+
+      {/* 게시글 작성 버튼 */}
+      <button onClick={submitPost} style={{ ...buttonStyle, marginTop: '20px', backgroundColor: '#D97706' }}>
+        게시글 작성
+      </button>
+    </div>
+  )
 }
 
-*/
+const buttonStyle = {
+  backgroundColor: '#4CAF50',
+  color: 'white',
+  padding: '10px 15px',
+  margin: '0 5px',
+  border: 'none',
+  borderRadius: '5px',
+  cursor: 'pointer',
+  fontSize: '16px',
+}
+
+export default TiptapEditor
