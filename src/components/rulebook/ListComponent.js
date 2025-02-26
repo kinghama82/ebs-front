@@ -20,32 +20,28 @@ export default function ListComponent() {
     }, []);
 
     return (
-        <div>
-
-            <div className="flex justify-content-center bg-[#813D00] text-3xl py-4">RuleBook List</div>
-
-
-        <table className="w-full table-auto border-collapse">
-            <thead>
-            <tr className="bg-yellow-100">
-                <th className="p-2 border">제목</th>
-                <th className="p-2 border">내용</th>
-                <th className="p-2 border">작성자</th>
-                <th className="p-2 border">날짜</th>
-            </tr>
-            </thead>
-            <tbody>
-            {rulebook.map((rule) => (
-                <tr key={rule.id}>
-                   <td className="p-2 border">{rule.title}</td>
-                    <td className="p-2 border">{rule.content}</td>
-                    <td className="p-2 border">{rule.writerId}</td>
-                    <td className="p-2 border">{rule.createdate}</td>
-                </tr>
-            ))}
-            </tbody>
-        </table>
-
+        <div className="mx-auto w-full max-w-4xl">
+        <div className="flex justify-center bg-[#813D00] text-3xl py-4" style={{ margin: '40px' }}>
+            RuleBook List
         </div>
+    
+        <div className="w-full">
+            <div className="flex bg-yellow-100" style={{marginBottom:'10px'}}>
+                <div className="flex-1 p-2 flex items-center justify-center">제목</div>
+                <div className="flex-1 p-2 flex items-center justify-center">내용</div>
+                <div className="flex-1 p-2 flex items-center justify-center">작성자</div>
+                <div className="flex-1 p-2 flex items-center justify-center">날짜</div>
+            </div>
+    
+            {rulebook.map((rule) => (
+                <div key={rule.id} className="flex border-b">
+                    <div className="flex-1 p-2 flex items-center justify-center">{rule.title}</div>
+                    <div className="flex-1 p-2 flex items-center justify-center">{rule.content}</div>
+                    <div className="flex-1 p-2 flex items-center justify-center">{rule.writerId}</div>
+                    <div className="flex-1 p-2 flex items-center justify-center">{rule.createdate}</div>
+                </div>
+            ))}
+        </div>
+    </div>
     );
 }
