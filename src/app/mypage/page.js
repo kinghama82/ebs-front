@@ -16,8 +16,8 @@ const myPage = () => {
                     <aside className="bg-slate-200 w-full px-10 py-40 rounded-lg"></aside>
             </div>
 
-                            {/* main과 aside 사이에 버튼을 추가 */}
-                            <div className="flex justify-start space-x-4 my-1">
+                {/* main과 aside 사이에 버튼을 추가 */}
+                <div className="flex justify-start space-x-4 my-1">
                     <button className="bg-orange-100 text-black font-bold px-4 py-2 rounded-md mt-2 ">내글보기</button>
                     <button className="bg-orange-100 text-black font-bold px-4 py-2 rounded-md mt-2 ">전적통계</button>
                 </div>
