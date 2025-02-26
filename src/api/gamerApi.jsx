@@ -23,6 +23,48 @@ export const newgamer = async (formData) => {
     }
 };
 
+
+const host = `${API_SERVER_HOST}/api/member`;
+
+export const loginPost = async (loginParam) => {
+
+    const header = {headers : {"Content-Type":"x-www-form-urlencoded"}};
+
+    const form = new FormData();
+    form.append("username",loginParam.email);
+    form.append("password",loginParam.password);
+
+    const res = await axios.post(`${host}/login`,form,header);
+
+    return res.data;
+}
+
+
+
+
+
+
+
+
+/*export const loginUser = async (email, password) => {
+    try {
+        const response = await axios.post(`${API_SERVER_HOST}/api/gamer/login`, {
+            email,
+            password,
+        }, {
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+        return response.data; // { token: "JWT_TOKEN" }
+    } catch (error) {
+        console.error("로그인 실패:", error.response?.data?.msg || error.message);
+        throw error;
+    }
+};*/
+
+
+
 /*
 // 추가적인 API 예시: 게이머 업데이트 API
 export const updateGamer = async (formData) => {

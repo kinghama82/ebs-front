@@ -1,3 +1,4 @@
+"use client";
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -10,11 +11,34 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
+import { loginPost} from "@/api/gamerApi";
+import { useState } from "react";
 
 export function LoginForm({
   className,
   ...props
 }) {
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError(null);
+
+    try {
+      const response = await loginPost(email, password);
+      if (response?.token) {
+        localStorage.setItem("jwtToken", response.token); // JWT 토큰 저장
+        router.push("/"); // 메인 페이지로 이동
+      }
+    } catch (error) {
+      setError("로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.");
+    }
+  };
+
+
   return (
     (<div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -25,7 +49,7 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="grid gap-6">
               <div className="flex flex-col gap-4">
                 <Button variant="outline" className="w-full text-amber-800 font-extrabold hover:text-amber-800">
@@ -45,13 +69,17 @@ export function LoginForm({
                   Login with Google
                 </Button>
               </div>
+
+
               <div
                 className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
                 <span className="relative z-10 bg-background px-2 text-muted-foreground">
                   Or continue with
                 </span>
               </div>
-              <div className="grid gap-6">
+
+
+              {/*<div className="grid gap-6">
                 <div className="grid gap-2">
                   <Label htmlFor="email">Email</Label>
                   <Input id="email" type="email" placeholder="m@example.com" required />
@@ -74,7 +102,45 @@ export function LoginForm({
                 <Link href="/signup" className="underline underline-offset-4">
                   회원 가입
                 </Link>
+              </div>*/}
+
+              <div className="grid gap-6">
+                {error && (
+                    <div className="mb-4 p-2 bg-red-200 text-red-800 rounded">
+                      {error}
+                    </div>
+                )}
+                <div className="grid gap-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                      id="email"
+                      type="email"
+                      placeholder="m@example.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="password">Password</Label>
+                  <Input
+                      id="password"
+                      type="password"
+                      placeholder="비밀번호"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                  />
+                </div>
+                <Button
+                    type="submit"
+                    className="w-full text-md bg-amber-800 hover:bg-amber-800"
+                >
+                  로그인
+                </Button>
               </div>
+
+
             </div>
           </form>
         </CardContent>
