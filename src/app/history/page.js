@@ -1,6 +1,4 @@
 import BasicMenu from "@/components/menus/BasicMenu";
-import Navbar from "@/components/menus/BasicMenu";
-import { Card } from "@/components/ui/card";
 
 const HistoryPage = () => {
     return ( <>
@@ -11,6 +9,7 @@ const HistoryPage = () => {
                 </div>
                
                 <div className="m-1 basis-6/12 card border-black">bb
+
                 </div>
             </div>
           
