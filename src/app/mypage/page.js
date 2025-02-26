@@ -5,7 +5,7 @@ const myPage = () => {
     
     <div>
         <BasicMenu></BasicMenu>
-        <div className="w-full max-w-5xl mx-auto"> {/* 부모 div에 공백 및 최대 너비 설정 */}
+        <div className="w-full max-w-6xl mx-auto"> {/* 부모 div에 공백 및 최대 너비 설정 */}
                 <h1 className="mt-4 text-4xl font-bold text-center">마이 페이지</h1>
 
                 <div className="bg-white my-5 w-full flex flex-col md:flex-row md:space-x-10 justify-between">
