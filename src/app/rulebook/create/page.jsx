@@ -5,7 +5,7 @@ const Newpage = () => {
     return (
         <div>
             <div>
-                에디터
+                <EditorComponent></EditorComponent>
             </div>
         </div>
     );
