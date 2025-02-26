@@ -1,6 +1,6 @@
 "use client";
 
-import { Dices, Menu, Search, X } from "lucide-react";
+import { CircleUserRound, Dices, Menu, Search, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
@@ -37,8 +37,11 @@ const BasicMenu = () => {
           
           {/* 로고 */}
           <div className="flex items-center space-x-6">
-            <Link href="/" className="text-xl font-bold text-amber-800">
+            <Link href="/" className="text-xl font-bold text-amber-800" title="홈으로">
               <Dices />
+            </Link>
+            <Link href="/mypage" className="text-amber-800" title="마이페이지">
+              <CircleUserRound/>
             </Link>
 
             {/* 네비게이션 메뉴 */}
