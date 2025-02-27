@@ -1,9 +1,8 @@
 import axios from "axios";
-import { headers } from "next/headers";
 
 const { API_SERVER_HOST } = require("../publicapi");
 
-const host = `${API_SERVER_HOST}/free`
+const host = `${API_SERVER_HOST}/api/free`
 
 export const getList = async (pageParam) => {
     const {page, size} = pageParam
