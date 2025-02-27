@@ -1,7 +1,6 @@
+import BootstrapProvider from "@/components/BootstrapProvider";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import BootstrapProvider from "@/components/BootstrapProvider";
-import BasicMenu from "@/components/menus/BasicMenu"; // 추가
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -22,7 +21,12 @@ export default function RootLayout({ children }) {
     return (
         <html lang="ko">
         <meta charSet="utf-8"/>
-        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <head>
+        <link rel="stylesheet"
+              href="https://cdn.jsdelivr.net/npm/pretendard@latest/dist/web/static/pretendard.css">
+        </link>
+        </head>
+        <body>
         <BootstrapProvider> {/* BootstrapProvider로 감싸기 */}
 
             {children}

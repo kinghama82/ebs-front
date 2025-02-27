@@ -1,3 +1,4 @@
+import { TabsDemo } from "@/components/history/TabsComponent";
 import BasicMenu from "@/components/menus/BasicMenu";
 import Link from "next/link";
 
@@ -10,15 +11,18 @@ const HistoryPage = () => {
         
             <div className="flex flex-row gap-12 rounded-md mt-2 max-w-6xl mx-auto border-1 bg-gray-300 min-h-96 border-black">
                 <div className="m-1 basis-6/12 card border-black">
-                    <Link href="/history/new">
-                        add history
-                    </Link>
-                        
+                                            
                 </div>
                 
                
-                <div className="m-1 basis-6/12 card border-black">bb
-
+                <div className="m-1 basis-6/12 card border-black">
+                    <div className="m-1 flex" >
+                    <Link href="/history/new" 
+                          className="p-1 text-md rounded text-center ml-auto text-black w-auto no-underline bg-gray-300">
+                        기록 작성
+                    </Link>
+                    </div>
+                    <TabsDemo></TabsDemo>
                 </div>
             </div>
           

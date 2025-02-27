@@ -77,3 +77,13 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer base {
+  :root {
+    --font-pretendard: "Pretendard", sans-serif;
+  }
+
+  body {
+    font-family: var(--font-pretendard);
+  }
+}

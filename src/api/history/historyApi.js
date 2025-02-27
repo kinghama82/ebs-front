@@ -1,5 +1,4 @@
 import axios from "axios";
-import { headers } from "next/headers";
 
 const { API_SERVER_HOST } = require("../publicapi");
 
@@ -23,9 +22,9 @@ export const getList = async (pageParam) => {
 }
 //등록
 export const addHistory = async (history) => {
-    const header = {headers: {"Content-Type": "multipart/form-data"}}
+    // const header = {headers: {"Content-Type": "multipart/form-data"}}
 
-    const res = await axios.post(`${host}/`, history, header)
+    const res = await axios.post(`${host}/`, history)
 
     return res.data    
 }

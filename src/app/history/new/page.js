@@ -1,8 +1,12 @@
+import AddComponent from "@/components/history/AddComponent";
+
 const NewHistoryPage = () => {
 
 
     return(
-        <div>히스토리작성페이지</div>
+        <div>
+            <AddComponent/>
+        </div>
     )
 }
 export default NewHistoryPage;
