@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 export default function ListComponent() {
+
     const [rulebook, setRulebook] = useState([]);
     const [isClient, setIsClient] = useState(false);
 
@@ -33,6 +34,12 @@ export default function ListComponent() {
         return null;  // 클라이언트에서만 렌더링되도록
     }
 
+    //글작성페이지 이동
+    const moveCreate = () => {
+        window.location.href = '/rulebook/create'; // 페이지 이동
+      };
+
+      
     return (
         <div className="mx-auto w-full max-w-4xl">
             <div className="flex justify-center bg-[#813D00] text-3xl py-4" style={{ margin: '40px' }}>
@@ -61,6 +68,19 @@ export default function ListComponent() {
                     </div>
                 ))}
             </div>
+            <button onClick={moveCreate}
+            style={{ ...buttonStyle, marginTop: '20px', backgroundColor: '#D97706' }}>글 작성</button>
         </div>
     );
 }
+const buttonStyle = {
+    backgroundColor: '#4CAF50',
+    color: 'white',
+    padding: '10px 15px',
+    margin: '0 5px',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
+    fontSize: '16px',
+  }
+  

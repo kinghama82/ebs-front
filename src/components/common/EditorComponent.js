@@ -6,14 +6,14 @@ import { StarterKit } from '@tiptap/starter-kit'
 import { Image } from '@tiptap/extension-image'
 import { Youtube } from 'lucide-react'
 import axios from 'axios'
-import { Extension } from '@tiptap/core'
+import { Node } from '@tiptap/core'
 
-// YouTube 확장 정의 수정
-const YouTube = Extension.create({
+// YouTube 노드 정의
+const YouTube = Node.create({
   name: 'youtube',
-  group: 'block',
+  group: 'block',  // 블록 요소로 설정
+  content: 'inline*',
   inline: false,
-  content: 'text*',
   draggable: true,
   addAttributes() {
     return {
@@ -45,7 +45,7 @@ const YouTube = Extension.create({
   addCommands() {
     return {
       setYouTube: (src) => ({ chain }) => {
-        return chain().insertContent(`<iframe src="${src}" />`).run()
+        return chain().insertContent(`<iframe src="${src}" width="100%" height="315" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>`).run()
       },
     }
   },
@@ -53,45 +53,49 @@ const YouTube = Extension.create({
 
 const TiptapEditor = () => {
   const fileInputRef = useRef(null)
-  const [title, setTitle] = useState('')  // 게시글 제목을 입력 받을 상태 추가
   const [imageUrl, setImageUrl] = useState('')  // 이미지 미리보기 상태 추가
+  const [title, setTitle] = useState('') 
 
   const editor = useEditor({
     extensions: [
       StarterKit,
       Image.configure({
         uploadImage: async (file) => {
+          console.log("이미지 업로드 시작")
+
           const uploadImageUrl = await uploadImageToServer(file)
+
+          console.log("업로드된 이미지 URL: ", uploadImageUrl)
+
           editor.chain().focus().setImage({ src: uploadImageUrl }).run()
-          setImageUrl(uploadImageUrl)  // 미리보기 URL 설정
+
           return uploadImageUrl
         },
       }),
-      YouTube,  // 수정된 YouTube 확장 사용
+      YouTube,  // YouTube 노드 확장 사용
     ],
     content: [],
   })
 
   // 서버에 이미지를 업로드하고 URL 반환
   const uploadImageToServer = async (file) => {
-    const formData = new FormData();
-    formData.append('file', file);
+    const formData = new FormData()
+    formData.append('file', file)
 
     try {
-        // 서버에 이미지 업로드
-        const response = await axios.post('http://localhost:8080/rulebook/upload', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-        });
-
-        // 서버에서 반환된 이미지 URL
-        return response.data.url; 
+      const response = await axios.post('http://localhost:8080/rulebook/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      const imageUrl = response.data.url
+      console.log("업로드된 이미지 URL", imageUrl)
+      return imageUrl
     } catch (error) {
-        console.error('이미지 업로드 오류:', error);
-        throw new Error('이미지 업로드에 실패했습니다.');
+      console.error('이미지 업로드 오류:', error)
+      throw new Error('이미지 업로드에 실패했습니다.')
     }
-  };
+  }
 
   // 유튜브 링크를 입력받아 에디터에 유튜브 콘텐츠 삽입
   const insertYouTube = (link) => {
@@ -99,7 +103,7 @@ const TiptapEditor = () => {
       const videoId = extractVideoId(link)
       if (videoId) {
         const youtubeEmbedUrl = `https://www.youtube.com/embed/${videoId}`
-        editor.chain().focus().setYouTube(youtubeEmbedUrl).run()
+        editor.chain().focus().setYouTube(youtubeEmbedUrl).run()  // setYouTube로 유튜브 iframe 삽입
       } else {
         alert('유효한 유튜브 URL을 입력해주세요.')
       }
@@ -115,6 +119,8 @@ const TiptapEditor = () => {
   // 게시글 작성 함수
   const submitPost = async () => {
     const content = editor.getHTML();
+
+    console.log("html",editor.getHTML());
 
     if (!title) {
         alert('제목을 입력해주세요.');
@@ -132,6 +138,9 @@ const TiptapEditor = () => {
         });
 
         alert('게시글 작성 완료');
+
+        window.location.href = '/rulebook';
+        
     } catch (error) {
         console.error('게시글 작성 오류', error.response || error);
         alert('게시글 작성에 실패했습니다.');
@@ -139,7 +148,9 @@ const TiptapEditor = () => {
   };
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px', backgroundColor: '#f9f9f9', borderRadius: '8px' }}>
+    <div
+      style={{ maxWidth: '800px', margin: '0 auto', padding: '20px', backgroundColor: '#f9f9f9', borderRadius: '8px' }}
+    >
       <h1 style={{ textAlign: 'center', fontSize: '24px', marginBottom: '20px' }}>Tiptap 에디터</h1>
 
       {/* 제목 입력 */}
@@ -166,19 +177,27 @@ const TiptapEditor = () => {
         type="file"
         accept="image/*"
         style={{ display: 'none' }}
-        onChange={(event) => setImageUrl(URL.createObjectURL(event.target.files[0]))}  // 미리보기용 이미지 설정
+        onChange={(event) => {
+          const file = event.target.files[0];
+          if (file && file.type.startsWith('image/')) {
+            setImageUrl(URL.createObjectURL(file));  // 미리보기용 이미지 설정
+            editor.chain().focus().setImage({ src: URL.createObjectURL(file) }).run(); // 에디터에 이미지 삽입
+          }
+        }}
       />
 
       {/* 이미지 미리보기 */}
-      {imageUrl && (
-        <div style={{ marginBottom: '20px' }}>
-          <h3>이미지 미리보기</h3>
-          <img src={imageUrl} alt="미리보기" style={{ width: '100%', maxHeight: '300px', objectFit: 'contain' }} />
-        </div>
-      )}
+     
 
       {/* 에디터 콘텐츠 */}
-      <div style={{ outline: '2px solid #D97706', padding: '10px', borderRadius: '5px' }}>
+      <div
+        style={{
+          outline: '2px solid #D97706',
+          padding: '10px',
+          borderRadius: '5px',
+          minHeight: '200px',
+        }}
+      >
         <EditorContent editor={editor} />
       </div>
 
