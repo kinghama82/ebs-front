@@ -22,7 +22,7 @@ const HistoryPage = () => {
                         기록 작성
                     </Link>
                     </div>
-                    <TabsDemo></TabsDemo>
+                    {/* <TabsDemo></TabsDemo> */}
                 </div>
             </div>
           
