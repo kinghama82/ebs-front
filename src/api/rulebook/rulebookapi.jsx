@@ -19,3 +19,9 @@ export const getOne = async (id) => {
     const res = await axios.get(`${host}/rulebook/${id}`);  // 상세 조회를 위한 GET 요청
     return res.data;
 };
+
+export const upload = async (formData) => {
+    const response = await axios.post(`${host}/rulebook/upload`, formData);
+
+    return response.data;
+};

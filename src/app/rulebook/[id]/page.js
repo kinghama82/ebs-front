@@ -9,6 +9,8 @@ const PostDetailPage = () => {
   const [loading, setLoading] = useState(true);  // 로딩 상태
   const [id, setId] = useState(null);  // ID를 직접 URL에서 받아오기
 
+
+
   useEffect(() => {
     // URL에서 id를 추출 (클라이언트에서만)
     const url = window.location.href;
@@ -40,6 +42,10 @@ const PostDetailPage = () => {
     return <div>No data available</div>;  // 데이터가 없을 경우
   }
 
+  const handleEditClick = () => {
+    window.location.href = `/rulebook/modify/${id}`;
+  };
+
   return (
     <div>
       <BasicMenu /> {/* 메뉴 컴포넌트 추가 */}
@@ -63,6 +69,7 @@ const PostDetailPage = () => {
             <p><strong>작성일:</strong> {ruleDetail.createdate}</p>
           </div>
         </div>
+        <button onClick={handleEditClick}>수정</button> {/* 수정 버튼 클릭 시 수정 페이지로 이동 */}
       </div>
     </div>
   );
