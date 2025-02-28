@@ -72,7 +72,7 @@ const AddComponent = () =>{
     return(
         <>
         <BasicMenu/>
-        <div className="border-2 border-sky-200 mt-10 m-2 p-4">
+        <div className="border-2 max-w-6xl mx-auto rounded mt-10 m-2 p-4">
             {fetching ? <FetchingModal></FetchingModal> : <></>}
         <div className="m-2 flex justify-center">
             <div className="relative mb-4 flex w-full flex-wrap items-stretch">
@@ -118,6 +118,7 @@ const AddComponent = () =>{
             </input>
             </div>
         </div>
+        <div>
         <StyledWrapper>
         <div className="radio-buttons-container">
             <div className="radio-button">
@@ -146,6 +147,7 @@ const AddComponent = () =>{
             </div>
         </div>
         </StyledWrapper>
+        </div>
         <div className="flex justify-end">
             <div className="relative mb-4 flex p-4 flex-wrap items-stretch">
                 <button type="button" className="rounded p-4 w-36 bg-blue-500 text-xl text-white"
