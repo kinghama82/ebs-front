@@ -1,5 +1,6 @@
 import { TabsDemo } from "@/components/history/TabsComponent";
 import BasicMenu from "@/components/menus/BasicMenu";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 const HistoryPage = () => {
@@ -12,7 +13,12 @@ const HistoryPage = () => {
             <div className="flex flex-row gap-12 rounded-md mt-2 max-w-6xl mx-auto border-1 bg-gray-300 min-h-96">
                 {/* 왼쪽공간 */}
                 <div className="m-1 basis-6/12 card border-black">
-                              여기는 차트 공간              
+                    <div className="m-1">
+                        <Button>파슬파슬</Button>
+                    </div>
+                    <div>
+                        여기는 차트공간
+                    </div>                                           
                 </div>
                 
                {/* 오른쪽공간 */}
