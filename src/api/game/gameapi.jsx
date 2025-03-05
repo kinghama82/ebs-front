@@ -23,3 +23,16 @@ export const getGameById = async (id) => {
         throw error;
     }
 };
+
+export const searchGames = async (keyword) => {
+    try {
+        const response = await axios.get(`${API_SERVER_HOST}/api/games/search`, {
+            params: { keyword } // ✅ 쿼리 파라미터로 검색어 전달
+        });
+        return response.data;
+    } catch (error) {
+        console.error("게임 검색 중 오류 발생:", error);
+        throw error;
+    }
+};
+
