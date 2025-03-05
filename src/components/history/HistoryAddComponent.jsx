@@ -168,17 +168,17 @@ const HistoryAddComponent = () => {
                     <div className="flex flex-col gap-4" >
                         <div className="ms-4 flex gap-4 font-bold">전적
                             <label className="ml-6 flex items-center gap-2">
-                                <input type="radio" id="radio1" checked={history.win === 1}
+                                <input type="radio" id="radio1" name="result" checked={history.win === 1}
                                        onChange={handleChangeResult}/>
                                 {" "}승(Win)
                             </label>
                             <label className="flex items-center gap-2">
-                                <input type="radio" id="radio2" checked={history.draw === 1}
+                                <input type="radio" id="radio2" name="result" checked={history.draw === 1}
                                        onChange={handleChangeResult}/>
                                 {" "}무(Draw)
                             </label>
                             <label className="flex items-center gap-2">
-                                <input type="radio" id="radio3" checked={history.lose === 1}
+                                <input type="radio" id="radio3" name="result" checked={history.lose === 1}
                                        onChange={handleChangeResult}/>
                                 {" "}패(Lose)
                             </label>
