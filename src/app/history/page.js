@@ -1,4 +1,8 @@
-import { TabsDemo } from "@/components/history/TabsComponent";
+
+
+import HistoryChart from "@/components/history/HistoryChart";
+import HistoryList from "@/components/history/HistoryList";
+import { HistoryTab } from "@/components/history/HistoryTab";
 import BasicMenu from "@/components/menus/BasicMenu";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -14,10 +18,10 @@ const HistoryPage = () => {
                 {/* 왼쪽공간 */}
                 <div className="m-1 basis-6/12 card border-black">
                     <div className="m-1">
-                        <Button>파슬파슬</Button>
+                        <Button>닉네임출력</Button>
                     </div>
                     <div>
-                        여기는 차트공간
+                        <HistoryChart/>
                     </div>                                           
                 </div>
                 
@@ -29,12 +33,12 @@ const HistoryPage = () => {
                         기록 작성
                     </Link>
                     </div>
-                    <TabsDemo></TabsDemo>
+                    <HistoryTab/>
                 </div>              
             </div>
             {/* 아래공간 */}
             <div className="mt-4 max-w-6xl mx-auto bg-gray-300 rounded min-h-96 my-auto">
-                {/* <HistoryList/> */}
+               <HistoryList/>
             </div>
           
         
