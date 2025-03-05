@@ -6,6 +6,7 @@ import { HistoryTab } from "@/components/history/HistoryTab";
 import BasicMenu from "@/components/menus/BasicMenu";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { Suspense } from "react";
 
 const HistoryPage = () => {
 
@@ -38,7 +39,9 @@ const HistoryPage = () => {
             </div>
             {/* 아래공간 */}
             <div className="mt-4 max-w-6xl mx-auto bg-gray-300 rounded min-h-96 my-auto">
-               <HistoryList/>
+                <Suspense fallback={<div>Loading...</div>}>
+                    <HistoryList />
+                </Suspense>
             </div>
           
         
