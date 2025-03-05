@@ -18,8 +18,8 @@ import {
 } from "@/components/ui/chart"
 const chartData = [
     { browser: "Win(승)", visitors: 200, fill: "var(--color-safari)" },
-  { browser: "Lose(패)", visitors: 275, fill: "var(--color-chrome)" },  
-  { browser: "Draw(무)", visitors: 173, fill: "var(--color-edge)" },  
+    { browser: "Lose(패)", visitors: 275, fill: "var(--color-chrome)" },  
+    { browser: "Draw(무)", visitors: 173, fill: "var(--color-edge)" },  
 ]
 
 const chartConfig = {
@@ -59,12 +59,12 @@ export default function HistoryChart() {
         <CardTitle>전적 통산 차트</CardTitle>
         <CardDescription>전적 집계 기간?</CardDescription>
       </CardHeader>
-      <CardContent className="flex-1 pb-0">
+      <CardContent className="flex flex-row items-center justify-center pb-0 gap-4">
         <ChartContainer
           config={chartConfig}
-          className="mx-auto aspect-square max-h-[250px]"
+          className="w-[250px] h-[250px] flex justify-center items-center"
         >
-          <PieChart>
+          <PieChart width={250} height={250}>
             <ChartTooltip
               cursor={false}
               content={<ChartTooltipContent hideLabel />}
@@ -108,6 +108,17 @@ export default function HistoryChart() {
             </Pie>
           </PieChart>
         </ChartContainer>
+        <div className="flex flex-col gap-3 text-center">
+          {chartData.map((item) => (
+            <div key={item.browser} className="flex items-center gap-2 text-lg">
+              <div
+                className="w-4 h-4 rounded-full"
+                style={{ backgroundColor: item.fill }}
+              />
+              <span className="font-semibold">{item.browser}: {item.visitors}</span>
+            </div>
+          ))}
+        </div>
       </CardContent>
       <CardFooter className="flex-col gap-2 text-sm">
         <div className="flex items-center gap-2 font-medium leading-none">
