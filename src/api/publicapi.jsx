@@ -1,1 +1,5 @@
+// export const API_SERVER_HOST = 'http://43.202.30.85:8080';
+
 export const API_SERVER_HOST = 'http://localhost:8080';
+//백에서 코드 수정할때 로컬로 바꾸고 확인작업
+

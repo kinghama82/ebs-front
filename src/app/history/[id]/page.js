@@ -34,7 +34,7 @@ const HistoryPage = () => {
             </div>
             {/* 아래공간 */}
             <div className="mt-4 max-w-6xl mx-auto bg-gray-300 rounded min-h-96 my-auto">
-                아래공간
+                {/* <HistoryList/> */}
             </div>
           
         
