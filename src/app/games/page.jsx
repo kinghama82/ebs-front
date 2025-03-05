@@ -1,18 +1,36 @@
-// app/games/page.js
 "use client";
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
+import { getGames } from "@/api/game/gameapi"; // getGames 함수 사용
 
 export default function GamesPage() {
     const [games, setGames] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        fetch("http://localhost:8080/games")
-            .then((res) => res.json())
-            .then((data) => setGames(data))
-            .catch((error) => console.error("Error fetching games:", error));
+        const fetchGames = async () => {
+            try {
+                const data = await getGames();
+                setGames(data);
+            } catch (err) {
+                console.error("Error fetching games:", err);
+                setError("게임 데이터를 불러오는 중 오류가 발생했습니다.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchGames();
     }, []);
+
+    if (loading) {
+        return <div className="container mx-auto p-4 text-center">게임 데이터를 불러오는 중...</div>;
+    }
+
+    if (error) {
+        return <div className="container mx-auto p-4 text-center text-red-500">{error}</div>;
+    }
 
     return (
         <div className="container mx-auto p-4">
@@ -21,10 +39,9 @@ export default function GamesPage() {
                 {games.map((game) => (
                     <Link key={game.id} href={`/games/${game.id}`}>
                         <div className="border p-4 rounded-lg shadow cursor-pointer hover:bg-gray-100">
-                            {/* 이미지가 존재하는 경우에만 표시 */}
                             {game.img ? (
-                                <Image
-                                    src={`http://localhost:8080${game.img}`}
+                                <img
+                                    src={game.img}
                                     alt={game.gameName}
                                     width={200}
                                     height={200}

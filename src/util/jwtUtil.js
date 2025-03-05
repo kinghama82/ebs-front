@@ -7,35 +7,34 @@ const jwtAxios = axios.create();
 const refreshJWT = async (accessToken, refreshToken) => {
 
     const host = API_SERVER_HOST;
-    const headers = {headers: {'Authorization' : `Bearer ${accessToken}`}};
-
-    const res = await axios.post(`${host}/api/members/refreshToken?refreshToken=${refreshToken}` , headers);
+    const res = await axios.post(
+        `${host}/api/gamer/refreshToken`,
+        { refreshToken },  // refreshToken을 body에 포함
+        { headers: { 'Authorization': `Bearer ${accessToken}` } } // headers는 세 번째 인자로 전달
+    );
 
     console.log("---------------------------");
     console.log(res.data);
 }
 
-/*
 const beforeReq = (config) => {
     console.log("beforeReq...");
 
-    const memberInfo = getCookie("member");
+    const accessToken = getCookie("accessToken"); // 클라이언트 사이드 쿠키에서 가져옴
 
-    if(!memberInfo) {
-        console.log("memberInfo is null");
+    if (!accessToken) {
+        console.log("Access Token이 없습니다.");
         return Promise.reject(
-            {response:
-                {data: "로그인이 필요합니다."}
-            }
-        )
+            { response: { data: "로그인이 필요합니다." } }
+        );
     }
 
-    const {accessToken} = memberInfo;
-
     config.headers.Authorization = `Bearer ${accessToken}`;
-
     return config;
-}*/
+};
+
+jwtAxios.interceptors.request.use(beforeReq, requestFail);
+
 
 const requestFail = (err) => {
     console.log("requestFail...");
@@ -77,7 +76,47 @@ const responseFail = (err) => {
     return Promise.reject(err);
 }
 
+export const refreshAccessToken = async () => {
+    try {
+        const refreshToken = getCookie("refreshToken"); // 클라이언트 사이드 쿠키에서 가져옴
+
+        if (!refreshToken) {
+            console.error("Refresh Token이 없습니다.");
+            return null;
+        }
+
+        const host = `${API_SERVER_HOST}/api/gamer`;
+        const response = await axios.post(`${host}/refreshToken`, { refreshToken });
+
+        // 새 Access Token 저장
+        setCookie("accessToken", response.data.accessToken, 10 / (24 * 60)); // 10분
+        return response.data.accessToken;
+    } catch (error) {
+        console.error("토큰 갱신 실패:", error.response?.data || error.message);
+        return null;
+    }
+};
+
+
 jwtAxios.interceptors.request.use(beforeReq,requestFail);
-jwtAxios.interceptors.response.use(beforeRes,responseFail);
+jwtAxios.interceptors.response.use(
+    async (res) => res,
+    async (err) => {
+        const originalRequest = err.config;
+
+        if (err.response && err.response.status === 401 && !originalRequest._retry) {
+            originalRequest._retry = true;  // 무한 루프 방지
+            const newAccessToken = await refreshAccessToken();
+
+            if (newAccessToken) {
+                originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
+                return axios(originalRequest);  // 요청 다시 시도
+            }
+        }
+
+        return Promise.reject(err);
+    }
+);
+
 
 export default jwtAxios;
