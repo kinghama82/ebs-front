@@ -1,11 +1,11 @@
-import AddComponent from "@/components/history/AddComponent";
+import HistoryAddComponent from "@/components/history/HistoryAddComponent";
 
 const NewHistoryPage = () => {
 
 
     return(
         <div>
-            <AddComponent/>
+            <HistoryAddComponent/>
         </div>
     )
 }

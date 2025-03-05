@@ -31,7 +31,7 @@ const BasicMenu = () => {
   }, [isSearchOpen]);
 
   return (
-    <nav className="bg-white shadow-md border border-black border-opacity-100 rounded-md sticky-top max-w-6xl mx-auto top-0 left-0 z-50">
+    <nav className="bg-white shadow-md border border-black border-opacity-100 rounded-md max-w-6xl position:sticky mx-auto top-0 left-0 z-50" >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           
@@ -45,7 +45,7 @@ const BasicMenu = () => {
             </Link>
 
             {/* 네비게이션 메뉴 */}
-            <div className="hidden md:flex space-x-6">
+            <div className="hidden no-underline md:flex space-x-6">
               <NavLink href="/news">뉴스</NavLink>
               <NavLink href="/free">자유</NavLink>
               <NavLink href="/question">질문</NavLink>

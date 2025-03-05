@@ -22,7 +22,7 @@ export const getList = async (pageParam) => {
 }
 //등록
 export const addHistory = async (history) => {
-    // const header = {headers: {"Content-Type": "multipart/form-data"}}
+    const header = {headers: {"Content-Type": "multipart/form-data"}}
 
     const res = await axios.post(`${host}/`, history)
 
