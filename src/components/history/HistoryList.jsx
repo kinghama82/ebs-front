@@ -42,9 +42,9 @@ const HistoryList = () => {
         });
     }, [page, size]); 
 
-    // ✅ 페이지 이동 함수 (상태도 업데이트)
+    //페이지 이동 함수 (상태도 업데이트)
     const moveToPage = (newPage) => {
-        setPage(newPage); // ✅ 상태를 업데이트하여 리렌더링 유도
+        setPage(newPage); 
         router.replace(`?page=${newPage}&size=${size}`,{scroll: false});
     };
 
@@ -53,7 +53,7 @@ const HistoryList = () => {
             {fetching ? <FetchingModal /> : null}
 
             {/* 히스토리 리스트 */}
-            <div className="flex flex-col mx-auto p-6 space-y-4">
+            <div className="flex flex-col mx-auto p-6 space-y-2">
                 <div className="flex items-center justify-between w-full p-2 border-b border-black">
                     <span className="w-1/12  text-center font-bold ">글번호</span>                    
                     <span className="w-5/12  text-center font-bold ">제 목</span>
@@ -80,6 +80,7 @@ const HistoryList = () => {
             </div>
 
             {/* 페이지네이션 */}
+            
             <Pagination>
                 <PaginationContent>
                     {serverData.prev && (
@@ -107,6 +108,7 @@ const HistoryList = () => {
                     )}
                 </PaginationContent>
             </Pagination>
+            
         </div>
     );
 };

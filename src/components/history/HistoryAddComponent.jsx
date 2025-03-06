@@ -144,16 +144,16 @@ const HistoryAddComponent = () => {
         addHistory(formData).then((data) => {
             setFetching(false);
             setResult(data.result)
-            // if(data.result){
-            //     router.push('/history/1')
-            // }
+            
+            router.push('/history')
+            
         });
 
     };
 
     const closeModal = () => {
         setResult(null);
-        router.push('/history/')
+        
     };
 
     return (
