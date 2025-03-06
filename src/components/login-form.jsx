@@ -10,9 +10,9 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import Link from "next/link"
-import { loginPost} from "@/api/gamerApi";
+import { loginPost } from "@/api/loginAPI";
 import { useState } from "react";
+import {router} from "next/client";
 
 export function LoginForm({
   className,

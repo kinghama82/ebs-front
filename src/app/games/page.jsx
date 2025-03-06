@@ -33,34 +33,45 @@ export default function GamesPage() {
     }
 
     return (
-        <div className="container mx-auto p-4">
+        <div className="container mx-auto p-4 border-2 max-w-6xl">
             <h1 className="text-2xl font-bold mb-4">보드게임 목록</h1>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+
+
+            <div className=" gap-4 ">
                 {games.map((game) => (
                     <Link key={game.id} href={`/games/${game.id}`}>
-                        <div className="border p-4 rounded-lg shadow cursor-pointer hover:bg-gray-100">
+                        <div className="flex gap-2  p-3 rounded-lg shadow cursor-pointer hover:bg-gray-100 items-center">
                             {game.img ? (
-                                <img
-                                    src={game.img}
+                                /*<img
+                                    src={`http://43.202.30.85:8080${game.img}`}
                                     alt={game.gameName}
-                                    width={200}
-                                    height={200}
+                                    width={100}
+                                    height={100}
                                     className="rounded-md"
+                                />*/
+                                // 이미지 강제로 픽셀고정
+                                <div className={"m-1 ms-2 border-2"}>
+                                <img
+                                    src={`http://43.202.30.85:8080${game.img}`}
+                                    alt={game.gameName}
+                                    className="w-[50px] h-[50px] object-cover rounded-md"
                                 />
+                                </div>
                             ) : (
                                 <div className="h-[200px] flex items-center justify-center bg-gray-200 text-gray-500">
                                     이미지 없음
                                 </div>
                             )}
-                            <h2 className="text-xl font-semibold">{game.gameName}</h2>
-                            <p>제작사: {game.company}</p>
-                            <p>출시년도: {game.year}</p>
+                            <h2 className="text-xl font-semibold w-56 ms-2 ">{game.gameName}</h2>
+                            <p className={"w-60"}>제작사: {game.company}</p>
+                            <p className={"w-20"}>출시년도: {game.year}</p>
                             <p>인원: {game.players}</p>
                             <p>가격: {game.price} 원</p>
                         </div>
                     </Link>
                 ))}
             </div>
+
         </div>
     );
 }
