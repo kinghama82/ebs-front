@@ -147,7 +147,7 @@ const HistoryAddComponent = () => {
 
     const closeModal = () => {
         setResult(null);
-        router.push('/history/1')
+        router.push('/history/')
     };
 
     return (

@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import FetchingModal from "../common/FetchingModal";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "../ui/pagination";
+import Link from "next/link";
 
 const host = API_SERVER_HOST;
 
@@ -39,7 +40,7 @@ const HistoryList = () => {
             setServerData(data);
             setFetching(false);
         });
-    }, [page, size]); // ✅ page 값이 변하면 자동으로 데이터 다시 불러오기
+    }, [page, size]); 
 
     // ✅ 페이지 이동 함수 (상태도 업데이트)
     const moveToPage = (newPage) => {
@@ -53,11 +54,27 @@ const HistoryList = () => {
 
             {/* 히스토리 리스트 */}
             <div className="flex flex-col mx-auto p-6 space-y-4">
+                <div className="flex items-center justify-between w-full p-2 border-b border-black">
+                    <span className="w-1/12  text-center font-bold ">글번호</span>                    
+                    <span className="w-5/12  text-center font-bold ">제 목</span>
+                    <span className="w-1/12  text-center font-bold ">전 적</span>
+                    <span className="w-1/12  text-center font-bold ">게 임 이 름</span>
+                    <span className="w-1/12  text-center font-bold ">기 록 일</span>
+                </div>
+            
                 {serverData.dtoList.map(history => (
                     <div key={history.id} 
                          className="flex items-center justify-between w-full p-2 border-b border-black ">
-                    <span className="text-sm font-semibold text-gray-600">{history.id}</span>
-                    <span className="text-sm text-gray-800">{history.title}</span>
+                    <span className="w-1/12 text-center ">{history.id}</span>
+                    <span className="w-5/12 text-center " ><Link href={`/history/read/${history.id}`}>{history.title}</Link></span>
+                    <span className={`w-1/12 text-center font-bold 
+                            ${history.win ? "text-green-700" : history.draw ? "text-yellow-600" : "text-orange-600"}`}>
+                        {history.win ? "Win" : history.draw ? "Draw" : "Lose"}
+                    </span>
+                    <span className="w-1/12 text-center ">
+                        <Link href={`/games/${history.game.id}`}>{history.game.gameName}</Link>
+                    </span>
+                    <span className="w-1/12 text-center ">{history.date}</span>
                 </div>
                 ))}
             </div>

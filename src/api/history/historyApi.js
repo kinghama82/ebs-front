@@ -7,7 +7,9 @@ const host = `${API_SERVER_HOST}/api/history`
 
 //읽기
 export const getHistory = async (id) => {
-    const res = await axios.get(`${host}/${id}`)
+    console.log(`API 요청 URL: ${host}/read/${id}`)
+    const res = await axios.get(`${host}/read/${id}`)
+    console.log("API응답 데이터: ", res.data)
 
     return res.data
 }
