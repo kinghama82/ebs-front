@@ -12,7 +12,7 @@ export default async function GameDetailPage({ params }) {
 
         return (
             <div
-                className="container p-4 border-4 border-indigo-500 flex justify-start mt-5 relative"
+                className="container p-4 border-4 border-indigo-500 flex justify-start mt-5 relative max-w-6xl"
                 style={{
                     backgroundImage: `
                         linear-gradient(to right, rgba(0,0,0,0.8) 60%, rgba(0,0,0,0) 40%),
