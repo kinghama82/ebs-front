@@ -18,7 +18,7 @@ const PostDetailPage = () => {
 
   useEffect(() => {
     if (id) {
-      // API에서 해당 ID의 상세 정보를 가져옵니다.
+      // API에서 해당 ID의 상세 정보를 가져오고 조회수 증가
       axios
         .get(`http://localhost:8080/rulebook/${id}`)
         .then((response) => {
@@ -32,7 +32,6 @@ const PostDetailPage = () => {
     }
   }, [id]);
 
-
   const handleEditClick = () => {
     window.location.href = `/rulebook/modify/${id}`;  // 수정 페이지로 이동
   };
@@ -40,7 +39,7 @@ const PostDetailPage = () => {
   const handleDeleteClick = (id) => {
     if (window.confirm("정말로 삭제하시겠습니까?")) {
       axios
-        .delete(`http://localhost:8080/rulebook/${id}`)
+        .delete(`http://localhost:8080/rulebook/delete/${id}`)
         .then((response) => {
           console.log("게시글 삭제 성공", response);
           alert("삭제되었습니다.");
@@ -82,6 +81,7 @@ const PostDetailPage = () => {
           <div className="flex justify-between text-sm text-gray-600">
             <p><strong>작성자:</strong> {ruleDetail.writerId}</p>
             <p><strong>작성일:</strong> {ruleDetail.createdate}</p>
+            <p><strong>조회수:</strong> {ruleDetail.viewCount}</p> {/* 조회수 표시 */}
           </div>
         </div>
         <button onClick={handleEditClick}>수정</button> {/* 수정 버튼 클릭 시 수정 페이지로 이동 */}

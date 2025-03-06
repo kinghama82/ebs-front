@@ -1,0 +1,46 @@
+/* styles/Editor.module.css */
+.ProseMirror {
+    outline: none;
+    border: none;
+    background: transparent;
+}
+
+.ProseMirror p,
+.ProseMirror div {
+    outline: none;
+    border: none;
+    background: transparent;
+}
+
+.ProseMirror-focused {
+    outline: none;
+}
+
+.ProseMirror span {
+    display: inline;
+  }
+  
+  .ProseMirror span[style] {
+    display: inline !important;
+  }
+
+/* styles/Editor.module.css 또는 global.css */
+.dropdown {
+    padding: 8px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+  }
+  
+  /*드롭다운 항목에 대한 스타일*/
+.dropdownItem {
+  padding: '5px 10px';    /*항목의 패딩 설정*/
+  cursor: 'pointer';     /* 마우스 커서를 pointer로 변경*/
+}
+
+/* hover 상태 스타일*/
+.dropdownItem:hover {
+  background-color: '#D97706';  /* 마우스를 올렸을 때 배경색 변경*/
+  color: white;  /* 텍스트 색상 변경*/
+}
