@@ -56,6 +56,7 @@ const HistoryAddComponent = () => {
         }
     };
 
+    //라디오버튼
     const handleChangeResult = (e) => {
         const { id } = e.target;
         setHistory((prevState) => ({
@@ -66,6 +67,7 @@ const HistoryAddComponent = () => {
         }));
     };
 
+    //파티원 추가 부분
     const handleAddPartyMember = () => {
         let newMember = partyMember.trim();
 
@@ -96,14 +98,16 @@ const HistoryAddComponent = () => {
         }
     }, [result])
 
+    //파티원목록 초기화
     const handleResetPartyMembers = () => {
         setHistory((prev) => ({
             ...prev,
-            mate: []  // 파티원 목록 초기화
+            mate: []  
         }));
     };
 
 
+    //기록저장 버튼 클릭후 수행 부분
     const handleClickAdd = () => {
         // history 자체가 undefined인지 확인
         if (!history) {
