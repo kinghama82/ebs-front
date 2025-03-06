@@ -51,7 +51,7 @@ const YouTube = Node.create({
   },
 })
 
-const TiptapEditor = () => {
+const EditorComponent = () => {
   const fileInputRef = useRef(null)
   const [imageUrl, setImageUrl] = useState('')  // 이미지 미리보기 상태 추가
   const [title, setTitle] = useState('') 
@@ -128,7 +128,7 @@ const TiptapEditor = () => {
     }
 
     const formData = new FormData();
-    const rulebookData = { title: title, content: content };
+    const rulebookData = { title: title, content: content};
     formData.append('rulebook', new Blob([JSON.stringify(rulebookData)], { type: 'application/json' }));
 
     try {
@@ -141,10 +141,11 @@ const TiptapEditor = () => {
 
         window.location.href = '/rulebook';
         
-    } catch (error) {
-        console.error('게시글 작성 오류', error.response || error);
+    } catch (err) {
+        console.error('게시글 작성 오류', err.response || err);
         alert('게시글 작성에 실패했습니다.');
     }
+
   };
 
   return (
@@ -220,4 +221,4 @@ const buttonStyle = {
   fontSize: '16px',
 }
 
-export default TiptapEditor
+export default EditorComponent
