@@ -9,9 +9,6 @@ import Link from "next/link";
 import { Suspense } from "react";
 
 const HistoryPage = () => {
-
-
-
     return ( <>
         <BasicMenu/>
         
@@ -19,7 +16,7 @@ const HistoryPage = () => {
                 {/* 왼쪽공간 */}
                 <div className="m-1 basis-6/12 card border-black">
                     <div className="m-1">
-                        <Button>닉네임출력</Button>
+                        <Button>닉네임출력부분</Button>
                     </div>
                     <div>
                         <HistoryChart/>
@@ -27,20 +24,20 @@ const HistoryPage = () => {
                 </div>
                 
                {/* 오른쪽공간 */}
-                <div className="m-1 basis-6/12 card border-black">
-                    <div className="m-1 flex" >
-                    <Link href="/history/new" 
-                          className="p-1 text-md rounded text-center ml-auto text-black w-auto no-underline bg-gray-300">
-                        기록 작성
-                    </Link>
-                    </div>
+                <div className="m-1 p-1 basis-6/12 card border-black">                  
                     <HistoryTab/>
                 </div>              
             </div>
+            {/* 사이공간 */}
+            <div className="m-2 max-w-6xl mx-auto flex justify-end relative">
+                <Button variant="secondary" className="text-white text-md">
+                    <Link href={`/history/new`}>기록 작성</Link>
+                </Button>
+            </div>
             {/* 아래공간 */}
-            <div className="mt-4 max-w-6xl mx-auto bg-gray-300 rounded min-h-96 my-auto">
+            <div className=" max-w-6xl mx-auto bg-gray-300 rounded -mt-7">
                 <Suspense fallback={<div>Loading...</div>}>
-                    <HistoryList />
+                    <HistoryList/>
                 </Suspense>
             </div>
           
