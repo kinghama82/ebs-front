@@ -9,8 +9,6 @@ const PostDetailPage = () => {
   const [loading, setLoading] = useState(true);  // 로딩 상태
   const [id, setId] = useState(null);  // ID를 직접 URL에서 받아오기
 
-
-
   useEffect(() => {
     // URL에서 id를 추출 (클라이언트에서만)
     const url = window.location.href;
@@ -34,6 +32,27 @@ const PostDetailPage = () => {
     }
   }, [id]);
 
+
+  const handleEditClick = () => {
+    window.location.href = `/rulebook/modify/${id}`;  // 수정 페이지로 이동
+  };
+
+  const handleDeleteClick = (id) => {
+    if (window.confirm("정말로 삭제하시겠습니까?")) {
+      axios
+        .delete(`http://localhost:8080/rulebook/${id}`)
+        .then((response) => {
+          console.log("게시글 삭제 성공", response);
+          alert("삭제되었습니다.");
+          window.location.href = "/rulebook"; // 삭제 후 목록 페이지로 리디렉션
+        })
+        .catch((error) => {
+          console.error("게시글 삭제 오류", error);
+          alert("삭제 중 오류가 발생했습니다.");
+        });
+    }
+  };
+
   if (loading) {
     return <div>Loading...</div>;  // 로딩 중에는 "Loading..." 표시
   }
@@ -41,10 +60,6 @@ const PostDetailPage = () => {
   if (!ruleDetail) {
     return <div>No data available</div>;  // 데이터가 없을 경우
   }
-
-  const handleEditClick = () => {
-    window.location.href = `/rulebook/modify/${id}`;
-  };
 
   return (
     <div>
@@ -70,6 +85,7 @@ const PostDetailPage = () => {
           </div>
         </div>
         <button onClick={handleEditClick}>수정</button> {/* 수정 버튼 클릭 시 수정 페이지로 이동 */}
+        <button onClick={() => handleDeleteClick(id)}>삭제</button> {/* 삭제 버튼 클릭 시 삭제 요청 */}
       </div>
     </div>
   );

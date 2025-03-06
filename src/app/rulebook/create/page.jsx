@@ -1,7 +1,8 @@
 import EditorComponent from "@/components/common/EditorComponent";
-
+import React from "react";
 
 const Newpage = () => {
+
     return (
         <div>
             <div>

@@ -20,8 +20,14 @@ export const getOne = async (id) => {
     return res.data;
 };
 
-export const upload = async (formData) => {
-    const response = await axios.post(`${host}/rulebook/upload`, formData);
+export const modify = async (id, formData) => {
+    const res = await axios.put(`${host}/rulebook/modify/${id}`, formData);
 
-    return response.data;
+    return res.data;
 };
+
+export const remove = async (id) => {
+    const res = await axios.delete(`${host}/rulebook/delete/${id}`);
+
+    return res.data;
+}; 
