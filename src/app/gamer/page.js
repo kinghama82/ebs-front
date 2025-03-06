@@ -2,10 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { loginPost } from "../../api/loginAPI";
+import { loginPost } from "@/api/loginAPI";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { getClientCookie } from "@/util/getClientCookie";
+
+const accessToken = getClientCookie("accessToken");
+console.log("클라이언트 쿠키:", accessToken);
 
 const LoginPage = () => {
     const [email, setEmail] = useState("");

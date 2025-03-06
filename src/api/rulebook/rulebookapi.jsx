@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const host = "http://localhost:8080";
+const host = "http://43.202.30.85:8080";
 
 export const getList = async () => {
     const res = await axios.get(`${host}/list`);

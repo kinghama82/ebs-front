@@ -12,7 +12,7 @@ export default function ListComponent() {
     }, []);
 
     useEffect(() => {
-        fetch("http://localhost:8080/rulebook/list")
+        fetch("http://43.202.30.85:8080/rulebook/list")
             .then((res) => res.json())
             .then((data) => {
                 if (Array.isArray(data.dtoList)) {

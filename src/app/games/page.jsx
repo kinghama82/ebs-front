@@ -1,49 +1,77 @@
-// app/games/page.js
 "use client";
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
+import { getGames } from "@/api/game/gameapi"; // getGames 함수 사용
 
 export default function GamesPage() {
     const [games, setGames] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        fetch("http://localhost:8080/games")
-            .then((res) => res.json())
-            .then((data) => setGames(data))
-            .catch((error) => console.error("Error fetching games:", error));
+        const fetchGames = async () => {
+            try {
+                const data = await getGames();
+                setGames(data);
+            } catch (err) {
+                console.error("Error fetching games:", err);
+                setError("게임 데이터를 불러오는 중 오류가 발생했습니다.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchGames();
     }, []);
 
+    if (loading) {
+        return <div className="container mx-auto p-4 text-center">게임 데이터를 불러오는 중...</div>;
+    }
+
+    if (error) {
+        return <div className="container mx-auto p-4 text-center text-red-500">{error}</div>;
+    }
+
     return (
-        <div className="container mx-auto p-4">
+        <div className="container mx-auto p-4 border-2 max-w-6xl">
             <h1 className="text-2xl font-bold mb-4">보드게임 목록</h1>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+
+
+            <div className=" gap-4 ">
                 {games.map((game) => (
                     <Link key={game.id} href={`/games/${game.id}`}>
-                        <div className="border p-4 rounded-lg shadow cursor-pointer hover:bg-gray-100">
-                            {/* 이미지가 존재하는 경우에만 표시 */}
+                        <div className="flex gap-2  p-3 rounded-lg shadow cursor-pointer hover:bg-gray-100 items-center">
                             {game.img ? (
-                                <Image
-                                    src={`http://localhost:8080${game.img}`}
+                                /*<img
+                                    src={`http://43.202.30.85:8080${game.img}`}
                                     alt={game.gameName}
-                                    width={200}
-                                    height={200}
+                                    width={100}
+                                    height={100}
                                     className="rounded-md"
+                                />*/
+                                // 이미지 강제로 픽셀고정
+                                <div className={"m-1 ms-2 border-2"}>
+                                <img
+                                    src={`http://43.202.30.85:8080${game.img}`}
+                                    alt={game.gameName}
+                                    className="w-[50px] h-[50px] object-cover rounded-md"
                                 />
+                                </div>
                             ) : (
                                 <div className="h-[200px] flex items-center justify-center bg-gray-200 text-gray-500">
                                     이미지 없음
                                 </div>
                             )}
-                            <h2 className="text-xl font-semibold">{game.gameName}</h2>
-                            <p>제작사: {game.company}</p>
-                            <p>출시년도: {game.year}</p>
+                            <h2 className="text-xl font-semibold w-56 ms-2 ">{game.gameName}</h2>
+                            <p className={"w-60"}>제작사: {game.company}</p>
+                            <p className={"w-20"}>출시년도: {game.year}</p>
                             <p>인원: {game.players}</p>
                             <p>가격: {game.price} 원</p>
                         </div>
                     </Link>
                 ))}
             </div>
+
         </div>
     );
 }

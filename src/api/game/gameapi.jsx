@@ -1,47 +1,38 @@
 // src/api/game/gameapi.jsx
 import axios from "axios";
-import { API_SERVER_HOST } from "@/api/publicapi";
+import {API_SERVER_HOST} from "@/api/publicapi";
 
-const host = `${API_SERVER_HOST}/api/gamer`;
-
-export const loginPost = async (loginParam) => {
-
-    const header = { headers: { "Content-Type": "application/x-www-form-urlencoded" } };
-
-    const form = new FormData();
-    form.append("username",loginParam.email);
-    form.append("password",loginParam.password);
-
-    const res = await axios.post(`${host}/login`,form,header);
-
-    return res.data;
-}
-
-
-
-
-
-
-
-
-
-/*
-
-// import axios from "axios";
-import jwtAxios from "src/util/jwtUtil";
-
-const SERVER_URL = "http://localhost:8080";
-
-
-export const getgames = async () => {
-    const response = await jwtAxios.get(`${SERVER_URL}/api/games`);
+export const getGames = async () => {
+    const response = await axios.get(`${API_SERVER_HOST}/api/games`);
     return response.data;
 };
 
 export const newgame = async (formData) => {
-    const response = await jwtAxios.post(`${SERVER_URL}/api/games/new`, formData, {
+    const response = await axios.post(`${API_SERVER_HOST}/api/games/create`, formData, {
         // "Content-Type"은 생략하거나 자동 설정에 맡기면 좋습니다.
     });
     return response.data;
 };
-*/
+
+export const getGameById = async (id) => {
+    try {
+        const response = await axios.get(`${API_SERVER_HOST}/api/games/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error("게임 데이터를 불러오는 중 오류 발생:", error);
+        throw error;
+    }
+};
+
+export const searchGames = async (keyword) => {
+    try {
+        const response = await axios.get(`${API_SERVER_HOST}/api/games/search`, {
+            params: { keyword } // ✅ 쿼리 파라미터로 검색어 전달
+        });
+        return response.data;
+    } catch (error) {
+        console.error("게임 검색 중 오류 발생:", error);
+        throw error;
+    }
+};
+

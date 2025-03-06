@@ -3,12 +3,16 @@
 import { CircleUserRound, Dices, Menu, Search, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { searchGames } from "@/api/game/gameapi"; // ✅ 검색 API 추가
+import { useRouter } from "next/navigation"; // ✅ 검색 결과 페이지 이동용
 
 const BasicMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const searchRef = useRef(null);
   const inputRef = useRef(null);
+  const [searchKeyword, setSearchKeyword] = useState(""); // ✅ 검색어 상태 추가
+  const router = useRouter(); // ✅ Next.js의 라우터 사용
 
   // 검색창 바깥 클릭 시 닫히도록 설정
   useEffect(() => {
@@ -29,6 +33,25 @@ const BasicMenu = () => {
       inputRef.current.focus();
     }
   }, [isSearchOpen]);
+
+  // ✅ 검색 실행 함수
+  const handleSearch = async () => {
+    if (!searchKeyword.trim()) return; // 빈 검색어 방지
+
+    try {
+      // 검색 결과 페이지로 이동
+      router.push(`/search?keyword=${searchKeyword}`);
+    } catch (error) {
+      console.error("검색 오류:", error);
+    }
+  };
+
+  // ✅ Enter 키를 눌렀을 때 검색 실행
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      handleSearch();
+    }
+  };
 
   return (
     <nav className="bg-white shadow-md border border-black border-opacity-100 rounded-md max-w-6xl sticky-top mx-auto top-0 left-0 z-50" >
@@ -63,6 +86,9 @@ const BasicMenu = () => {
                 ref={inputRef}
                 type="text"
                 placeholder="검색어 입력"
+                value={searchKeyword} // ✅ 입력값 상태 연결
+                onChange={(e) => setSearchKeyword(e.target.value)} // ✅ 입력값 업데이트
+                onKeyDown={handleKeyDown} // ✅ Enter 키 검색 실행
                 className={`absolute right-full top-1/2 -translate-y-1/2 border border-gray-300 rounded-md px-3 py-1 bg-white transition-all duration-300 ${
                   isSearchOpen ? "w-60 opacity-100" : "w-0 opacity-0"
                 }`}
@@ -70,8 +96,11 @@ const BasicMenu = () => {
 
               {/* 돋보기 버튼 */}
               <button
-                onClick={() => setIsSearchOpen(!isSearchOpen)}
-                className="p-2 rounded-md focus:outline-none z-10 "
+                  onClick={() => {
+                    if (isSearchOpen) handleSearch(); // ✅ 검색 실행
+                    setIsSearchOpen(!isSearchOpen);
+                  }}
+                  className="p-2 rounded-md focus:outline-none z-10 "
               >
                 <Search size={20} className="text-amber-800" />
               </button>
