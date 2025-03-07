@@ -24,7 +24,7 @@ export const getList = async (pageParam) => {
 }
 //등록
 export const addHistory = async (history) => {
-    const header = {headers: {"Content-Type": "multipart/form-data"}}
+    
 
     const res = await axios.post(`${host}/`, history)
 
@@ -33,10 +33,12 @@ export const addHistory = async (history) => {
 
 
 //수정
-export const putHistory = async (id, history) => {
-    const header = {headers : {"Content-Type" : "multipart/form-data"}}
+export const modifyHistory = async (id, history) => {
 
-    const res = await axios.put(`${host}/${id}`, history, header)
+    console.log(`API요청 : ${host}/${id}`)
+    console.log("보낼 데이터 : ", history)
+
+    const res = await axios.put(`${host}/${id}`, history)
 
     return res.data
 }

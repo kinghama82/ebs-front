@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import FetchingModal from "../common/FetchingModal";
-import BasicMenu from "../menus/BasicMenu";
 import GameBoxComponent from "../common/GameBoxComponent";
 
 const initState = {
@@ -127,6 +126,7 @@ const HistoryAddComponent = () => {
             return;
         }
 
+        console.log("현재 히스토리 : ", history)
         const formData = new FormData();
         formData.append("title", history.title);
         formData.append("content", history.content);
@@ -158,7 +158,7 @@ const HistoryAddComponent = () => {
 
     return (
         <>
-            <BasicMenu />
+            
             <div className="bg-gray-400 border-2 max-w-6xl mx-auto rounded mt-10 m-2 p-4 flex flex-col gap-6">
                 {fetching ? <FetchingModal /> : <></>}
                 {/* 제목 입력 */}
@@ -186,7 +186,7 @@ const HistoryAddComponent = () => {
                 </div>
 
                 {/* 게임 ID 입력 및 검색 */}
-                <div className="relative flex w-full flex-wrap items-stretch p-4 -mt-5">
+                <div className="relative flex w-full flex-wrap items-stretch p-4 -mt-5 -mb-6">
                     <div className="w-2/12 p-4 text-center font-bold">게임검색</div>
                     <input
                         className="w-[400px] p-4 rounded border border-solid border-neutral-300 shadow-md"
@@ -196,7 +196,7 @@ const HistoryAddComponent = () => {
                         value={gameId}
                         onChange={(e) => setGameId(e.target.value)}
                     />
-                    <button className="ml-4 p-4 bg-blue-500 text-white rounded shadow-md"
+                    <button className="ml-4 p-4 bg-blue-500 text-white rounded shadow-md "
                         onClick={handleSearchGame}>
                         검색
                     </button>

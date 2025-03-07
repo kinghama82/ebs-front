@@ -61,15 +61,15 @@ export default function GamesPage() {
                                 )}
                                 <h2 className="text-xl font-semibold w-56 ms-2">{game.gameName}</h2>
                                 <p className="w-60">제작사: {game.company}</p>
-                                <p className="w-20">출시년도: {game.year}</p>
-                                <p>인원: {game.players}</p>
-                                <p>가격: {game.price} 원</p>
+                                <p className="w-40">출시년도: {game.year}</p>
+                                <p className="mr-2">인원: {game.players}</p>
+                                <p className="ml-2">가격: {game.price} 원</p>
                             </div>
                         </AccordionTrigger>
 
                         <AccordionContent>
                             <div
-                                className=" p-2  flex justify-start items-center relative max-w-6xl h-64"
+                                className=" p-2 rounded flex justify-start items-center relative max-w-6xl h-64"
                                 style={{
                                     backgroundImage: `
                         linear-gradient(to right, rgba(0,0,0,0.8) 75%, rgba(0,0,0,0) 30%),
