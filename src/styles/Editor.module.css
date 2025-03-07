@@ -25,22 +25,19 @@
   }
 
 /* styles/Editor.module.css 또는 global.css */
-.dropdown {
-    padding: 8px;
-    font-size: 14px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    cursor: pointer;
-  }
-  
-  /*드롭다운 항목에 대한 스타일*/
+
+
 .dropdownItem {
-  padding: '5px 10px';    /*항목의 패딩 설정*/
-  cursor: 'pointer';     /* 마우스 커서를 pointer로 변경*/
+    display: block;
+    width: 100%; /* 가로 전체 확장 */
+    padding: 0 12px 8px; /* 아래쪽에만 패딩 추가 */
+    line-height: 1.5; /* 텍스트 줄 높이 조정 */
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.2s ease-in-out;
 }
 
-/* hover 상태 스타일*/
 .dropdownItem:hover {
-  background-color: '#D97706';  /* 마우스를 올렸을 때 배경색 변경*/
-  color: white;  /* 텍스트 색상 변경*/
+    background-color: #007bff; /* hover 시 전체 영역 색 변경 */
+    color: white; /* 텍스트 색상 변경 */
 }

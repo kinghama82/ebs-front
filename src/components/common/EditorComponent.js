@@ -224,11 +224,11 @@ const EditorComponent = () => {
           setDropdownVisible(false);
         }
       };
-  
+
       document.addEventListener('mousedown', handleClickOutside);
       return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
-  
+
       // 글자 크기 버튼 클릭 시 드롭다운 위치 설정
   const handleFontSizeDropdownClick = () => {
     const buttonRect = buttonRef.current.getBoundingClientRect();
@@ -240,7 +240,7 @@ const EditorComponent = () => {
   };
 
 
-    
+
   return (
     <div
       style={{ maxWidth: '800px', margin: '0 auto', padding: '20px', backgroundColor: 'transparent', borderRadius: '8px' }}
@@ -321,7 +321,7 @@ const EditorComponent = () => {
                 }}
               >
                 <div
-                  className="dropdownItem"
+                  className={styles.dropdownItemp}
                   onClick={() => handleFontSizeChange(16)}
                 >
                   16px
@@ -370,7 +370,7 @@ const EditorComponent = () => {
                 </div>
               </div>
             )}
-            
+
             {/* 밑줄 버튼 */}
             <button onClick={() => editor.chain().focus().toggleUnderline().run()} style={buttonStyle}><u>U</u></button>
 
@@ -403,13 +403,13 @@ const EditorComponent = () => {
 const dropdownItemStyle = {
   padding: '5px 10px',
   cursor: 'pointer',
-}
+  transition: 'background-color 0.2s ease-in-out', // 부드러운 색상 전환 효과 추가
+};
 
-// hover 상태 스타일
 const dropdownItemHoverStyle = {
-  backgroundColor: '#D97706',  // 마우스를 올렸을 때 배경색 변경
+  backgroundColor: '#007bff',  // 마우스를 올렸을 때 배경색 (파란색)
   color: 'white',  // 텍스트 색상 변경
-}
+};
 
 const buttonStyle = {
   backgroundColor: 'transparent',
