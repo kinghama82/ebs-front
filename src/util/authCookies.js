@@ -3,41 +3,39 @@
 import { cookies } from "next/headers";
 
 // ✅ Next.js 서버 쿠키 저장 함수
-export const setAuthCookies = (accessToken, refreshToken) => {
+export const setAuthCookies = async (accessToken, refreshToken) => { // ✅ async 추가
     const cookieStore = cookies();
-
-    // ✅ 개발 환경에서는 secure: false로 설정해야 쿠키가 저장됨
     const isProduction = process.env.NODE_ENV === "production";
 
     cookieStore.set("accessToken", accessToken, {
-        httpOnly: false,
-        secure: false,  // ✅ 배포 환경에서만 `secure: true`
+        httpOnly: true,
+        secure: isProduction,
         sameSite: "None",
-        maxAge: 10 * 60,  // ✅ 10분 후 만료
+        maxAge: 10 * 60,
         path: "/",
     });
 
     cookieStore.set("refreshToken", refreshToken, {
-        httpOnly: false,
-        secure: false,
+        httpOnly: true,
+        secure: isProduction,
         sameSite: "None",
-        maxAge: 7 * 24 * 60 * 60,  // ✅ 7일 후 만료
+        maxAge: 7 * 24 * 60 * 60,
         path: "/",
     });
 };
 
-// ✅ Next.js 서버에서 쿠키 가져오기
-export const getAuthCookies = () => {
-    const cookieStore = cookies();
+// ✅ Next.js 서버에서 쿠키 가져오기 (비동기 함수로 변경)
+export const getAuthCookies = async () => {
+    const cookieStore = await cookies(); // ✅ `await` 추가
 
     return {
-        accessToken: cookieStore.get("accessToken")?.value || null,
-        refreshToken: cookieStore.get("refreshToken")?.value || null,
+        accessToken: await cookieStore.get("accessToken")?.value || null,
+        refreshToken: await cookieStore.get("refreshToken")?.value || null,
     };
 };
 
 // ✅ Next.js 서버에서 쿠키 삭제
-export const deleteAuthCookies = () => {
+export const deleteAuthCookies = async () => {  // ✅ async 추가
     const cookieStore = cookies();
 
     cookieStore.set("accessToken", "", {
