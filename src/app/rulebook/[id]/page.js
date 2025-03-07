@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import BasicMenu from "@/components/menus/BasicMenu";
 import axios from "axios";
+import {X} from 'lucide-react'
 
 const PostDetailPage = () => {
   const [ruleDetail, setRuleDetail] = useState(null);  // 게시글 상세 데이터 상태
@@ -65,27 +66,33 @@ const PostDetailPage = () => {
       <BasicMenu /> {/* 메뉴 컴포넌트 추가 */}
 
       <div className="mx-auto w-full max-w-4xl p-4">
-        <div className="bg-[#813D00] text-white text-3xl py-4 text-center">
-          RuleBook Detail
+
+        <div className=" text-black text-4xl py-3">
+          {ruleDetail.title}
         </div>
 
-        <div className="w-full bg-yellow-100 p-4">
-          <h2 className="text-2xl font-bold mb-4">{ruleDetail.title}</h2>
+        <div className="w-full"  style={{borderBlock:'2px solid #D97706'}}>
+
+          <div className="flex justify-end text-sm text-gray-600 gap-4">
+            <p><strong>작성자:</strong>{ruleDetail.writerId} 원태연</p>
+            <p><strong>작성일:</strong> {ruleDetail.createdate}</p>
+            <p><strong>조회수:</strong> {ruleDetail.viewCount}</p> {/* 조회수 표시 */}
+          </div>
+
 
           {/* content는 HTML 형식이므로 dangerouslySetInnerHTML을 사용해 출력 */}
           <div
             className="editor-content"
-            dangerouslySetInnerHTML={{ __html: ruleDetail.content }}
+            dangerouslySetInnerHTML={{ __html: ruleDetail.content }} style={{marginTop: '20px'}}
           />
 
-          <div className="flex justify-between text-sm text-gray-600">
-            <p><strong>작성자:</strong> {ruleDetail.writerId}</p>
-            <p><strong>작성일:</strong> {ruleDetail.createdate}</p>
-            <p><strong>조회수:</strong> {ruleDetail.viewCount}</p> {/* 조회수 표시 */}
-          </div>
+          <div className="flex justify-end gap-3" style={{marginBottom: '3px'}}>
+          <button onClick={handleEditClick} style={{color:'white',background:'#D97706', borderRadius: '15%', padding: '3px'}}>수정</button> {/* 수정 버튼 클릭 시 수정 페이지로 이동 */}
+          <button onClick={() => handleDeleteClick(id)} style={{background:'#D97706', borderRadius: '15%', padding: '3px', color:'white'}}><X size={25}/></button> {/* 삭제 버튼 클릭 시 삭제 요청 */}
+            </div>
+
         </div>
-        <button onClick={handleEditClick}>수정</button> {/* 수정 버튼 클릭 시 수정 페이지로 이동 */}
-        <button onClick={() => handleDeleteClick(id)}>삭제</button> {/* 삭제 버튼 클릭 시 삭제 요청 */}
+
       </div>
     </div>
   );
