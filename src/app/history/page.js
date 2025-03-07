@@ -7,6 +7,8 @@ import RecentGameComponent from "@/components/history/RecentGameComponent";
 import BasicMenu from "@/components/menus/BasicMenu";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Cookies from "js-cookie";
+import jwtDecode from "jsonwebtoken";
 import Link from "next/link";
 import { Suspense, useEffect, useState } from "react";
 
@@ -15,6 +17,7 @@ const HistoryPage = () => {
     const [fetching, setFetching] = useState(false);
     const page = 1; // 기본 페이지 값
     const size = 10; // 기본 사이즈 값
+    const [userInfo, setUserInfo] = useState("")
 
     useEffect(() => {
         setFetching(true);
@@ -26,6 +29,21 @@ const HistoryPage = () => {
             .catch(() => setFetching(false));
     }, []);
 
+    useEffect(() => {
+        // 1. 쿠키에서 gamerCooki(JWT) 가져오기
+        const token = Cookies.get("gamerCooki");
+        if (token) {
+          try {
+            const decoded = jwtDecode.decode(token); // JWT 디코딩
+            if (decoded && decoded.nickname) {
+              setUserInfo(decoded) //유저정보저장
+            }
+          } catch (error) {
+            console.error("JWT 디코딩 오류:", error);
+          }
+        }
+      }, []);
+
 
     return (<>
         <BasicMenu />
@@ -34,7 +52,7 @@ const HistoryPage = () => {
             {/* 왼쪽공간 */}
             <div className="m-1 basis-6/12 card border-black">
                 <div className="m-1">
-                    <Button>닉네임출력부분</Button>
+                    <Button variant="secondary" className="text-white text-md">{userInfo.nickname}</Button>
                 </div>
                 <div>
                     <HistoryChart />
@@ -43,10 +61,10 @@ const HistoryPage = () => {
 
             {/* 오른쪽공간 */}
             <div className="m-1 p-1 basis-6/12 card border-black">
-                <Tabs defaultValue="account" className="w-full">
+                <Tabs defaultValue="game" className="w-full">
                     <TabsList className="grid w-full grid-cols-2">
-                        <TabsTrigger value="account">게임 메이트</TabsTrigger>
-                        <TabsTrigger value="password">최근 플레이 게임</TabsTrigger>
+                        <TabsTrigger value="mate">게임 메이트</TabsTrigger>
+                        <TabsTrigger value="game">최근 플레이 게임</TabsTrigger>
                     </TabsList>
                     <TabsContent value="account" className="m-1">
                         게임 메이트 공간

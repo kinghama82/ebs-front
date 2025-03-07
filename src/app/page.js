@@ -1,17 +1,16 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import BasicMenu from "@/components/menus/BasicMenu";
 import { getGames } from "@/api/game/gameapi";
-import jwtDecode from "jsonwebtoken"; // JWT 디코딩을 위한 라이브러리
-import Cookies from "js-cookie"; // 쿠키에서 데이터 가져오기
+import BasicMenu from "@/components/menus/BasicMenu";
 import {
     Carousel,
     CarouselContent,
-    CarouselItem,
-    CarouselNext,
-    CarouselPrevious,
+    CarouselItem
 } from "@/components/ui/carousel";
+import Cookies from "js-cookie"; // 쿠키에서 데이터 가져오기
+import jwtDecode from "jsonwebtoken"; // JWT 디코딩을 위한 라이브러리
+import { useEffect, useState } from "react";
 
+import { Button } from "@/components/ui/button";
 import {
     Card,
     CardContent,
@@ -19,12 +18,14 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
     const [games, setGames] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [nickname, setNickname] = useState(""); // 닉네임 저장
+    const router = useRouter()
 
     useEffect(() => {
         // 1. 쿠키에서 gamerCooki(JWT) 가져오기
@@ -69,18 +70,13 @@ export default function Home() {
             <div className="p-6 text-4xl font-bold text-center text-amber-800">
                 Board ParaDice
             </div>
-            {/* ✅ 닉네임 표시 */}
-            {nickname ? (
-                <div className="text-center text-lg font-semibold mt-2">
-                    환영합니다, <span className="text-blue-500">{nickname}</span>님!
-                </div>
-            ) : (
-                <div className="text-center text-gray-500">로그인하세요</div>
-            )}
-
+            
+            {/* 네비바 */}
             <BasicMenu />
+            
 
-            <Carousel className="border-2 max-w-6xl content-center origin-center items-center mx-auto">
+            {/* 캐러셀부분 */}
+            <Carousel className="border-2 rounded max-w-6xl -mt-[85px] content-center origin-center items-center mx-auto">
                 <CarouselContent>
                     {/* 첫 번째 카드 */}
                     <CarouselItem className="basis-1/3 p-4">
@@ -162,5 +158,6 @@ export default function Home() {
                 </CarouselContent>
             </Carousel>
         </div>
+
     );
 }
