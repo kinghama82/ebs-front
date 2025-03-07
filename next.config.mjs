@@ -40,7 +40,7 @@ const nextConfig = {
                 protocol: "http",
                 hostname: "43.202.30.85",
                 port: "8080",
-                pathname: "/uploads/**",
+                pathname: "/uploads/!**",
             },
         ],
         domains: ['43.202.30.85'],

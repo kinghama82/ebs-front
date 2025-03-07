@@ -12,13 +12,13 @@ export default async function GameDetailPage({ params }) {
 
         return (
             <div
-                className="container p-4 border-4 border-indigo-500 flex justify-start mt-5 relative max-w-6xl"
+                className="container p-4 border-4 border-indigo-500 flex justify-start  relative max-w-6xl"
                 style={{
                     backgroundImage: `
-                        linear-gradient(to right, rgba(0,0,0,0.8) 60%, rgba(0,0,0,0) 40%),
+                        linear-gradient(to right, rgba(0,0,0,0.8) 75%, rgba(0,0,0,0) 30%),
                         url(http://43.202.30.85:8080${game.img})
                     `,
-                    backgroundSize: '100% 100%, 30% 100%',
+                    backgroundSize: '100% 100%, 300px 300px',
                     backgroundPosition: 'left, right center',
                     backgroundRepeat: 'no-repeat, no-repeat',
                     color: 'white',
@@ -28,11 +28,15 @@ export default async function GameDetailPage({ params }) {
                 <div className="m-8">
                     {game.img && game.img !== "" ? (
                         <img
+                            // src={`http://43.202.30.85:8080${game.img}`}
+                            // alt={game.gameName}
+                            // width={200}
+                            // height={200}
+                            // className="rounded-md"
+
                             src={`http://43.202.30.85:8080${game.img}`}
                             alt={game.gameName}
-                            width={200}
-                            height={200}
-                            className="rounded-md"
+                            className="w-[200px] h-[200px] object rounded-md"
                         />
                     ) : (
                         <div className="h-[200px] flex items-center justify-center bg-gray-200 text-gray-500">
