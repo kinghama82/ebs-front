@@ -1,6 +1,6 @@
 "use client";
 
-import { deleteHistory, getHistory } from "@/api/history/historyApi";
+import { deleteHistory, getHistory, modifyHistory } from "@/api/history/historyApi";
 import GameBoxComponent from "@/components/common/GameBoxComponent";
 import BasicMenu from "@/components/menus/BasicMenu";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
@@ -76,6 +76,9 @@ const HistoryReadPage = () => {
             })
         })
     }
+    const moveToModify = (id) => {        
+        router.push(`/history/modify/${id}`)
+    } 
     
 
     return (
@@ -112,8 +115,8 @@ const HistoryReadPage = () => {
 
             {/* 버튼부분 */}
             <div className="mx-auto relative flex gap-2 max-w-6xl justify-end">
-                <Button variant="secondary" className="font-bold shadow-md"
-                        >수정</Button>
+                <Button variant="secondary" className=" shadow-md text-white"
+                        onClick={() => moveToModify(id)}>수정</Button>
                 <AlertDialog>
                     <AlertDialogTrigger asChild>
                         <Button variant="destructive">삭제</Button>
