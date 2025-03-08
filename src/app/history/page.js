@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Cookies from "js-cookie";
 import jwtDecode from "jsonwebtoken";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 
 const HistoryPage = () => {
@@ -18,6 +19,7 @@ const HistoryPage = () => {
     const page = 1; // 기본 페이지 값
     const size = 10; // 기본 사이즈 값
     const [userInfo, setUserInfo] = useState("")
+    const router = useRouter()
 
     useEffect(() => {
         setFetching(true);
@@ -77,9 +79,14 @@ const HistoryPage = () => {
         </div>
         {/* 사이공간 */}
         <div className="m-2 max-w-6xl mx-auto flex justify-end relative">
-            <Button variant="secondary" className="text-white text-md">
-                <Link href={`/history/new`}>기록 작성</Link>
-            </Button>
+            {/* 기록작성버튼 쿠키없으면 버튼 안보이게*/}
+            {userInfo ? 
+                <Button variant="secondary" className="text-white text-md"
+                        onClick={() => router.push('/history/new')}>
+                        기록 작성
+                </Button>
+            : <></>}
+            
         </div>
         {/* 아래공간 */}
         <div className=" max-w-6xl mx-auto bg-gray-300 rounded -mt-7">
