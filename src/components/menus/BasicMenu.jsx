@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation"; // ✅ 검색 결과 페이지 이�
 import { useEffect, useRef, useState } from "react";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
+import { useCustomCookie } from "../common/useCustomCookie";
 
 const BasicMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -16,22 +17,7 @@ const BasicMenu = () => {
   const inputRef = useRef(null);
   const [searchKeyword, setSearchKeyword] = useState(""); // ✅ 검색어 상태 추가
   const router = useRouter(); // ✅ Next.js의 라우터 사용
-  const [userInfo, setUserInfo] = useState("")
-
-  useEffect(() => {
-    // 1. 쿠키에서 gamerCooki(JWT) 가져오기
-    const token = Cookies.get("gamerCooki");
-    if (token) {
-      try {
-        const decoded = jwtDecode.decode(token); // JWT 디코딩
-        if (decoded && decoded.nickname) {
-          setUserInfo(decoded)
-        }
-      } catch (error) {
-        console.error("JWT 디코딩 오류:", error);
-      }
-    }
-  }, []);
+  const userInfo = useCustomCookie()
 
   // 검색창 바깥 클릭 시 닫히도록 설정
   useEffect(() => {
@@ -144,7 +130,9 @@ const BasicMenu = () => {
                 <NavLink href="/question" onClick={() => setIsOpen(false)}>질문</NavLink>
                 <NavLink href="/rulebook" onClick={() => setIsOpen(false)}>룰북</NavLink>
                 <NavLink href="/games" onClick={() => setIsOpen(false)}>게임정보</NavLink>
+                {userInfo ?
                 <NavLink href="/history" onClick={() => setIsOpen(false)}>게임기록</NavLink>
+                :<></>}                
               </div>
             </div>
           )}
