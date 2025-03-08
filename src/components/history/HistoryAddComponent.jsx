@@ -267,11 +267,14 @@ const HistoryAddComponent = () => {
                 </div>
 
                 {/* 추가 버튼 */}
+                {userInfo ? 
                 <div className="flex justify-end mr-10 -mt-14 p-4">
                     <button type="button" className="rounded p-4 w-36 bg-blue-500 text-xl text-white"
                             onClick={handleClickAdd}>기록 저장
                     </button>
                 </div>
+                : <></>}
+                
             </div>
         </>
     );
