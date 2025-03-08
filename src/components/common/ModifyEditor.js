@@ -1,11 +1,19 @@
 'use client'
 
-import { useEditor, EditorContent } from '@tiptap/react';
-import { StarterKit } from '@tiptap/starter-kit';
-import React, { useState, useEffect } from 'react';
-import { Image } from '@tiptap/extension-image';
-import axios from 'axios';
+import React, { useRef, useState, useEffect } from 'react'
+import { useEditor, EditorContent } from '@tiptap/react'
+import { StarterKit } from '@tiptap/starter-kit'
+import { Image } from '@tiptap/extension-image'
+import { TvMinimalPlay, FileImage, AlignRight, AlignLeft, AlignJustify } from 'lucide-react'
+import axios from 'axios'
 import { Node } from '@tiptap/core'
+import { TextStyle } from '@tiptap/extension-text-style'
+import { Underline } from '@tiptap/extension-underline'
+import styles from '@/styles/Editor.module.css'
+import { TextAlign } from '@tiptap/extension-text-align'
+import Color from '@tiptap/extension-color'
+import { Mark, mergeAttributes } from '@tiptap/core';
+import { SketchPicker } from 'react-color'
 
 // YouTube 노드 정의
 const YouTube = Node.create({
@@ -54,6 +62,14 @@ const YouTube = Node.create({
 const ModifyEditor = ({ postId, initialContent, initialTitle }) => {
   const [title, setTitle] = useState(initialTitle);
   const [content, setContent] = useState(initialContent);
+  const fileInputRef = useRef(null)
+  const [colorPickerVisible, setColorPickerVisible] = useState(false) // 색상 선택기 상태 정의
+  const [selectedColor, setSelectedColor] = useState('#000000') // 기본 색상 검정색
+  const [selectedFontSize, setSelectedFontSize] = useState(16); // 기본 글자 크기 설정
+  const [dropdownVisible, setDropdownVisible] = useState(false); // 드롭다운 보이기/숨기기 상태
+  const dropdownRef = useRef(null);
+  const buttonRef = useRef(null); // 글자 크기 버튼에 대한 참조 추가
+
 
   const editor = useEditor({
     extensions: [StarterKit, Image, YouTube],
@@ -88,55 +104,247 @@ const ModifyEditor = ({ postId, initialContent, initialTitle }) => {
     try {
       // 서버에 게시글 데이터 전송
       const response = await axios.put(`http://localhost:8080/rulebook/modify/${postId}`, formData, {
-          headers: { 'Content-Type': 'multipart/form-data' },
+        headers: { 'Content-Type': 'multipart/form-data' },
       });
 
       alert('게시글 작성 완료');
 
       window.location.href = '/rulebook';
-      
-  } catch (err) {
+
+    } catch (err) {
       console.error('게시글 작성 오류', err.response || err);
       alert('게시글 작성에 실패했습니다.');
+    }
+  };
+
+  // 색상 선택기 토글 함수
+  const toggleColorPicker = () => {
+    setColorPickerVisible(!colorPickerVisible);
   }
+
+  // 글자 크기 버튼 클릭 시 드롭다운 위치 설정
+  const handleFontSizeDropdownClick = () => {
+    const buttonRect = buttonRef.current.getBoundingClientRect();
+    setDropdownPosition({
+      top: buttonRect.bottom, // 버튼 아래에 드롭다운이 위치하도록 설정
+      left: buttonRect.left,  // 버튼 왼쪽에 맞춰서 드롭다운 위치 설정
+    });
+    setDropdownVisible(!dropdownVisible); // 드롭다운 토글
   };
 
   return (
-    <div>
-      <input
-        type="text"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        placeholder="게시글 제목"
-        style={{ width: '100%', padding: '10px', fontSize: '16px', marginBottom: '20px' }}
-      />
+      <div
+          style={{ maxWidth: '800px', margin: '0 auto', padding: '20px', backgroundColor: 'transparent', borderRadius: '8px' }}
+      >
+        <h1 style={{ textAlign: 'center', fontSize: '24px', marginBottom: '20px', marginTop: '50px' }}>게시글 작성</h1>
 
-      <div style={{ marginBottom: '20px' }}>
-        <button onClick={() => editor.chain().focus().toggleBold().run()} style={buttonStyle}><strong>B</strong></button>
-        <button onClick={() => editor.chain().focus().toggleItalic().run()} style={buttonStyle}><em>I</em></button>
-        <button onClick={() => editor.chain().focus().toggleStrike().run()} style={buttonStyle}><s>S</s></button>
+        {/* 제목 입력 */}
+        <input
+            type="text"
+            placeholder="게시글 제목을 입력하세요"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            style={{ width: '100%', padding: '10px', fontSize: '16px', marginBottom: '30px', outline: '2px solid #D97706', borderRadius: '5px' }}
+        />
+
+        {/* 파일 입력 엘리먼트 */}
+        <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            style={{ display: 'none' }}
+            onChange={(event) => {
+              const file = event.target.files[0];
+              if (file && file.type.startsWith('image/')) {
+                setImageUrl(URL.createObjectURL(file));  // 미리보기용 이미지 설정
+                editor.chain().focus().setImage({ src: URL.createObjectURL(file) }).run(); // 에디터에 이미지 삽입
+              }
+            }}
+        />
+
+        {/* 에디터 콘텐츠 */}
+        <div
+            style={{
+              outline: '2px solid #D97706',
+              borderRadius: '5px',
+              minHeight: '350px',
+              cursor: 'text',
+              backgroundColor: 'transparent',
+            }}
+            onClick={() => editor?.commands.focus()}
+        >
+          {/* 에디터 툴바 */}
+          <div style={{ display: 'flex', gap: '30px', borderRadius: '5px' }}>
+            <div>
+              <button onClick={() => editor.chain().focus().toggleBold().run()} style={GetButtonStyle(editor, 'bold')}><strong>B</strong></button>
+              <button onClick={() => editor.chain().focus().toggleItalic().run()} style={GetButtonStyle(editor, 'italic')}><em>I</em></button>
+              <button onClick={() => editor.chain().focus().toggleStrike().run()} style={GetButtonStyle(editor, 'strike')}><s>S</s></button>
+
+              {/* 색상 팔레트 버튼 */}
+              <button onClick={toggleColorPicker} style={buttonStyle}>색상</button>
+              {colorPickerVisible && (
+                  <div style={{ position: 'absolute', zIndex: 1000 }}>
+                    <SketchPicker color={selectedColor} onChangeComplete={handleColorChange} />
+                  </div>
+              )}
+
+              {/* 글자 크기 버튼 */}
+              <button
+                  ref={buttonRef} // 글자 크기 버튼에 참조 추가
+                  onClick={handleFontSizeDropdownClick} // 클릭 시 드롭다운 토글
+                  style={buttonStyle}
+              >
+                글자 크기
+              </button>
+              {dropdownVisible && (
+                  <div
+                      ref={dropdownRef} // 드롭다운 참조
+                      style={{
+                        position: 'absolute',
+                        top: `${dropdownPosition.top}px`, // 동적으로 위치 설정
+                        left: `${dropdownPosition.left}px`, // 동적으로 위치 설정
+                        backgroundColor: 'white',
+                        border: '1px solid #D97706',
+                        borderRadius: '5px',
+                        padding: '10px',
+                        maxHeight: '160px', // 최대 높이를 설정하여 스크롤 생기도록 함
+                        overflowY: 'auto',
+                      }}
+                  >
+                    <div
+                        className={styles.dropdownItemp}
+                        onClick={() => handleFontSizeChange(16)}
+                    >
+                      16px
+                    </div>
+                    <div
+                        className="dropdownItem"
+                        onClick={() => handleFontSizeChange(18)}
+                    >
+                      18px
+                    </div>
+                    <div
+                        className="dropdownItem"
+                        onClick={() => handleFontSizeChange(20)}
+                    >
+                      20px
+                    </div>
+                    <div
+                        className="dropdownItem"
+                        onClick={() => handleFontSizeChange(24)}
+                    >
+                      24px
+                    </div>
+                    <div
+                        className="dropdownItem"
+                        onClick={() => handleFontSizeChange(30)}
+                    >
+                      30px
+                    </div>
+                    <div
+                        className="dropdownItem"
+                        onClick={() => handleFontSizeChange(36)}
+                    >
+                      36px
+                    </div>
+                    <div
+                        className="dropdownItem"
+                        onClick={() => handleFontSizeChange(40)}
+                    >
+                      40px
+                    </div>
+                    <div
+                        className="dropdownItem"
+                        onClick={() => handleFontSizeChange(48)}
+                    >
+                      48px
+                    </div>
+                  </div>
+              )}
+
+              {/* 밑줄 버튼 */}
+              <button onClick={() => editor.chain().focus().toggleUnderline().run()} style={buttonStyle}><u>U</u></button>
+
+              <button onClick={() => editor.chain().focus().setTextAlign('left').run()} style={AlignButtonStyle(editor, 'left')}><AlignLeft /></button>
+              <button onClick={() => editor.chain().focus().setTextAlign('center').run()} style={AlignButtonStyle(editor, 'center')}><AlignJustify /></button>
+              <button onClick={() => editor.chain().focus().setTextAlign('right').run()} style={AlignButtonStyle(editor, 'right')}><AlignRight /></button>
+            </div>
+
+            <div>
+              <button onClick={() => insertYouTube(prompt('유튜브 링크를 입력하세요:'))} style={buttonStyle}><TvMinimalPlay /></button>
+              <button onClick={() => fileInputRef.current.click()} style={buttonStyle}><FileImage /></button>
+            </div>
+          </div>
+
+          {/* 텍스트 입력 */}
+          <div className={styles.ProseMirror} style={{ padding: '10px' }}>
+            <EditorContent editor={editor} />
+          </div>
+        </div>
+
+        {/* 게시글 작성 버튼 */}
+        <button onClick={updatePost} style={{ ...buttonStyle, marginTop: '20px', backgroundColor: '#D97706' }}>
+          게시글 작성
+        </button>
+
       </div>
+  )
+}
 
-      <div style={{ border: '1px solid #ddd', padding: '20px' }}>
-        <EditorContent editor={editor} />
-      </div>
+const dropdownItemStyle = {
+  padding: '5px 10px',
+  cursor: 'pointer',
+  transition: 'background-color 0.2s ease-in-out', // 부드러운 색상 전환 효과 추가
+};
 
-      <button onClick={updatePost} style={buttonStyle}>
-        게시글 수정 완료
-      </button>
-    </div>
-  );
+const dropdownItemHoverStyle = {
+  backgroundColor: '#007bff',  // 마우스를 올렸을 때 배경색 (파란색)
+  color: 'white',  // 텍스트 색상 변경
 };
 
 const buttonStyle = {
-  backgroundColor: '#4CAF50',
-  color: 'white',
+  backgroundColor: 'transparent',
+  color: 'black',
   padding: '10px 15px',
-  margin: '10px 5px',
+  margin: '0 5px',
   border: 'none',
   borderRadius: '5px',
   cursor: 'pointer',
+  fontSize: '16px',
+}
+
+//툴바 스타일
+const GetButtonStyle = (editor, type) => {
+  const isActive = editor?.isActive(type); // 활성화 여부 확인
+
+  return {
+    backgroundColor: 'transparent',
+    color: isActive ? '#D97706' : 'black', // 활성화되면 색상을 변경
+    padding: '10px 15px',
+    margin: '0 5px',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
+    fontSize: '16px',
+  };
+};
+
+//정렬 버튼 스타일
+const AlignButtonStyle = (editor, type) => {
+  const alignment = editor?.getAttributes('paragraph')?.textAlign;
+
+  const isActive = alignment === type;
+
+  return {
+    backgroundColor: 'transparent',
+    color: isActive ? '#D97706' : 'black',
+    padding: '10px 15px',
+    margin: '0 5px',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
+    fontSize: '16px',
+  };
 };
 
 export default ModifyEditor;
-

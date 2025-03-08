@@ -16,7 +16,7 @@ async function fetchPostData(postId) {
 
 const EditPostPage = async ({ params }) => {
   const { id } = params; // URL에서 postId를 받아옵니다.
-  
+
   // 서버에서 해당 게시글의 데이터 가져오기
   const postData = await fetchPostData(id);
 
@@ -26,11 +26,11 @@ const EditPostPage = async ({ params }) => {
   }
 
   return (
-    <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
-      <h1>게시글 수정</h1>
-      {/* EditorComponent에 postId와 기존 데이터를 전달 */}
-      <ModifyEditor postId={id} initialContent={postData.content} initialTitle={postData.title} />
-    </div>
+      <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
+        <h1>게시글 수정</h1>
+        {/* EditorComponent에 postId와 기존 데이터를 전달 */}
+        <ModifyEditor postId={id} initialContent={postData.content} initialTitle={postData.title} />
+      </div>
   );
 };
 
