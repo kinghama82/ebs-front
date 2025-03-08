@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import FetchingModal from "../common/FetchingModal";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "../ui/pagination";
+import { ArrowUpDown } from "lucide-react";
 
 const initState = {
     dtoList: [],
@@ -22,14 +23,13 @@ const initState = {
 const HistoryList = ({ userInfo, selectedYear }) => {
     const router = useRouter();
     const searchParams = useSearchParams();
-
-    // ✅ 상태 추가하여 강제 리렌더링
     const [page, setPage] = useState(parseInt(searchParams.get("page")) || 1);
     const size = parseInt(searchParams.get("size")) || 10;
     const gamerid = searchParams.get("gamerid")
-
     const [serverData, setServerData] = useState(initState);
     const [fetching, setFetching] = useState(false);
+    const [sortKey, setSortKey] = useState(null);
+    const [sortOrder, setSortOrder] = useState("asc")
 
     useEffect(() => {
         setFetching(true);
@@ -39,18 +39,38 @@ const HistoryList = ({ userInfo, selectedYear }) => {
                 console.log(data);
                 setServerData(data);
                 setFetching(false);
-                
+
             });
-        } else{   //연도검색 선택하면 연도별 getList
+        } else {   //연도검색 선택하면 연도별 getList
             getHistoryByYear(gamerid, selectedYear, page, size).then(data => {
                 setServerData(data);
                 setFetching(false);
-                
+
             });
         }
     }, [page, size, gamerid, selectedYear]);
 
-    // ✅ 글번호 계산 (전체 개수에서 현재 페이지 오프셋을 뺀 값)
+    // 정렬 함수
+    const handleSort = (key) => {
+        const newSortOrder = sortKey === key && sortOrder === "asc" ? "desc" : "asc";
+        setSortKey(key);
+        setSortOrder(newSortOrder);
+    };
+    // ✅ 데이터 정렬 적용
+    const sortedData = [...serverData.dtoList].sort((a, b) => {
+        if (!sortKey) return 0; // 정렬 키가 없으면 기존 순서 유지
+        const valueA = a[sortKey];
+        const valueB = b[sortKey];
+
+        if (typeof valueA === "string") {
+            return sortOrder === "asc" ? valueA.localeCompare(valueB) : valueB.localeCompare(valueA);
+        } else {
+            return sortOrder === "asc" ? valueA - valueB : valueB - valueA;
+        }
+    });
+
+
+    // 글번호 계산 (전체 개수에서 현재 페이지 오프셋을 뺀 값)
     const startNumber = serverData.totalCount - (page - 1) * size;
 
     //페이지 이동 함수 (상태도 업데이트)
@@ -70,29 +90,30 @@ const HistoryList = ({ userInfo, selectedYear }) => {
                     <span className="w-5/12  text-center font-bold ">제 목</span>
                     <span className="w-1/12  text-center font-bold ">전 적</span>
                     <span className="w-2/12  text-center font-bold ">게 임 이 름</span>
-                    <span className="w-2/12  text-center font-bold ">기 록 일</span>
+                    <span className="w-2/12  text-center font-bold cursor-pointer flex items-center justify-center gap-1" 
+                          onClick={() => handleSort("date")}>기 록 일<ArrowUpDown className="w-4 h-4"/></span>
                 </div>
-                {serverData.dtoList.length > 0 ? (
-                serverData.dtoList.map((history, index) => (
-                    <div key={history.id}
-                        className="flex items-center justify-between w-full p-2 border-b border-black ">
-                        <span className="w-1/12 text-center ">{startNumber - index}</span>
-                        <span className="w-5/12 text-center " >
-                            <Link href={`/history/read/${history.id}`}>{history.title}</Link>
-                        </span>
-                        <span className={`w-1/12 text-center font-bold 
+                {sortedData.length > 0 ? (
+                    sortedData.map((history, index) => (
+                        <div key={history.id}
+                            className="flex items-center justify-between w-full p-2 border-b border-black ">
+                            <span className="w-1/12 text-center ">{startNumber - index}</span>
+                            <span className="w-5/12 text-center " >
+                                <Link href={`/history/read/${history.id}`}>{history.title}</Link>
+                            </span>
+                            <span className={`w-1/12 text-center font-bold 
                             ${history.win ? "text-green-700" : history.draw ? "text-yellow-600" : "text-orange-600"}`}>
-                            {history.win ? "Win" : history.draw ? "Draw" : "Lose"}
-                        </span>
-                        <span className="w-2/12 text-center text-blue-700">
-                            <Link href={`/games/${history.game.id}`}>{history.game.gameName}</Link>
-                        </span>
-                        <span className="w-2/12 text-center ">{history.date}</span>
-                    </div>
-                ))
-            ) : (
-                <div className="text-center p-4">해당 연도에 기록이 없습니다.</div>
-            )}
+                                {history.win ? "Win" : history.draw ? "Draw" : "Lose"}
+                            </span>
+                            <span className="w-2/12 text-center text-blue-700">
+                                <Link href={`/games/${history.game.id}`}>{history.game.gameName}</Link>
+                            </span>
+                            <span className="w-2/12 text-center ">{history.date}</span>
+                        </div>
+                    ))
+                ) : (
+                    <div className="text-center p-4">해당 연도에 기록이 없습니다.</div>
+                )}
             </div>
 
             {/* 페이지네이션 */}

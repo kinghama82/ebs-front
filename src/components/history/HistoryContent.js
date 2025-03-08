@@ -62,7 +62,7 @@ const HistoryContent = ({ userInfo }) => {
                             </p>
                         </div>
                     </div>
-                    <div className="border border-black p-2">아래부분?</div>
+                    <div className="border border-black p-2">아래부분?여기에 뭘 넣을까??</div>
                 </div>
 
                 {/* 오른쪽공간 */}
