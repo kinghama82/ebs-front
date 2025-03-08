@@ -32,8 +32,8 @@ const HistoryContent = ({ userInfo, serverData }) => {
                             게임 메이트 공간
                         </TabsContent>
                         <TabsContent value="game" className="m-1">
-                            {serverData?.dtoList && serverData.dtoList.length > 0 ? (
-                                <RecentGameComponent histories={serverData.dtoList} />
+                            {userInfo?.id ? (
+                                <RecentGameComponent gamerid={userInfo.id}/>
                             ) : (
                                 <div className="p-4 border rounded shadow-md text-gray-500">
                                     최근 플레이한 게임이 없습니다.

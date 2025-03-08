@@ -4,7 +4,6 @@ import { getList } from "@/api/history/historyApi";
 import { useCustomCookie } from "@/components/common/useCustomCookie";
 import HistoryContent from "@/components/history/HistoryContent";
 import BasicMenu from "@/components/menus/BasicMenu";
-import { useRouter } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 
 
@@ -14,14 +13,6 @@ const HistoryPage = () => {
     const page = 1; // 기본 페이지 값
     const size = 10; // 기본 사이즈 값
     const userInfo = useCustomCookie()
-    const router = useRouter()
-
-    useEffect(() => {
-        if (userInfo) {
-            console.log("HistoryPage에서 userInfo 업데이트됨:");
-
-        }
-    }, [userInfo])
 
     useEffect(() => {
         if (!userInfo || !userInfo.id) return
