@@ -1,33 +1,29 @@
 "use client"
+import { getRecentGames } from "@/api/history/historyApi";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-const RecentGameComponent = ({ histories }) => {
+const RecentGameComponent = ({ gamerid }) => {
     const [gameList, setGameList] = useState([])
 
     useEffect(() => {
-        if (!histories || histories.length === 0) return
+        if (!gamerid) return;
 
-        // 중복 제거 및 최근 플레이 게임 정렬
-        const uniqueGames = Array.from(new Map(histories.map(h => [h.game.id, h.game])).values());
-        setGameList(uniqueGames);
+        getRecentGames(gamerid).then((games) => {
+            setGameList(games);
+        }).catch(err => console.error(err));
+    }, [gamerid]);
 
-    }, [histories]);
-
-    if (!gameList) return null
+    if (gameList.length === 0) return <p>최근 플레이한 게임이 없습니다.</p>;
 
     return (
         <div className="p-4 border rounded shadow-md">
             <ul className="list-disc list-inside">
-                {gameList.length > 0 ? (
-                    gameList.map(game => (
-                        <li key={game.id} className="text-blue-500">
-                            <Link href={`/games/${game.id}`}>{game.gameName}</Link>
-                        </li>
-                    ))
-                ) : (
-                    <p>최근 플레이한 게임이 없습니다.</p>
-                )}
+                {gameList.map(game => (
+                    <div key={game.id} className="text-black font-semibold text-xl border-b border-black">
+                        <Link href={`/games/${game.id}`}>{game.gameName}</Link>
+                    </div>
+                ))}
             </ul>
         </div>
     );
