@@ -12,11 +12,7 @@ import { useHistoryRecord } from "./useHistoryRecord"
 const HistoryContent = ({ userInfo }) => {
     const router = useRouter()
     const [selectedYear, setSelectedYear] = useState(null)
-
-
     const { record: userRecord, loading, error } = useHistoryRecord(userInfo?.id)
-    console.log("현재 userRecord : ", userRecord)
-
 
     return (
         <div>
@@ -43,34 +39,31 @@ const HistoryContent = ({ userInfo }) => {
                             </Select>
                         </span>
                     </div>
-                    {/* 차트와 텍스트 */}
+                    {/* 차트와 통산전적 */}
                     <div className="flex p-2 space-x-4">
-                        {/* 왼쪽 (그래프) */}
+                        {/* 왼쪽 (차트) */}
                         <div className="w-1/2 flex justify-center items-center ml-10">
-                            <HistoryChart win={3} draw={2} lose={1} />
+                            <HistoryChart win={userRecord.win} draw={userRecord.draw} lose={userRecord.lose} />
                         </div>
-                        {/* 오른쪽 (텍스트) */}
+                        {/* 오른쪽 (통산전적) */}
                         <div className="w-1/2 flex flex-col justify-center items-center text-xl">
                             <h2 className="text-xl font-bold">게임 전적</h2>
                             <p className="text-gray-700 mt-2">Win :
-                                <span className="text-green-500 font-semibold"> {3}</span> 회
+                                <span className="text-green-500 font-semibold"> {userRecord.win}</span> 회
                             </p>
                             <p className="text-gray-700">Draw :
-                                <span className="text-yellow-500 font-semibold"> 2</span> 회
+                                <span className="text-yellow-500 font-semibold"> {userRecord.draw}</span> 회
                             </p>
                             <p className="text-gray-700">Lose :
-                                <span className="text-red-500 font-semibold"> 3</span> 회
+                                <span className="text-red-500 font-semibold"> {userRecord.lose}</span> 회
                             </p>
                             <p className="text-gray-700">승률 :
-                                <span className="text-green-500 font-semibold"> 3회</span> %
+                                <span className="text-green-500 font-semibold"> {Math.floor(userRecord.win/(userRecord.win+userRecord.draw+userRecord.lose)*100)}</span> %
                             </p>
                         </div>
                     </div>
                     <div className="border border-black p-2">아래부분?</div>
                 </div>
-
-
-
 
                 {/* 오른쪽공간 */}
                 <div className="m-1 p-1 basis-6/12 card border-black" >
@@ -96,7 +89,7 @@ const HistoryContent = ({ userInfo }) => {
             </div >
             {/* 사이공간 */}
             <div className="m-2 max-w-6xl mx-auto flex justify-end relative" >
-                {/* 기록작성버튼 쿠키없으면 버튼 안보이게*/}
+                {/* 기록작성버튼 쿠키없으면 버튼 안보임*/}
                 {userInfo ?
                     <Button variant="secondary" className="text-white text-md"
                         onClick={() => router.push('/history/new')}>
@@ -104,7 +97,7 @@ const HistoryContent = ({ userInfo }) => {
                     </Button>
                     : <></>}
             </div >
-            {/* 아래공간 */}
+            {/* 아래공간 리스트 */}
             <div className=" max-w-6xl mx-auto bg-gray-300 rounded -mt-7" >
                 <HistoryList userInfo={userInfo} selectedYear={selectedYear} />
             </div>

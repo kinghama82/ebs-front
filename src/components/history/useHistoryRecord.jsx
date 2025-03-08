@@ -9,13 +9,12 @@ const initState = {
 }
 
 export function useHistoryRecord (gamerid){
-    const [record, setRecord] = useState(undefined)
+    const [record, setRecord] = useState(gamerid)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
     const [isLoaded, setIsLoaded] = useState(false); 
 
     useEffect(()=> {
-        console.log("useHistoryRecord훅 gamerId 값 : ", gamerid)
         if(!gamerid) {
             console.warn("gamerid가 없어서 api 호출을 하지 않음")
             return
@@ -30,7 +29,6 @@ export function useHistoryRecord (gamerid){
         setError(null)
 
         getTotalRecord(gamerid).then((data)=>{
-            console.log("API응답데이터 : ", data)
             if(data && typeof data === "object" && Object.keys(data).length > 0){
                 
                 setRecord(data);
