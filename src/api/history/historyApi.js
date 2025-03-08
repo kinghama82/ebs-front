@@ -15,10 +15,10 @@ export const getHistory = async (id) => {
 }
 
 //리스트
-export const getList = async (pageParam) => {
+export const getList = async (pageParam, gamerid) => {
     const {page, size} = pageParam
 
-    const res = await axios.get(`${host}/`,{params:{page:page, size:size}})
+    const res = await axios.get(`${host}/`,{params:{page, size, gamerid}})
 
     return res.data
 }

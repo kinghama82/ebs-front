@@ -68,11 +68,11 @@ const HistoryPage = () => {
                         <TabsTrigger value="mate">게임 메이트</TabsTrigger>
                         <TabsTrigger value="game">최근 플레이 게임</TabsTrigger>
                     </TabsList>
-                    <TabsContent value="account" className="m-1">
+                    <TabsContent value="mate" className="m-1">
                         게임 메이트 공간
                     </TabsContent>
-                    <TabsContent value="password" className="m-1">
-                        <RecentGameComponent histories={serverData?.dtoList || []}/>
+                    <TabsContent value="game" className="m-1">                        
+                        <RecentGameComponent histories={serverData?.dtoList || []}/>                                               
                     </TabsContent>
                 </Tabs>
             </div>

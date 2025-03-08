@@ -79,7 +79,7 @@ const BasicMenu = () => {
                   <NavLink href="/question">질문</NavLink>
                   <NavLink href="/rulebook">룰북</NavLink>
                   <NavLink href="/games">게임정보</NavLink>
-                  {userInfo ? <NavLink href="/history">게임기록</NavLink> : <></>}                  
+                  {userInfo ? <NavLink href={`/history?page=1&size=10&gamerid=${userInfo.id}`}>게임기록</NavLink> : <></>}                  
                 </div>
               </div>
 
@@ -131,7 +131,9 @@ const BasicMenu = () => {
                 <NavLink href="/rulebook" onClick={() => setIsOpen(false)}>룰북</NavLink>
                 <NavLink href="/games" onClick={() => setIsOpen(false)}>게임정보</NavLink>
                 {userInfo ?
-                <NavLink href="/history" onClick={() => setIsOpen(false)}>게임기록</NavLink>
+                <NavLink href={`/history?page=1&size=10&gamerid=${userInfo.id}`} 
+                         onClick={() => setIsOpen(false)}>
+                게임기록</NavLink>
                 :<></>}                
               </div>
             </div>
@@ -153,7 +155,7 @@ const BasicMenu = () => {
                 >LogOut
                 </Button><br />
                 <Button variant="link" className="text-black" size="md"
-                  onClick={() => router.push('/mypage')}>마이페이지
+                        onClick={() => router.push('/mypage')}>마이페이지
                 </Button>
               </CardDescription>
             </CardHeader>
