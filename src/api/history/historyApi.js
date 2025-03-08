@@ -48,3 +48,9 @@ export const deleteHistory = async (id) => {
     const res = await axios.delete(`${host}/${id}`)
     return res.data
 }
+
+//최근 플레이 게임
+export const getRecentGames = async (gamerid) => {
+    const res = await axios.get(`${host}/recent/${gamerid}`)
+    return res.data
+}
