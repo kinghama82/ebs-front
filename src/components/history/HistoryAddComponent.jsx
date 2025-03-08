@@ -147,7 +147,7 @@ const HistoryAddComponent = () => {
             setFetching(false);
             setResult(data.result)
             
-            router.push('/history')
+            router.push(`/history?page=1&size=10&gamerid=${userInfo.id}`)
             
         });
 

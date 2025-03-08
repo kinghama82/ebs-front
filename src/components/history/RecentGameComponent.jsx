@@ -3,18 +3,21 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 const RecentGameComponent = ({ histories }) => {
-    const [gameList, setGameList] = useState([]);
+    const [gameList, setGameList] = useState([])
 
     useEffect(() => {
-        if (histories) {
-            // 중복 제거 및 최근 플레이 게임 정렬
-            const uniqueGames = Array.from(new Map(histories.map(h => [h.game.id, h.game])).values());
-            setGameList(uniqueGames);
-        }
+        if (!histories || histories.length === 0) return
+
+        // 중복 제거 및 최근 플레이 게임 정렬
+        const uniqueGames = Array.from(new Map(histories.map(h => [h.game.id, h.game])).values());
+        setGameList(uniqueGames);
+
     }, [histories]);
 
+    if (!gameList) return null
+
     return (
-        <div className="p-4 border rounded shadow-md">            
+        <div className="p-4 border rounded shadow-md">
             <ul className="list-disc list-inside">
                 {gameList.length > 0 ? (
                     gameList.map(game => (
