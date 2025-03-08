@@ -54,3 +54,27 @@ export const getRecentGames = async (gamerid) => {
     const res = await axios.get(`${host}/recent/${gamerid}`)
     return res.data
 }
+
+//연도별 히스토리 검색
+export const getHistoryByYear = async (gamerid, year, page, size = 10) => {
+    const res = await axios.get(`${host}/byYear`, { params: { gamerid, year, page, size } });
+    return res.data;
+};
+
+//전체기간 통산전적
+export const getTotalRecord = async (gamerid) => {
+    try {
+        
+        const res = await axios.get(`${host}/totalrecord`, { params: { gamerid } });
+
+        if (!res.data || Object.keys(res.data).length === 0) {
+            console.warn("API 응답이 비어있음, 기본값 반환");
+            return { win: 0, draw: 0, lose: 0 };
+        }
+
+        return res.data;
+    } catch (error) {
+        console.error("API 요청 중 오류 발생:", error);
+        return { win: 0, draw: 0, lose: 0 };
+    }
+}

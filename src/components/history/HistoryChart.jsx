@@ -1,133 +1,110 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { Label, Pie, PieChart } from "recharts"
+import { Doughnut } from "react-chartjs-2";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend, Chart } from "chart.js";
+import { useEffect } from "react";
 
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card"
-import {
-    ChartContainer,
-    ChartTooltip,
-    ChartTooltipContent
-} from "@/components/ui/chart"
-const chartData = [
-    { browser: "Win(승)", visitors: 200, fill: "var(--color-safari)" },
-    { browser: "Lose(패)", visitors: 275, fill: "var(--color-chrome)" },  
-    { browser: "Draw(무)", visitors: 173, fill: "var(--color-edge)" },  
-]
+// Chart.js에 필요한 요소 등록
+ChartJS.register(ArcElement, Tooltip, Legend);
 
-const chartConfig = {
-  visitors: {
-    label: "Visitors",
-  },
-  chrome: {
-    label: "Chrome",
-    color: "hsl(var(--chart-1))",
-  },
-  safari: {
-    label: "Safari",
-    color: "hsl(var(--chart-2))",
-  },
-  firefox: {
-    label: "Firefox",
-    color: "hsl(var(--chart-3))",
-  },
-  edge: {
-    label: "Edge",
-    color: "hsl(var(--chart-4))",
-  },
-  other: {
-    label: "Other",
-    color: "hsl(var(--chart-5))",
-  },
-}
+// 🔥 가운데 텍스트 플러그인 추가
+const centerTextPlugin = {
+    id: "centerText",
+    beforeDraw: (chart) => {
+        const { width } = chart;
+        const { height } = chart;
+        const ctx = chart.ctx;
+        ctx.restore();
 
-export default function HistoryChart() {
-  const totalVisitors = React.useMemo(() => {
-    return chartData.reduce((acc, curr) => acc + curr.visitors, 0)
-  }, [])
+        // 총 전적 계산
+        const totalGames = chart.config.data.datasets[0].data.reduce((a, b) => a + b, 0);
 
-  return (
-    <Card className="flex flex-col">
-      <CardHeader className="items-center pb-0">
-        <CardTitle>전적 통산 차트</CardTitle>
-        <CardDescription>전적 집계 기간?</CardDescription>
-      </CardHeader>
-      <CardContent className="flex flex-row items-center justify-center pb-0 gap-4">
-        <ChartContainer
-          config={chartConfig}
-          className="w-[250px] h-[250px] flex justify-center items-center"
-        >
-          <PieChart width={250} height={250}>
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent hideLabel />}
-            />
-            <Pie
-              data={chartData}
-              dataKey="visitors"
-              nameKey="browser"
-              innerRadius={60}
-              strokeWidth={5}
-            >
-              <Label
-                content={({ viewBox }) => {
-                  if (viewBox && "cx" in viewBox && "cy" in viewBox) {
-                    return (
-                      <text
-                        x={viewBox.cx}
-                        y={viewBox.cy}
-                        textAnchor="middle"
-                        dominantBaseline="middle"
-                      >
-                        <tspan
-                          x={viewBox.cx}
-                          y={viewBox.cy}
-                          className="fill-foreground text-3xl font-bold"
-                        >
-                          {totalVisitors.toLocaleString()}
-                        </tspan>
-                        <tspan
-                          x={viewBox.cx}
-                          y={(viewBox.cy || 0) + 24}
-                          className="fill-foreground font-bold"
-                        >
-                          총 전적
-                        </tspan>
-                      </text>
-                    )
-                  }
-                }}
-              />
-            </Pie>
-          </PieChart>
-        </ChartContainer>
-        <div className="flex flex-col gap-3 text-center">
-          {chartData.map((item) => (
-            <div key={item.browser} className="flex items-center gap-2 text-lg">
-              <div
-                className="w-4 h-4 rounded-full"
-                style={{ backgroundColor: item.fill }}
-              />
-              <span className="font-semibold">{item.browser}: {item.visitors}</span>
-            </div>
-          ))}
+        // 텍스트 스타일 설정
+        ctx.font = "bold 20px Arial";
+        ctx.fillStyle = "#333"; // 글씨 색상
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+
+        // 도넛 중앙 위치
+        const x = width / 2;
+        const y = height /2;
+
+        // ✅ 텍스트 위치 조정 (여기서 조정 가능!)
+        const titleYOffset = 30; 
+        const valueYOffset = -8;  
+        
+        // 윗줄 총 전적수
+        ctx.font = "bold 40px Arial";
+        ctx.fillStyle = "#333"; // 진한 색
+        ctx.fillText(`${totalGames}`, x, y + valueYOffset); // 🔥 위치 조정
+
+         // 아랫줄 플레이
+         ctx.font = "bold 22px Arial";
+         ctx.fillStyle = "#666"; // 회색 계열
+         ctx.textAlign = "center";
+         ctx.textBaseline = "middle";
+         ctx.fillText("플레이", x, y + titleYOffset);
+        
+        
+
+       
+
+
+        ctx.save();
+    },
+};
+
+const HistoryChart = ({ win, draw, lose }) => {
+    useEffect(()=>{
+        Chart.register(centerTextPlugin)
+
+        return () => {
+            Chart.unregister(centerTextPlugin)
+        }
+    },[])
+
+    const data = {
+        labels: ["승", "무", "패"],
+        datasets: [
+            {
+                data: [win, draw, lose], // 전달된 데이터 값 사용
+                backgroundColor: ["#4CAF50", "#FFC107", "#F44336"], // 초록색, 노란색, 빨간색
+                hoverBackgroundColor: ["#388E3C", "#FFA000", "#D32F2F"], // 호버 색상
+                borderWidth: 2,
+                hoverOffset: 15,
+            },
+        ],
+    };
+
+    const options = {
+        responsive: true,
+        cutout: "50%",
+        plugins: {
+            legend: { display: false, position: "top" },
+            tooltip: {
+                enabled: true,
+                backgroundColor: "rgba(0, 0, 0, 0.8)", // 툴팁 배경색
+                titleAlign: "center", // 제목 중앙 정렬
+                bodyAlign: "center", // 본문 중앙 정렬
+                displayColors: true, // 색상 박스 숨김
+                padding: 10, // 내부 여백 증가
+                callbacks: {
+                    title: () => "",
+                    label: (tooltipItem) => {
+                        const label = tooltipItem.label; // "승", "무", "패"
+                        const value = tooltipItem.raw; // 해당 값
+                        return ` ${label}: ${value}회`; // 한 줄로 표시
+                    },
+                },
+            },
+        },
+    };
+
+    return (
+         <div className="w-65 h-65 flex justify-center items-center">
+            <Doughnut data={data} options={options} />
         </div>
-      </CardContent>
-      <CardFooter className="flex-col gap-2 text-sm">
-        <div className="flex items-center gap-2 font-medium leading-none">
-          뭐 들어갈말 있나?
-        </div>
-        <div className="leading-none text-foreground">
-          생각해보자
-        </div>
-      </CardFooter>
-    </Card>
-  )
-}
+    );
+};
+
+export default HistoryChart
