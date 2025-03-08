@@ -1,51 +1,56 @@
+"use client"
 
-
-import HistoryChart from "@/components/history/HistoryChart";
-import HistoryList from "@/components/history/HistoryList";
-import { HistoryTab } from "@/components/history/HistoryTab";
+import { getList } from "@/api/history/historyApi";
+import { useCustomCookie } from "@/components/common/useCustomCookie";
+import HistoryContent from "@/components/history/HistoryContent";
 import BasicMenu from "@/components/menus/BasicMenu";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { Suspense } from "react";
+import { useRouter } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
+
 
 const HistoryPage = () => {
-    return ( <>
-        <BasicMenu/>
-        
-            <div className="flex flex-row gap-12 rounded-md mt-2 max-w-6xl mx-auto border-1 bg-gray-300 min-h-96">
-                {/* 왼쪽공간 */}
-                <div className="m-1 basis-6/12 card border-black">
-                    <div className="m-1">
-                        <Button>닉네임출력부분</Button>
-                    </div>
-                    <div>
-                        <HistoryChart/>
-                    </div>                                           
-                </div>
-                
-               {/* 오른쪽공간 */}
-                <div className="m-1 p-1 basis-6/12 card border-black">                  
-                    <HistoryTab/>
-                </div>              
-            </div>
-            {/* 사이공간 */}
-            <div className="m-2 max-w-6xl mx-auto flex justify-end relative">
-                <Button variant="secondary" className="text-white text-md">
-                    <Link href={`/history/new`}>기록 작성</Link>
-                </Button>
-            </div>
-            {/* 아래공간 */}
-            <div className=" max-w-6xl mx-auto bg-gray-300 rounded -mt-7">
-                <Suspense fallback={<div>Loading...</div>}>
-                    <HistoryList/>
-                </Suspense>
-            </div>
-          
-        
-        
-        
-    </>);
-    }
-    export default HistoryPage;
+    const [serverData, setServerData] = useState(null);
+    const [fetching, setFetching] = useState(false);
+    const page = 1; // 기본 페이지 값
+    const size = 10; // 기본 사이즈 값
+    const userInfo = useCustomCookie()
+    const router = useRouter()
 
- 
+    useEffect(() => {
+        if (userInfo) {
+            console.log("HistoryPage에서 userInfo 업데이트됨:");
+
+        }
+    }, [userInfo])
+
+    useEffect(() => {
+        if (!userInfo || !userInfo.id) return
+
+        setFetching(true);
+        getList({ page, size, gamerid: userInfo.id })
+            .then(data => {
+                setServerData(data);
+                setFetching(false);
+            })
+            .catch(() => setFetching(false));
+    }, [userInfo]);
+
+    return (<>
+        <BasicMenu />
+        {/* userInfo가 없으면 로딩 메시지 표시 */}
+        {!userInfo ? (
+            <div className="text-center p-4">사용자 정보를 불러오는 중...</div>
+        ) : (
+            <Suspense fallback={<div className="text-center p-4">히스토리를 불러오는 중...</div>}>
+                <HistoryContent userInfo={userInfo} serverData={serverData} />
+            </Suspense>
+        )}
+
+
+
+
+
+    </>);
+}
+export default HistoryPage;
+
