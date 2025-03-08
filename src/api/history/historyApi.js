@@ -15,16 +15,16 @@ export const getHistory = async (id) => {
 }
 
 //리스트
-export const getList = async (pageParam) => {
+export const getList = async (pageParam, gamerid) => {
     const {page, size} = pageParam
 
-    const res = await axios.get(`${host}/`,{params:{page:page, size:size}})
+    const res = await axios.get(`${host}/`,{params:{page, size, gamerid}})
 
     return res.data
 }
 //등록
 export const addHistory = async (history) => {
-    const header = {headers: {"Content-Type": "multipart/form-data"}}
+    
 
     const res = await axios.post(`${host}/`, history)
 
@@ -33,10 +33,12 @@ export const addHistory = async (history) => {
 
 
 //수정
-export const putHistory = async (id, history) => {
-    const header = {headers : {"Content-Type" : "multipart/form-data"}}
+export const modifyHistory = async (id, history) => {
 
-    const res = await axios.put(`${host}/${id}`, history, header)
+    console.log(`API요청 : ${host}/${id}`)
+    console.log("보낼 데이터 : ", history)
+
+    const res = await axios.put(`${host}/${id}`, history)
 
     return res.data
 }

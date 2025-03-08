@@ -7,8 +7,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import FetchingModal from "../common/FetchingModal";
-import BasicMenu from "../menus/BasicMenu";
 import GameBoxComponent from "../common/GameBoxComponent";
+import { useCustomCookie } from "../common/useCustomCookie";
 
 const initState = {
     title: '',
@@ -30,6 +30,7 @@ const HistoryAddComponent = () => {
     const router = useRouter()
     const [gameId, setGameId] = useState("")
     const [game, setGame] = useState(null)
+    const userInfo = useCustomCookie()
 
     const handleChangeHistory = (e) => {
         setHistory((prev) => ({
@@ -109,6 +110,7 @@ const HistoryAddComponent = () => {
 
     //기록저장 버튼 클릭후 수행 부분
     const handleClickAdd = () => {
+        console.log("현재 userinfo.id 정보 : ", userInfo?.id)
         // history 자체가 undefined인지 확인
         if (!history) {
         toast("데이터 오류 발생", { description: "기록을 저장할 수 없습니다." });
@@ -117,21 +119,21 @@ const HistoryAddComponent = () => {
 
         // 각 필수 속성들이 undefined가 아닐 때만 trim() 실행
         const title = history.title || "";
-        const gamer = history.gamer || "";
         const game = history.game || "";
         const content = history.content || "";
         const date = history.date || "";
 
-        if (!title.trim() || !gamer.trim() || !game.trim() || !content.trim() || !date.trim()) {
+        if (!title.trim() || !game.trim() || !content.trim() || !date.trim()) {
             toast("모든 필수 입력값을 입력하세요!", { description: "빈 칸을 채워주세요." });
             return;
         }
 
+        console.log("현재 히스토리 : ", history)
         const formData = new FormData();
         formData.append("title", history.title);
         formData.append("content", history.content);
         formData.append("game", history.game);
-        formData.append("gamer", history.gamer);
+        formData.append("gamer", userInfo.id);
         formData.append("win", history.win);
         formData.append("draw", history.draw);
         formData.append("lose", history.lose);
@@ -145,7 +147,7 @@ const HistoryAddComponent = () => {
             setFetching(false);
             setResult(data.result)
             
-            router.push('/history')
+            router.push(`/history?page=1&size=10&gamerid=${userInfo.id}`)
             
         });
 
@@ -158,7 +160,7 @@ const HistoryAddComponent = () => {
 
     return (
         <>
-            <BasicMenu />
+            
             <div className="bg-gray-400 border-2 max-w-6xl mx-auto rounded mt-10 m-2 p-4 flex flex-col gap-6">
                 {fetching ? <FetchingModal /> : <></>}
                 {/* 제목 입력 */}
@@ -172,21 +174,9 @@ const HistoryAddComponent = () => {
                         onChange={handleChangeHistory} />
                 </div>
 
-                {/* 작성자 입력 */}
-                <div className="relative flex w-full flex-wrap items-stretch border-b p-4 -mt-5">
-                    <div className="w-2/12 p-4 text-center font-bold">작성자</div>
-                    <input
-                        className="w-[850px] relative p-4 rounded border border-solid border-neutral-300 shadow-md"
-                        name="gamer"
-                        type="text"
-                        placeholder="제목을 입력하세요"
-                        value={history.gamer}
-                        onChange={handleChangeHistory}
-                    />
-                </div>
 
                 {/* 게임 ID 입력 및 검색 */}
-                <div className="relative flex w-full flex-wrap items-stretch p-4 -mt-5">
+                <div className="relative flex w-full flex-wrap items-stretch p-4 -mt-5 -mb-6">
                     <div className="w-2/12 p-4 text-center font-bold">게임검색</div>
                     <input
                         className="w-[400px] p-4 rounded border border-solid border-neutral-300 shadow-md"
@@ -196,7 +186,7 @@ const HistoryAddComponent = () => {
                         value={gameId}
                         onChange={(e) => setGameId(e.target.value)}
                     />
-                    <button className="ml-4 p-4 bg-blue-500 text-white rounded shadow-md"
+                    <button className="ml-4 p-4 bg-blue-500 text-white rounded shadow-md "
                         onClick={handleSearchGame}>
                         검색
                     </button>
@@ -277,11 +267,14 @@ const HistoryAddComponent = () => {
                 </div>
 
                 {/* 추가 버튼 */}
+                {userInfo ? 
                 <div className="flex justify-end mr-10 -mt-14 p-4">
                     <button type="button" className="rounded p-4 w-36 bg-blue-500 text-xl text-white"
-                        onClick={handleClickAdd}>기록 저장
+                            onClick={handleClickAdd}>기록 저장
                     </button>
                 </div>
+                : <></>}
+                
             </div>
         </>
     );
