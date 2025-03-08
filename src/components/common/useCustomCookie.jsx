@@ -8,9 +8,10 @@ export function useCustomCookie() {
   const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
+    console.log("useCustomCookie 실행됨!!")
     // 1. 쿠키에서 gamerCooki(JWT) 가져오기
     const token = Cookies.get("gamerCooki");
-
+    
     if (!token) {
       setIsLoaded(true) //쿠키가 없더라도 로딩 완료
       return
