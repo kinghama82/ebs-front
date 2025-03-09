@@ -3,16 +3,37 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Mail, Lock } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function LoginPage() {
     const router = useRouter();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [errorMessage, setErrorMessage] = useState(""); // 에러 메시지 상태
+    const [isModalOpen, setIsModalOpen] = useState(false); // 에러 모달 상태
+    const [focusedField, setFocusedField] = useState(""); // 입력 필드 포커스 상태
+
+    const handleChange = (setter) => (e) => {
+        setter(e.target.value);
+    };
+
+    const handleFocus = (field) => {
+        setFocusedField(field);
+    };
+
+    const handleBlur = () => {
+        setFocusedField("");
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // 폼 데이터를 URLSearchParams 형식으로 변환
         const form = new URLSearchParams();
         form.append("username", email);
         form.append("password", password);
@@ -22,56 +43,98 @@ export default function LoginPage() {
                 method: "POST",
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
                 body: form.toString(),
-                // withCredentials 옵션은 fetch의 credentials 옵션으로 지정
-                credentials: "include"
+                credentials: "include",
             });
+
             const data = await res.json();
             console.log("Login response:", data);
 
             if (data.accessToken && data.refreshToken) {
-                // 일반 쿠키로 저장 (HttpOnly 사용 안 함)
-                // 만료일은 필요에 따라 설정 (여기서는 1일, 7일 등)
                 Cookies.set("gamerCooki", data.accessToken, { expires: 1, path: "/" });
                 Cookies.set("refreshToken", data.refreshToken, { expires: 7, path: "/" });
-                alert("로그인 성공");
                 router.push("/");
             } else {
-                alert("로그인 실패");
+                setErrorMessage("로그인 실패. 이메일 또는 비밀번호를 확인해주세요.");
+                setIsModalOpen(true);
             }
         } catch (error) {
             console.error("로그인 오류:", error);
-            alert("로그인 요청 중 오류 발생");
+            setErrorMessage("서버와 연결할 수 없습니다.");
+            setIsModalOpen(true);
         }
     };
 
     return (
-        <div style={{ maxWidth: "400px", margin: "0 auto", padding: "2rem" }}>
-            <h1>로그인</h1>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>이메일:</label>
-                    <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                        style={{ width: "100%", padding: "0.5rem", marginBottom: "1rem" }}
-                    />
-                </div>
-                <div>
-                    <label>비밀번호:</label>
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        style={{ width: "100%", padding: "0.5rem", marginBottom: "1rem" }}
-                    />
-                </div>
-                <button type="submit" style={{ padding: "0.75rem", width: "100%" }}>
-                    로그인
-                </button>
-            </form>
+        <div className="flex justify-center items-center min-h-screen bg-gray-100">
+            <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+            >
+                <Card className="w-[400px] shadow-xl rounded-2xl">
+                    <CardContent className="p-6">
+                        <h2 className="text-2xl font-bold text-center text-gray-700 mb-4">로그인</h2>
+                        <form className="space-y-4" onSubmit={handleSubmit}>
+                            <div>
+                                <Label htmlFor="email" className="text-sm font-semibold text-gray-600">
+                                    이메일
+                                </Label>
+                                <div className="relative">
+                                    {focusedField !== "email" && (
+                                        <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                                    )}
+                                    <Input
+                                        type="email"
+                                        id="email"
+                                        value={email}
+                                        onChange={handleChange(setEmail)}
+                                        onFocus={() => handleFocus("email")}
+                                        onBlur={handleBlur}
+                                        required
+                                        className="pl-12 h-10 border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none rounded-md w-full"
+                                    />
+                                </div>
+                            </div>
+                            <div>
+                                <Label htmlFor="password" className="text-sm font-semibold text-gray-600">
+                                    비밀번호
+                                </Label>
+                                <div className="relative">
+                                    {focusedField !== "password" && (
+                                        <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                                    )}
+                                    <Input
+                                        type="password"
+                                        id="password"
+                                        value={password}
+                                        onChange={handleChange(setPassword)}
+                                        onFocus={() => handleFocus("password")}
+                                        onBlur={handleBlur}
+                                        required
+                                        className="pl-12 h-10 border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none rounded-md w-full"
+                                    />
+                                </div>
+                            </div>
+                            <Button className="w-full mt-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:opacity-90">
+                                로그인
+                            </Button>
+                        </form>
+                    </CardContent>
+                </Card>
+            </motion.div>
+
+            {/* 🚀 로그인 실패 모달 */}
+            <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle className="text-lg font-semibold">로그인 오류</DialogTitle>
+                    </DialogHeader>
+                    <p className="text-red-600 text-center">{errorMessage}</p>
+                    <Button onClick={() => setIsModalOpen(false)} className="mt-4 w-full">
+                        확인
+                    </Button>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }
