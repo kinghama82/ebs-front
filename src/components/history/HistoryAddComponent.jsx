@@ -30,6 +30,8 @@ const HistoryAddComponent = () => {
     const router = useRouter()
     const [gameId, setGameId] = useState("")
     const [game, setGame] = useState(null)
+
+    
     const userInfo = useCustomCookie()
 
     const handleChangeHistory = (e) => {
