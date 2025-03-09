@@ -101,6 +101,29 @@ export default function Home() {
             {/* 네비바 */}
             <BasicMenu />
 
+            {/* 게임 장르 아이콘 */}
+            <div className="bg-gray-400 max-w-6xl mx-auto mt-2">
+                <Carousel>
+                    <CarouselContent>
+                        <CarouselItem className="basis-1/12">...</CarouselItem>
+                        <CarouselItem className="basis-1/12">...</CarouselItem>
+                        <CarouselItem className="basis-1/12">...</CarouselItem>
+                        <CarouselItem className="basis-1/12">...</CarouselItem>
+                        <CarouselItem className="basis-1/12">...</CarouselItem>
+                        <CarouselItem className="basis-1/12">...</CarouselItem>
+                        <CarouselItem className="basis-1/12">...</CarouselItem>
+                        <CarouselItem className="basis-1/12">...</CarouselItem>
+                        <CarouselItem className="basis-1/12">...</CarouselItem>
+                        <CarouselItem className="basis-1/12">...</CarouselItem>
+                    </CarouselContent>
+                </Carousel>
+            </div>
+
+            {/* 캐로주얼 */}
+            <div className="bg-gray-500 max-w-6xl mx-auto mt-2">
+                캐로주얼
+            </div>
+
 
 
         </div>
