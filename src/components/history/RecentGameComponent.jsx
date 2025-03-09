@@ -17,7 +17,7 @@ const RecentGameComponent = ({ gamerid }) => {
     if (gameList.length === 0) return <p>최근 플레이한 게임이 없습니다.</p>;
 
     return (
-        <div className="p-2 shadow-md">
+        <div className="p-2">
             <ul className="list-disc list-inside">
                 {gameList.map(game => (
                     <li key={game.id} className="flex items-center space-x-2 text-black font-semibold text-xl border-b py-2">

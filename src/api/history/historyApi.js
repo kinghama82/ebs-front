@@ -61,11 +61,14 @@ export const getHistoryByYear = async (gamerid, year, page, size = 10) => {
     return res.data;
 };
 
-//전체기간 통산전적
-export const getTotalRecord = async (gamerid) => {
+//통산전적
+export const getTotalRecord = async (gamerid, year = null) => {
     try {
-        
-        const res = await axios.get(`${host}/totalrecord`, { params: { gamerid } });
+        const params = {gamerid}
+        if(year) {
+            params.year = year
+        }
+        const res = await axios.get(`${host}/totalrecord`, { params });
 
         if (!res.data || Object.keys(res.data).length === 0) {
             console.warn("API 응답이 비어있음, 기본값 반환");

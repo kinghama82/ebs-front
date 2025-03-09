@@ -12,7 +12,7 @@ import { useHistoryRecord } from "./useHistoryRecord"
 const HistoryContent = ({ userInfo }) => {
     const router = useRouter()
     const [selectedYear, setSelectedYear] = useState(null)
-    const { record: userRecord, loading, error } = useHistoryRecord(userInfo?.id)
+    const { record: userRecord, loading, error } = useHistoryRecord(userInfo?.id, selectedYear || null)
 
     return (
         <div>
