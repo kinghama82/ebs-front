@@ -36,11 +36,6 @@ const HistoryPage = () => {
                 <HistoryContent userInfo={userInfo} serverData={serverData} />
             </Suspense>
         )}
-
-
-
-
-
     </>);
 }
 export default HistoryPage;

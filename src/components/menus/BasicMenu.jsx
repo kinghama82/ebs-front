@@ -2,7 +2,7 @@
 
 import Cookies from "js-cookie";
 import jwtDecode from "jsonwebtoken";
-import { Dices, Menu, Search, X } from "lucide-react";
+import { CircleUserRound, Dices, Menu, Search, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation"; // ✅ 검색 결과 페이지 이동용
 import { useEffect, useRef, useState } from "react";
@@ -61,8 +61,8 @@ const BasicMenu = () => {
 
   return (
     <>
-      <div className="mt-2">
-        <nav className="bg-white shadow-md border border-black border-opacity-100 rounded-md max-w-6xl sticky-top mx-auto top-0 left-0 z-50" >
+      <div className="mt-2 sticky-top">
+        <nav className="bg-white shadow-md border border-black border-opacity-100 rounded-md max-w-6xl mx-auto top-0 left-0 z-50" >
           <div className=" px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
 
@@ -71,6 +71,7 @@ const BasicMenu = () => {
                 <Link href="/" className="text-xl font-bold text-amber-800" title="홈으로">
                   <Dices />
                 </Link>
+                <Link className="text-amber-800" href={`/mypage`}><CircleUserRound/></Link>
 
 
                 {/* 네비게이션 메뉴 */}
@@ -142,7 +143,7 @@ const BasicMenu = () => {
         </nav>
       </div>
 
-      {/* 로그인 로그아웃 */}
+      {/* 로그인 로그아웃
       <div className="flex relative justify-end -mt-[65px] -mb-[110px]">
         {userInfo ? (
           <Card className="border grid-cols-2 border-black mr-[190px] w-[175px]">
@@ -153,7 +154,7 @@ const BasicMenu = () => {
               </CardTitle>
               <CardDescription>
                 <LogoutButton /> {/* ✅ 기존 버튼 대신 컴포넌트 사용 */}
-                <br />
+                {/* <br />
                 <Button variant="link" className="text-black" size="md"
                         onClick={() => router.push('/mypage')}>
                   마이페이지
@@ -167,7 +168,7 @@ const BasicMenu = () => {
                   onClick={() => router.push('/gamer')}>Login
           </Button>
         )}
-      </div>
+      </div> */} 
 
     </>
   );
