@@ -81,7 +81,7 @@ const HistoryList = ({ userInfo, selectedYear }) => {
 
     return (
         <div className="mt-10 mr-2 ml-2">
-            {fetching ? <FetchingModal /> : null}
+            
 
             {/* 히스토리 리스트 */}
             <div className="flex flex-col mx-auto p-6 space-y-2">
