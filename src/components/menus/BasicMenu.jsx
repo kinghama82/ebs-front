@@ -1,14 +1,8 @@
 "use client";
 
-<<<<<<< HEAD
-import Cookies from "js-cookie";
-import jwtDecode from "jsonwebtoken";
-import { CircleUserRound, Dices, Menu, Search, X } from "lucide-react";
-=======
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Dices, Menu, Search, X } from "lucide-react";
->>>>>>> 961eb0727882edd390b114cdcb382873c519c15a
 import Link from "next/link";
 import { useCustomCookie } from "../common/useCustomCookie";
 import LogoutButton from "@/components/LogoutButton";
@@ -156,6 +150,7 @@ const BasicMenu = () => {
                   </div>
                 </div>
             )}
+            </div>
           </nav>
         </div>
 
