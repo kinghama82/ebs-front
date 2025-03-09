@@ -1,6 +1,9 @@
 "use client";
 import { getGames } from "@/api/game/gameapi";
 import BasicMenu from "@/components/menus/BasicMenu";
+import CategoryIcons from "@/components/menus/CategoryIcons";
+import MainCarousel from "@/components/menus/MainCarousel";
+import MainSwiper from "@/components/menus/MainSwiper";
 import { Button } from "@/components/ui/button";
 import {
     Card,
@@ -9,11 +12,6 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import {
-    Carousel,
-    CarouselContent,
-    CarouselItem
-} from "@/components/ui/carousel";
 import Cookies from "js-cookie"; // 쿠키에서 데이터 가져오기
 import jwtDecode from "jsonwebtoken"; // JWT 디코딩을 위한 라이브러리
 import { CircleUserRound } from "lucide-react";
@@ -102,28 +100,17 @@ export default function Home() {
             <BasicMenu />
 
             {/* 게임 장르 아이콘 */}
-            <div className="bg-gray-400 max-w-6xl mx-auto mt-2">
-                <Carousel>
-                    <CarouselContent>
-                        <CarouselItem className="basis-1/12">...</CarouselItem>
-                        <CarouselItem className="basis-1/12">...</CarouselItem>
-                        <CarouselItem className="basis-1/12">...</CarouselItem>
-                        <CarouselItem className="basis-1/12">...</CarouselItem>
-                        <CarouselItem className="basis-1/12">...</CarouselItem>
-                        <CarouselItem className="basis-1/12">...</CarouselItem>
-                        <CarouselItem className="basis-1/12">...</CarouselItem>
-                        <CarouselItem className="basis-1/12">...</CarouselItem>
-                        <CarouselItem className="basis-1/12">...</CarouselItem>
-                        <CarouselItem className="basis-1/12">...</CarouselItem>
-                    </CarouselContent>
-                </Carousel>
+            <div className="max-w-6xl mx-auto mt-2 p-4">
+                <CategoryIcons/>
             </div>
 
             {/* 캐로주얼 */}
-            <div className="bg-gray-500 max-w-6xl mx-auto mt-2">
-                캐로주얼
+            <div className="max-w-6xl mx-auto mt-2 h-[350px]"> 
+                <MainSwiper/>
             </div>
 
+            {/* 아래 게시판 추가 공간 */}
+            <div className="max-w-6xl mx-auto mt-2 bg-gray-500">게시판 추가 공간</div>
 
 
         </div>
