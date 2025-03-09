@@ -32,7 +32,6 @@ export function useHistoryRecord (gamerid, year){
             if(data && typeof data === "object" && Object.keys(data).length > 0){
                 
                 setRecord(data);
-                console.log("현재 totalRecord가 가져온 기록 : ", record)
                 setIsLoaded(true)
             }else{
                 console.warn("API응답이 잘못되었으므로 기본값 유지")
