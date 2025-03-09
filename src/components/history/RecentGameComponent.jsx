@@ -20,7 +20,7 @@ const RecentGameComponent = ({ gamerid }) => {
         <div className="p-2">
             <ul className="list-disc list-inside">
                 {gameList.map(game => (
-                    <li key={game.id} className="flex items-center space-x-2 text-black font-semibold text-xl border-b py-2">
+                    <li key={game.id} className="flex items-center space-x-2 text-black font-semibold text-xl border-b dark:border-b-white py-2">
                         {/* 게임 이미지 */}
                         {game.img ? (
                             <span className=" ms-2 border-2">
@@ -34,7 +34,7 @@ const RecentGameComponent = ({ gamerid }) => {
                             </span>
                         )}
                         {/* 게임 이름 */}
-                        <Link href={`/games/${game.id}`}>{game.gameName}</Link>
+                        <Link className="dark:text-white" href={`/games/${game.id}`}>{game.gameName}</Link>
                     </li>
                 ))}
             </ul>
