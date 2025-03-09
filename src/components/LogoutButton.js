@@ -1,27 +1,28 @@
 "use client";
-import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import { toast } from "sonner"; // ✅ 최신 Sonner에서 제공하는 toast 사용
+import { Button } from "@/components/ui/button";
 
 export default function LogoutButton() {
-    const router = useRouter();
-
     const handleLogout = () => {
-        // 쿠키 삭제
+        // ✅ 쿠키 삭제
         Cookies.remove("gamerCooki");
         Cookies.remove("refreshToken");
 
-        alert("로그아웃되었습니다.");
+        // ✅ Sonner Toast 알람 표시
+        toast.success("로그아웃 완료", {
+            description: "메인 페이지로 이동합니다.",
+        });
 
-        // 로그인 페이지 또는 메인 페이지로 이동
-        router.push("/");
+        // ✅ 1.5초 후 강제 새로고침 (메인 페이지 이동)
+        setTimeout(() => {
+            window.location.href = "/";
+        }, 500);
     };
 
     return (
-        <button
-            onClick={handleLogout}
-            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700"
-        >
+        <Button onClick={handleLogout} className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700">
             로그아웃
-        </button>
+        </Button>
     );
 }
