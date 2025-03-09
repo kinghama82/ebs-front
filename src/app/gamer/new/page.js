@@ -1,10 +1,18 @@
-// /app/gamer/GamerForm.jsx
 "use client";
 
 import React, { useState } from "react";
-import { newgamer } from "../../../api/gamerApi";
+import { useRouter } from "next/navigation";
+import { newgamer } from "@/api/gamerApi";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Mail, Lock, Phone, MapPin, User, KeyRound, Calendar } from "lucide-react";
+import { motion } from "framer-motion";
 
 const GamerForm = () => {
+    const router = useRouter();
     const [formData, setFormData] = useState({
         name: "",
         age: "",
@@ -16,45 +24,157 @@ const GamerForm = () => {
         address: "",
     });
 
+    const [errorMessage, setErrorMessage] = useState("");
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [successModal, setSuccessModal] = useState(false);
+    const [focusedField, setFocusedField] = useState(""); // 🔹 입력 중인 필드 상태
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
+    const handleFocus = (field) => {
+        setFocusedField(field);
+    };
+
+    const handleBlur = () => {
+        setFocusedField("");
+    };
+
+    const validateForm = () => {
+        if (!formData.name) return "이름을 입력해주세요.";
+        if (!formData.age) return "나이를 입력해주세요.";
+        if (!formData.email) return "이메일을 입력해주세요.";
+        if (!formData.password1) return "비밀번호를 입력해주세요.";
+
+        if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/.test(formData.password1)) {
+            return "비밀번호는 6자 이상이며, 알파벳과 숫자를 포함해야 합니다.";
+        }
+
+        if (formData.password1 !== formData.password2) {
+            return "비밀번호가 일치하지 않습니다.";
+        }
+        if (!formData.nickname) return "닉네임을 입력해주세요.";
+        if (!formData.phone) return "핸드폰번호를 입력해주세요.";
+        if (!formData.address) return "주소를 입력해주세요.";
+        return null;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const validationError = validateForm();
+        if (validationError) {
+            setErrorMessage(validationError);
+            setIsModalOpen(true);
+            return;
+        }
+
         try {
-            const result = await newgamer(formData);
-            alert("새 게이머가 등록되었습니다.");
-            console.log(result);
+            await newgamer(formData);
+            setSuccessModal(true);
         } catch (error) {
             console.error("게이머 등록에 실패했습니다.", error);
+            setErrorMessage("회원가입 중 오류가 발생했습니다.");
+            setIsModalOpen(true);
         }
     };
 
+    const handleRedirect = () => {
+        setSuccessModal(false);
+        router.push("/gamer/");
+    };
+
+    const fieldLabels = {
+        name: "이름",
+        age: "나이",
+        email: "이메일",
+        password1: "비밀번호",
+        password2: "비밀번호 확인",
+        nickname: "닉네임",
+        phone: "핸드폰번호",
+        address: "주소",
+    };
+
+    const fieldIcons = {
+        name: <User size={18} />,
+        age: <Calendar size={18} />,
+        email: <Mail size={18} />,
+        password1: <Lock size={18} />,
+        password2: <Lock size={18} />,
+        nickname: <KeyRound size={18} />,
+        phone: <Phone size={18} />,
+        address: <MapPin size={18} />,
+    };
+
     return (
-        <form className="p-4 bg-white rounded-lg shadow-md" onSubmit={handleSubmit}>
-            <h2 className="text-xl font-bold mb-2">새 게이머 등록</h2>
-            {Object.keys(formData).map((key) => (
-                <div key={key} className="mb-2">
-                    <label className="block mb-1 capitalize">{key}</label>
-                    <input
-                        type="text"
-                        name={key}
-                        value={formData[key]}
-                        onChange={handleChange}
-                        className="border p-2 rounded w-full"
-                        required
-                    />
-                </div>
-            ))}
-            <button
-                type="submit"
-                className="bg-blue-500 text-white p-2 rounded hover:bg-blue-700"
+        <div className="flex justify-center items-center min-h-screen bg-gray-100">
+            <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
             >
-                등록하기
-            </button>
-        </form>
+                <Card className="w-[400px] shadow-xl rounded-2xl">
+                    <CardContent className="p-6">
+                        <h2 className="text-2xl font-bold text-center text-gray-700 mb-4">새 게이머 등록</h2>
+                        <form className="space-y-4" onSubmit={handleSubmit}>
+                            {Object.keys(formData).map((key) => (
+                                <div key={key}>
+                                    <Label htmlFor={key} className="text-sm font-semibold text-gray-600">
+                                        {fieldLabels[key]}
+                                    </Label>
+                                    <div className="relative">
+                                        {focusedField !== key && fieldIcons[key] && (
+                                            <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
+                                                {fieldIcons[key]}
+                                            </div>
+                                        )}
+                                        <Input
+                                            type={key.includes("password") ? "password" : key === "email" ? "email" : "text"}
+                                            name={key}
+                                            value={formData[key]}
+                                            onChange={handleChange}
+                                            onFocus={() => handleFocus(key)}
+                                            onBlur={handleBlur}
+                                            className="pl-12 h-10 border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none rounded-md w-full"
+                                        />
+                                    </div>
+                                </div>
+                            ))}
+                            <Button className="w-full mt-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:opacity-90">
+                                등록하기
+                            </Button>
+                        </form>
+                    </CardContent>
+                </Card>
+            </motion.div>
+
+            {/* 🚀 오류 메시지 모달 */}
+            <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle className="text-lg font-semibold">입력 오류</DialogTitle>
+                    </DialogHeader>
+                    <p className="text-red-600 text-center">{errorMessage}</p>
+                    <Button onClick={() => setIsModalOpen(false)} className="mt-4 w-full">
+                        확인
+                    </Button>
+                </DialogContent>
+            </Dialog>
+
+            {/* 🚀 가입 완료 모달 */}
+            <Dialog open={successModal} onOpenChange={setSuccessModal}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle className="text-lg font-semibold">회원가입 완료</DialogTitle>
+                    </DialogHeader>
+                    <p className="text-center">새 게이머가 등록되었습니다.</p>
+                    <Button onClick={handleRedirect} className="mt-4 w-full">
+                        로그인 페이지로 이동
+                    </Button>
+                </DialogContent>
+            </Dialog>
+        </div>
     );
 };
 

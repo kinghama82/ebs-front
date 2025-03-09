@@ -9,6 +9,7 @@ import { useEffect, useRef, useState } from "react";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { useCustomCookie } from "../common/useCustomCookie";
+import LogoutButton from "@/components/LogoutButton"; // ✅ 로그아웃 버튼 임포트
 
 const BasicMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -70,7 +71,7 @@ const BasicMenu = () => {
                 <Link href="/" className="text-xl font-bold text-amber-800" title="홈으로">
                   <Dices />
                 </Link>
-                
+
 
                 {/* 네비게이션 메뉴 */}
                 <div className="hidden no-underline md:flex space-x-6">
@@ -79,7 +80,7 @@ const BasicMenu = () => {
                   <NavLink href="/question">질문</NavLink>
                   <NavLink href="/rulebook">룰북</NavLink>
                   <NavLink href="/games">게임정보</NavLink>
-                  {userInfo ? <NavLink href={`/history?page=1&size=10&gamerid=${userInfo.id}`}>게임기록</NavLink> : <></>}                  
+                  {userInfo ? <NavLink href={`/history?page=1&size=10&gamerid=${userInfo.id}`}>게임기록</NavLink> : <></>}
                 </div>
               </div>
 
@@ -131,16 +132,16 @@ const BasicMenu = () => {
                 <NavLink href="/rulebook" onClick={() => setIsOpen(false)}>룰북</NavLink>
                 <NavLink href="/games" onClick={() => setIsOpen(false)}>게임정보</NavLink>
                 {userInfo ?
-                <NavLink href={`/history?page=1&size=10&gamerid=${userInfo.id}`} 
+                <NavLink href={`/history?page=1&size=10&gamerid=${userInfo.id}`}
                          onClick={() => setIsOpen(false)}>
                 게임기록</NavLink>
-                :<></>}                
+                :<></>}
               </div>
             </div>
           )}
         </nav>
       </div>
-      
+
       {/* 로그인 로그아웃 */}
       <div className="flex relative justify-end -mt-[65px] -mb-[110px]">
         {userInfo ? (
@@ -148,14 +149,14 @@ const BasicMenu = () => {
             <CardHeader>
               <CardTitle>
                 환영합니다.<br />
-                <span className="text-blue-700">{userInfo.nickname}</span> 님!        
+                <span className="text-blue-700">{userInfo.nickname}</span> 님!
               </CardTitle>
               <CardDescription>
-                <Button variant="link" className="text-red-600 mb-1" size="md"
-                >LogOut
-                </Button><br />
+                <LogoutButton /> {/* ✅ 기존 버튼 대신 컴포넌트 사용 */}
+                <br />
                 <Button variant="link" className="text-black" size="md"
-                        onClick={() => router.push('/mypage')}>마이페이지
+                        onClick={() => router.push('/mypage')}>
+                  마이페이지
                 </Button>
               </CardDescription>
             </CardHeader>
