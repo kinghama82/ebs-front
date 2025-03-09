@@ -8,7 +8,7 @@ const initState = {
     lose:0
 }
 
-export function useHistoryRecord (gamerid){
+export function useHistoryRecord (gamerid, year){
     const [record, setRecord] = useState(gamerid)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
@@ -20,18 +20,19 @@ export function useHistoryRecord (gamerid){
             return
         }
 
-        if (isLoaded) {
-            console.log("✅ 이미 정상적인 데이터가 있으므로 API 호출하지 않음");
-            return;
-        }
+        // if (isLoaded) {
+        //     console.log("✅ 이미 정상적인 데이터가 있으므로 API 호출하지 않음");
+        //     return;
+        // }
 
         setLoading(true)
         setError(null)
 
-        getTotalRecord(gamerid).then((data)=>{
+        getTotalRecord(gamerid,year).then((data)=>{
             if(data && typeof data === "object" && Object.keys(data).length > 0){
                 
                 setRecord(data);
+                console.log("현재 totalRecord가 가져온 기록 : ", record)
                 setIsLoaded(true)
             }else{
                 console.warn("API응답이 잘못되었으므로 기본값 유지")
@@ -42,7 +43,7 @@ export function useHistoryRecord (gamerid){
             setError("데이터 불러오는중 오류 발생")
             setRecord(initState)
         }).finally(()=> setLoading(false))
-    },[gamerid])
+    },[gamerid,year])
 
     return {record, loading, error}
 }
