@@ -14,6 +14,7 @@ import { TextAlign } from '@tiptap/extension-text-align'
 import Color from '@tiptap/extension-color'
 import { Mark, mergeAttributes } from '@tiptap/core';
 import { SketchPicker } from 'react-color'
+import {FontSize} from "@/components/common/EditorComponent";
 
 // YouTube 노드 정의
 const YouTube = Node.create({
@@ -70,10 +71,28 @@ const ModifyEditor = ({ postId, initialContent, initialTitle }) => {
   const dropdownRef = useRef(null);
   const buttonRef = useRef(null); // 글자 크기 버튼에 대한 참조 추가
 
+  // 글자 크기 드롭다운 위치 조정
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
 
   const editor = useEditor({
-    extensions: [StarterKit, Image, YouTube],
+    extensions: [
+        StarterKit, Image, YouTube,
+        TextAlign.configure( {
+          types: ['paragraph', 'heading'],
+        }),
+        TextStyle.configure({mergeNestedSpanStyles:true}),
+        FontSize,
+        Color,
+        Underline,
+        Image.configure({
+          uploadImage: async (file) => {
+
+          }
+        }),
+        YouTube,
+    ],
     content: initialContent,  // 초기 콘텐츠 설정
+
   });
 
   useEffect(() => {
@@ -107,13 +126,13 @@ const ModifyEditor = ({ postId, initialContent, initialTitle }) => {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
-      alert('게시글 작성 완료');
+      alert('게시글 수정 완료');
 
       window.location.href = '/rulebook';
 
     } catch (err) {
-      console.error('게시글 작성 오류', err.response || err);
-      alert('게시글 작성에 실패했습니다.');
+      console.error('게시글 수정 오류', err.response || err);
+      alert('게시글 수정에 실패했습니다.');
     }
   };
 
@@ -121,6 +140,31 @@ const ModifyEditor = ({ postId, initialContent, initialTitle }) => {
   const toggleColorPicker = () => {
     setColorPickerVisible(!colorPickerVisible);
   }
+
+  // 색상 선택 후 적용
+  const handleColorChange = (color) => {
+    setSelectedColor(color.hex); // 선택한 색상을 상태에 저장
+    editor.chain().focus().setColor(color.hex).run(); // 에디터에 색상 적용
+  }
+
+  // 글자 크기 드롭다운 변경 처리
+  const handleFontSizeChange = (size) => {
+    setSelectedFontSize(size);
+    editor.chain().focus().setFontSize(size).run();
+    setDropdownVisible(false); // 선택 후 드롭다운 숨기기
+  }
+
+  //드롭다운
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownVisible(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   // 글자 크기 버튼 클릭 시 드롭다운 위치 설정
   const handleFontSizeDropdownClick = () => {
@@ -136,7 +180,7 @@ const ModifyEditor = ({ postId, initialContent, initialTitle }) => {
       <div
           style={{ maxWidth: '800px', margin: '0 auto', padding: '20px', backgroundColor: 'transparent', borderRadius: '8px' }}
       >
-        <h1 style={{ textAlign: 'center', fontSize: '24px', marginBottom: '20px', marginTop: '50px' }}>게시글 작성</h1>
+        <h1 style={{ textAlign: 'center', fontSize: '24px', marginBottom: '20px', marginTop: '50px' }}>게시글 수정</h1>
 
         {/* 제목 입력 */}
         <input
@@ -284,7 +328,7 @@ const ModifyEditor = ({ postId, initialContent, initialTitle }) => {
 
         {/* 게시글 작성 버튼 */}
         <button onClick={updatePost} style={{ ...buttonStyle, marginTop: '20px', backgroundColor: '#D97706' }}>
-          게시글 작성
+          게시글 수정
         </button>
 
       </div>

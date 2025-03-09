@@ -1,4 +1,4 @@
-// app/games/[id]/page.js
+// app/games/[id]/page.jsx
 
 
 import GameBoxComponent from '@/components/common/GameBoxComponent';
