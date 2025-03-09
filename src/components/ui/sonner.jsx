@@ -27,3 +27,7 @@ const Toaster = ({
 }
 
 export { Toaster }
+
+export function SonnerToaster() {
+    return <Toaster position="top-right" />;
+}

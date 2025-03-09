@@ -1,7 +1,7 @@
 import BootstrapProvider from "@/components/BootstrapProvider";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Toaster } from "@/components/ui/sonner";
+import { SonnerToaster } from "@/components/ui/sonner"; // ✅ SonnerToaster import
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -21,17 +21,16 @@ export const metadata = {
 export default function RootLayout({ children }) {
     return (
         <html lang="ko">
-        <meta charSet="utf-8"/>
         <head>
-        <link rel="stylesheet"
-              href="https://cdn.jsdelivr.net/npm/pretendard@latest/dist/web/static/pretendard.css">
-        </link>
+            <meta charSet="utf-8"/>
+            <title>Board ParaDice</title>
+            <link rel="stylesheet"
+                  href="https://cdn.jsdelivr.net/npm/pretendard@latest/dist/web/static/pretendard.css"/>
         </head>
         <body>
-        <BootstrapProvider> {/* BootstrapProvider로 감싸기 */}
-
+        <SonnerToaster /> {/* ✅ Toast 메시지 활성화 */}
+        <BootstrapProvider> {/* ✅ BootstrapProvider 적용 */}
             {children}
-        <Toaster/>
         </BootstrapProvider>
         </body>
         </html>
