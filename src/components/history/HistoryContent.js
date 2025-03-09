@@ -8,6 +8,7 @@ import HistoryChart from "./HistoryChart"
 import HistoryList from "./HistoryList"
 import RecentGameComponent from "./RecentGameComponent"
 import { useHistoryRecord } from "./useHistoryRecord"
+import Link from "next/link"
 
 const HistoryContent = ({ userInfo }) => {
     const router = useRouter()
@@ -48,21 +49,23 @@ const HistoryContent = ({ userInfo }) => {
                         {/* 오른쪽 (통산전적) */}
                         <div className="w-1/2 flex flex-col justify-center items-center text-xl">
                             <h2 className="text-xl font-bold">게임 전적</h2>
-                            <p className="text-gray-700 mt-2">Win :
+                            <p className="text-gray-700 mt-2 font-bold">Win :
                                 <span className="text-green-500 font-semibold"> {userRecord.win}</span> 회
                             </p>
-                            <p className="text-gray-700">Draw :
+                            <p className="text-gray-700 font-bold">Draw :
                                 <span className="text-yellow-500 font-semibold"> {userRecord.draw}</span> 회
                             </p>
-                            <p className="text-gray-700">Lose :
+                            <p className="text-gray-700 font-bold">Lose :
                                 <span className="text-red-500 font-semibold"> {userRecord.lose}</span> 회
                             </p>
-                            <p className="text-gray-700">승률 :
+                            <p className="text-gray-700 mt-3 font-bold">승률 :
                                 <span className="text-green-500 font-semibold"> {Math.floor(userRecord.win/(userRecord.win+userRecord.draw+userRecord.lose)*100)}</span> %
                             </p>
                         </div>
                     </div>
-                    <div className="border border-black p-2">아래부분?여기에 뭘 넣을까??</div>
+                    <div className="p-2 text-center font-bold">
+                        게임하다 배고플땐? <Link className="text-blue-500" href="#">한식 끝판왕!</Link>
+                    </div>
                 </div>
 
                 {/* 오른쪽공간 */}
