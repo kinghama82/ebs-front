@@ -27,7 +27,6 @@ const EditPostPage = async ({ params }) => {
 
   return (
       <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
-        <h1>게시글 수정</h1>
         {/* EditorComponent에 postId와 기존 데이터를 전달 */}
         <ModifyEditor postId={id} initialContent={postData.content} initialTitle={postData.title} />
       </div>
