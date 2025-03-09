@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Dices, Menu, Search, X } from "lucide-react";
+import { CircleUserRound, Dices, Menu, Search, X } from "lucide-react";
 import Link from "next/link";
 import { useCustomCookie } from "../common/useCustomCookie";
 import LogoutButton from "@/components/LogoutButton";
