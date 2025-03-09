@@ -4,7 +4,7 @@ import jwtDecode from "jsonwebtoken";
 import { useEffect, useState } from "react";
 
 export function useCustomCookie() {
-  const [userInfo, setUserInfo] = useState(null)
+  const [userInfo, setUserInfo] = useState({})
   const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
@@ -34,6 +34,6 @@ export function useCustomCookie() {
 
   //isLoaded가 true 일때만 userInfo 반환
   if(!isLoaded) return null
-
+  console.log("현재 userInfo 정보 : ", userInfo)
   return userInfo 
 }
