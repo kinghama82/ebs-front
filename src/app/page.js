@@ -4,6 +4,7 @@ import BasicMenu from "@/components/menus/BasicMenu";
 import CategoryIcons from "@/components/menus/CategoryIcons";
 import MainCarousel from "@/components/menus/MainCarousel";
 import MainSwiper from "@/components/menus/MainSwiper";
+import { ModeToggle } from "@/components/ModeToggle";
 import { Button } from "@/components/ui/button";
 import {
     Card,
@@ -90,7 +91,7 @@ export default function Home() {
                         <CardContent className="-mt-4 -mb-4"><Button variant="destructive">LogOut</Button></CardContent>
                     </Card>
                 ):(
-                    <Button className="text-xl" onClick={()=> router.push(`/gamer`)}>로그인</Button>
+                    <Button className="text-xl dark:text-white" onClick={()=> router.push(`/gamer`)}>로그인</Button>
                 )}
                     
                 </div>

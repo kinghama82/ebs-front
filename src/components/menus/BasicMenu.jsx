@@ -6,6 +6,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useCustomCookie } from "../common/useCustomCookie";
+import { ModeToggle } from "../ModeToggle";
+import { useTheme } from "next-themes";
 
 const BasicMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -16,6 +18,7 @@ const BasicMenu = () => {
   const inputRef = useRef(null);
   const router = useRouter();
   const userInfo = useCustomCookie();
+  const { theme } = useTheme()
 
   // ✅ 검색창 외부 클릭 시 드롭다운 닫기
   useEffect(() => {
@@ -62,24 +65,25 @@ const BasicMenu = () => {
   return (
     <>
       <div className="mt-2 sticky-top">
-        <nav className="bg-white shadow-md border border-black border-opacity-100 rounded-md max-w-6xl mx-auto top-0 left-0 z-50">
+        <nav className={`shadow-md border border-opacity-100 rounded-md max-w-6xl mx-auto top-0 left-0 z-50 
+          ${theme === "dark" ? "bg-[#0a0b0c] text-white border-white" : "bg-white text-black border-black"}`}>
           <div className="px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
               
               {/* 🔹 로고 & 네비게이션 메뉴 */}
               <div className="flex items-center space-x-6">
-                <Link href="/" className="text-xl font-bold text-amber-800" title="홈으로">
+                <Link href="/" className="text-xl font-bold text-amber-800 dark:text-white" title="홈으로">
                   <Dices />
                 </Link>
                 {userInfo ? 
-                  <Link className="text-amber-800" href={`/mypage`}>
+                  <Link className="text-amber-800 dark:text-white" href={`/mypage`}>
                     <CircleUserRound />
                   </Link>
                   : <></>}
                 
 
                 {/* 네비게이션 메뉴 */}
-                <div className="hidden no-underline md:flex space-x-6">
+                <div className="hidden no-underline md:flex space-x-6 dark:text-white">
                   <NavLink href="/news">뉴스</NavLink>
                   <NavLink href="/free">자유</NavLink>
                   <NavLink href="/question">질문</NavLink>
@@ -116,7 +120,7 @@ const BasicMenu = () => {
                     setIsSearchOpen(true)
                   }}
                 >
-                  <Search size={20} className="text-amber-800" />
+                  <Search size={20} className="text-amber-800 dark:text-white" />
                 </button>
 
                 {/* 🔥 검색 결과 드롭다운 (제대로 유지) */}
@@ -140,8 +144,9 @@ const BasicMenu = () => {
                     ))}
                   </ul>
                 )}
+                <ModeToggle/>
               </div>
-              {/* 🔥 수정된 부분 끝 🔥 */}
+              
 
               {/* 햄버거 버튼 */}
               <button
