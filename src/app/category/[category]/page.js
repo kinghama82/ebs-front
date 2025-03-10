@@ -1,5 +1,7 @@
 "use client";
-import React, { useEffect, useState } from "react";
+
+import React, { useEffect, useState, use } from "react";
+import Image from "next/image";
 import { getGames } from "@/api/game/gameapi";
 import {
     Accordion,
@@ -8,16 +10,26 @@ import {
     AccordionTrigger,
 } from "@/components/ui/accordion";
 
-export default function GamesPage() {
+export default function CategoryPage({ params }) {
+    // ✅ `params`는 Promise이므로 `use()`로 비동기 처리
+    const { category } = use(params);
+
+    // ✅ URL 디코딩 적용
+    const decodedCategory = decodeURIComponent(category);
+
     const [games, setGames] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
 
     useEffect(() => {
         const fetchGames = async () => {
             try {
                 const data = await getGames();
-                setGames(data);
+                const filteredGames = data.filter((game) =>
+                    game.gameCategory.some((c) => c.gameCategory === decodedCategory)
+                );
+                setGames(filteredGames);
             } catch (err) {
                 console.error("Error fetching games:", err);
                 setError("게임 데이터를 불러오는 중 오류가 발생했습니다.");
@@ -27,7 +39,7 @@ export default function GamesPage() {
         };
 
         fetchGames();
-    }, []);
+    }, [decodedCategory]);
 
     if (loading) {
         return <div className="container mx-auto p-4 text-center">게임 데이터를 불러오는 중...</div>;
@@ -39,11 +51,11 @@ export default function GamesPage() {
 
     return (
         <div className="container mx-auto p-4 max-w-6xl">
-            <h1 className="text-2xl font-bold mb-4">보드게임 목록</h1>
+            <h1 className="text-2xl font-bold mb-4">{`"${decodedCategory}" 카테고리의 게임 목록`}</h1>
 
-            <Accordion type="single" collapsible >
+            <Accordion type="single" collapsible>
                 {games.map((game) => (
-                    <AccordionItem key={game.id} value={`item-${game.id}`} >
+                    <AccordionItem key={game.id} value={`item-${game.id}`}>
                         <AccordionTrigger>
                             <div className="flex flex-1 p-3 rounded-lg shadow cursor-pointer hover:bg-gray-100 items-center ">
                                 {game.img ? (
@@ -59,14 +71,13 @@ export default function GamesPage() {
                                         이미지 없음
                                     </div>
                                 )}
-                                <h2 className="text-lg font-semibold w-56 ms-2">{game.gameName}</h2>
+                                <h2 className="text-xl font-semibold w-56 ms-2">{game.gameName}</h2>
                                 <p className="w-60">제작사: {game.company}</p>
                                 <p className="w-40">출시년도: {game.year}</p>
                                 <p className="mr-2">인원: {game.players}</p>
                                 <p className="ml-2">가격: {game.price} 원</p>
                             </div>
                         </AccordionTrigger>
-
                         <AccordionContent>
                             <div
                                 className=" p-2 rounded flex justify-start items-center relative max-w-6xl h-64"

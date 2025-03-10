@@ -123,8 +123,34 @@ const BasicMenu = () => {
                   <Search size={20} className="text-amber-800 dark:text-white" />
                 </button>
 
-                {/* 🔥 검색 결과 드롭다운 (제대로 유지) */}
+
+                {/* 🔥 검색 결과 드롭다운 (검색창 아래로 위치하도록 수정) */}
                 {isSearchOpen && searchResults.length > 0 && (
+                    <ul className="absolute left-0 top-full mt-1 w-60 bg-white border border-gray-300 shadow-lg rounded-md z-50">
+                      {searchResults.map((game) => (
+                          <li
+                              key={game.id}
+                              onClick={() => handleSelectGame(game.id)}
+                              className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center"
+                          >
+                            {game.img && (
+                                <img
+                                    src={`http://43.202.30.85:8080${game.img}`}
+                                    alt={game.gameName}
+                                    className="w-10 h-10 object-cover rounded mr-3"
+                                />
+                            )}
+                            <span className="text-gray-700">{game.gameName}</span>
+                          </li>
+                      ))}
+                    </ul>
+                )}
+
+
+
+                {/* 🔥 검색 결과 드롭다운 (제대로 유지) */}
+                {/*아래코드는 기존에 드롭다운이 검색창 가리는코드*/}
+                {/*{isSearchOpen && searchResults.length > 0 && (
                   <ul className="absolute left-0 mt-1 w-60 bg-white border border-gray-300 shadow-lg rounded-md z-50">
                     {searchResults.map((game) => (
                       <li
@@ -143,7 +169,7 @@ const BasicMenu = () => {
                       </li>
                     ))}
                   </ul>
-                )}
+                )}*/}
                 <ModeToggle/>
               </div>
               
