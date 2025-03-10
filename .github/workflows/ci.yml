@@ -19,10 +19,11 @@ jobs:
         with:
           node-version: 18
           cache: 'npm'
+          cache-dependency-path: package-lock.json
 
           # 인스톨
       - name: Install Dependencies
-        run: npm ci
+        run: npm install
 
         #빌드
       - name: Build Project
