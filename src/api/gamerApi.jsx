@@ -1,28 +1,49 @@
+// src/api/gamerApi.jsx
 import { API_SERVER_HOST } from "@/api/publicapi";
 import axios from "axios";
+import { useCustomCookie } from "@/components/common/useCustomCookie"; // 커스텀 훅 가져오기
 
 // 게이머 정보 조회 API
-export const getgamer = async () => {
+export const getGamer = async () => {
     try {
-        const response = await axios.get(`${API_SERVER_HOST}/api/gamer/profile`);
+        const user = useCustomCookie(); // 쿠키에서 사용자 정보 가져오기
+        if (!user || !user.email) throw new Error("로그인된 사용자의 이메일이 없습니다.");
+
+        const response = await axios.get(`${API_SERVER_HOST}/api/gamer/detail?email=${user.email}`);
         return response.data;
     } catch (error) {
-        console.error("사용자를 찾는데 실패했습니다", error);
+        console.error("사용자 정보를 불러오는데 실패했습니다:", error);
         throw error;
     }
 };
 
+
+// 로그인된 사용자의 이메일을 받아오는 함수 (쿠키 또는 localStorage 활용 가능)
+const getLoggedInUserEmail = () => {
+    return localStorage.getItem("userEmail"); // 예시: 로컬스토리지에서 가져오기
+};
+
 // 새로운 게이머 등록 API
-export const newgamer = async (formData) => {
+export const newGamer = async (formData) => {
     try {
         const response = await axios.post(`${API_SERVER_HOST}/api/gamer/new`, formData);
         return response.data;
     } catch (error) {
-        console.error("새로운 회원을 만드는데 실패했습니다", error);
+        console.error("새로운 회원을 등록하는데 실패했습니다", error);
         throw error;
     }
 };
 
+// 프로필 업데이트 API (닉네임, 주소 등 변경 가능)
+export const updateGamerProfile = async (formData) => {
+    try {
+        const response = await axios.put(`${API_SERVER_HOST}/api/gamer/update`, formData);
+        return response.data;
+    } catch (error) {
+        console.error("프로필 업데이트 실패:", error);
+        throw error;
+    }
+};
 
 
 
