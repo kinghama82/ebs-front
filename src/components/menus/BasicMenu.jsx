@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { useCustomCookie } from "../common/useCustomCookie";
 import { ModeToggle } from "../ModeToggle";
 import { useTheme } from "next-themes";
+import ExRateComponent from "./ExRateComponent";
 
 const BasicMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -94,6 +95,7 @@ const BasicMenu = () => {
                       게임기록
                     </Link>
                   ) : null}
+                  <ExRateComponent/>
                 </div>
               </div>
 
