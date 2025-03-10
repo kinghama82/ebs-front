@@ -1,6 +1,5 @@
 "use client";
 
-import { getGameById } from "@/api/game/gameapi";
 import { addHistory } from "@/api/history/historyApi";
 import { Plus, RotateCcw } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -9,6 +8,8 @@ import { toast } from "sonner";
 import FetchingModal from "../common/FetchingModal";
 import GameBoxComponent from "../common/GameBoxComponent";
 import { useCustomCookie } from "../common/useCustomCookie";
+import { searchGames } from "@/api/game/gameapi";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 
 const initState = {
     title: '',
@@ -28,10 +29,11 @@ const HistoryAddComponent = () => {
     const [result, setResult] = useState(null);
     const [partyMember, setPartyMember] = useState("");
     const router = useRouter()
-    const [gameId, setGameId] = useState("")
-    const [game, setGame] = useState(null)
+    const [keyword, setKeyword] = useState("")
+    const [games, setGames] = useState([])
+    const [selectedGame, setSelectedGame] = useState(null)
 
-    
+
     const userInfo = useCustomCookie()
 
     const handleChangeHistory = (e) => {
@@ -43,20 +45,28 @@ const HistoryAddComponent = () => {
 
     // 📌 보드게임 검색 (ID 기반)
     const handleSearchGame = async () => {
-        if (!gameId.trim()) {
-            toast("게임 ID를 입력하세요!", { description: "게임 ID가 필요합니다." });
+        console.log("검색어 : ", keyword)
+        if (!keyword.trim()) {
+            toast("검색어를 입력하세요!", { description: "검색어가 필요합니다." });
             return;
         }
 
         try {
-            const game = await getGameById(gameId) // API 호출
-            setGame(game);  // 불러온 게임 정보 저장
-            setHistory((prev) => ({ ...prev, game: String(game.id) })); // 게임명 자동 입력
+            const game = await searchGames(keyword) // API 호출
+            setGames(game);  // 불러온 게임 목록 저장
+            // setHistory((prev) => ({ ...prev, game: String(game[0].id) })); // 게임명 자동 입력
         } catch (error) {
             console.log("API호출실패", error)
             toast("게임 정보를 찾을 수 없습니다.");
-            setGame(null);
+            setGames([]);
         }
+    };
+
+    // 게임 선택 시 해당 게임 정보 반영
+    const handleSelectGame = (game) => {
+        setSelectedGame(game);
+        setHistory((prev) => ({ ...prev, game: String(game.id) })) // 게임 id 저장
+        setGames([]);  // 검색 결과 초기화
     };
 
     //라디오버튼
@@ -92,8 +102,9 @@ const HistoryAddComponent = () => {
     useEffect(() => {
         if (result) {
             toast("게임기록 저장 완료", {
-                description: `${result}번 저장 완료`
-               
+                description: `${result}번 저장 완료`,
+                action: "확인",
+
             })
         }
     }, [result])
@@ -102,7 +113,7 @@ const HistoryAddComponent = () => {
     const handleResetPartyMembers = () => {
         setHistory((prev) => ({
             ...prev,
-            mate: []  
+            mate: []
         }));
     };
 
@@ -112,8 +123,8 @@ const HistoryAddComponent = () => {
         console.log("현재 userinfo.id 정보 : ", userInfo?.id)
         // history 자체가 undefined인지 확인
         if (!history) {
-        toast("데이터 오류 발생", { description: "기록을 저장할 수 없습니다." });
-        return;
+            toast("데이터 오류 발생", { description: "기록을 저장할 수 없습니다." });
+            return;
         }
 
         // 각 필수 속성들이 undefined가 아닐 때만 trim() 실행
@@ -145,21 +156,21 @@ const HistoryAddComponent = () => {
         addHistory(formData).then((data) => {
             setFetching(false);
             setResult(data.result)
-            
+
             router.push(`/history?page=1&size=10&gamerid=${userInfo.id}`)
-            
+
         });
 
     };
 
     const closeModal = () => {
         setResult(null);
-        
+
     };
 
     return (
         <>
-            
+
             <div className="bg-gray-400 border-2 max-w-6xl mx-auto rounded mt-10 m-2 p-4 flex flex-col gap-6">
                 {fetching ? <FetchingModal /> : <></>}
                 {/* 제목 입력 */}
@@ -181,9 +192,9 @@ const HistoryAddComponent = () => {
                         className="w-[400px] p-4 rounded border border-solid border-neutral-300 shadow-md"
                         type="text"
                         name="game"
-                        placeholder="게임 ID 입력"
-                        value={gameId}
-                        onChange={(e) => setGameId(e.target.value)}
+                        placeholder="검색어 입력"
+                        value={keyword}
+                        onChange={(e) => setKeyword(e.target.value)}
                     />
                     <button className="ml-4 p-4 bg-blue-500 text-white rounded shadow-md "
                         onClick={handleSearchGame}>
@@ -191,10 +202,25 @@ const HistoryAddComponent = () => {
                     </button>
                 </div>
 
+                {/* 검색된 게임 목록 표시 */}
+                {games.length > 0 ? (
+
+                    <div className="w-[984px] ml-12 space-y-2">
+                        <div className="card">
+                            <div className="font-bold p-2" >게임검색 결과</div>                    
+                                {games.map((game) => (                                    
+                                    <div key={game.id}
+                                         className="cursor-pointer p-2 border border-neutral-300 rounded hover:bg-blue-300"
+                                         onClick={() => handleSelectGame(game)}                                    >
+                                         {game.gameName}
+                                    </div>
+                                ))}
+                        </div>
+                    </div>
+                ) : (<></>)}
+
                 {/* 검색된 게임 정보 표시 */}
-                {game && (
-                    <GameBoxComponent id={gameId}/>
-                )}
+                {selectedGame && <GameBoxComponent id={selectedGame.id} />}
 
                 {/* 전적 및 날짜 입력 */}
                 <div className="p-4 border-b border-t grid grid-cols-2 gap-6 -mt-5">
@@ -217,26 +243,27 @@ const HistoryAddComponent = () => {
                             </label>
                         </div>
                         <div className="ms-4 font-bold"
-                             onClick={()=> document.getElementById("game-date-input").showPicker()}>게임 날짜
+                            onClick={() => document.getElementById("game-date-input").showPicker()}>게임 날짜
                             <input className="ml-4 p-3 w-[295px] border border-solid border-neutral-300 shadow-md rounded"
-                                   type="date" name="date" 
-                                   value={history.date}
-                                   id="game-date-input"
-                                   onChange={handleChangeHistory}/>
+                                type="date" name="date"
+                                value={history.date}
+                                id="game-date-input"
+                                onChange={handleChangeHistory} />
                         </div>
                     </div>
 
                     {/* 파티원 추가 입력 + 추가된 파티원 목록 */}
                     <div className="flex flex-col gap-4">
                         <div className="font-bold">파티원 추가</div>
-                        {/* 입력창과 +버튼 */}
                         <div className="flex items-center gap-2">
                             <input className="w-[324px] p-3 border border-solid border-neutral-300 shadow-md rounded"
                                 type="text" placeholder="파티원 이름 입력" value={partyMember}
                                 onChange={(e) => setPartyMember(e.target.value)} />
+                            {/* 파티원추가버튼 */}
                             <Plus className="rounded h-[56px] text-white w-16 bg-primary shadow-md"
                                 onClick={handleAddPartyMember}>
                             </Plus>
+                            {/* 파티원초기화버튼 */}
                             <RotateCcw className="rounded h-[56px] text-white w-16 bg-primary shadow-md"
                                 onClick={handleResetPartyMembers}>
                             </RotateCcw>
@@ -269,14 +296,14 @@ const HistoryAddComponent = () => {
                 </div>
 
                 {/* 추가 버튼 */}
-                {userInfo ? 
-                <div className="flex justify-end mr-10 -mt-14 p-4">
-                    <button type="button" className="rounded p-4 w-36 bg-blue-500 text-xl text-white"
+                {userInfo ?
+                    <div className="flex justify-end mr-10 -mt-14 p-4">
+                        <button type="button" className="rounded p-4 w-36 bg-blue-500 text-xl text-white"
                             onClick={handleClickAdd}>기록 저장
-                    </button>
-                </div>
-                : <></>}
-                
+                        </button>
+                    </div>
+                    : <></>}
+
             </div>
         </>
     );
