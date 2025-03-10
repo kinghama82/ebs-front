@@ -92,11 +92,8 @@ const HistoryAddComponent = () => {
     useEffect(() => {
         if (result) {
             toast("게임기록 저장 완료", {
-                description: `${result}번 저장 완료`,
-                action: {
-                    label: "확인",
-                    onClick: () => closeModal(),
-                },
+                description: `${result}번 저장 완료`
+               
             })
         }
     }, [result])
