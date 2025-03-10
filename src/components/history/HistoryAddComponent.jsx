@@ -216,10 +216,13 @@ const HistoryAddComponent = () => {
                                 {" "}패(Lose)
                             </label>
                         </div>
-                        <div className="ms-4 font-bold">게임 날짜
+                        <div className="ms-4 font-bold"
+                             onClick={()=> document.getElementById("game-date-input").showPicker()}>게임 날짜
                             <input className="ml-4 p-3 w-[295px] border border-solid border-neutral-300 shadow-md rounded"
-                                type="date" name="date" value={history.date}
-                                onChange={handleChangeHistory}/>
+                                   type="date" name="date" 
+                                   value={history.date}
+                                   id="game-date-input"
+                                   onChange={handleChangeHistory}/>
                         </div>
                     </div>
 
