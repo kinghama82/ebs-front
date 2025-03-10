@@ -30,7 +30,7 @@ const CategoryIcons = () => {
             {categories.map((category, index) => (
                 <Card
                     key={index}
-                    className="w-25 h-24 flex flex-col border border-black items-center justify-center cursor-pointer hover:bg-gray-200"
+                    className="w-25 h-24 flex flex-col border border-black items-center justify-center cursor-pointer hover:bg-gray-200 hover:text-black"
                     onClick={() => handleCategoryClick(category.name)} // ✅ 클릭 이벤트 함수 사용
                 >
                     <CardContent className="flex flex-col items-center p-2">
