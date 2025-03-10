@@ -22,7 +22,7 @@ jobs:
 
           # 인스톨
       - name: Install Dependencies
-        run: npm install
+        run: npm ci
 
         #빌드
       - name: Build Project
