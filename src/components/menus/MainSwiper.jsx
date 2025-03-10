@@ -27,7 +27,7 @@ export default function MainSwiper() {
         centeredSlides={true}
         autoplay={{
             //오토플레이 시간 설정 1000 = 1초
-          delay: 7000,
+          delay: 5000,
           disableOnInteraction: false,
         }}
         pagination={{
@@ -37,16 +37,18 @@ export default function MainSwiper() {
         modules={[Autoplay, Pagination, Navigation]}
         onAutoplayTimeLeft={onAutoplayTimeLeft}
         className="mySwiper"
+        style={{height: "500px", width: "100%"}}
       >
-        <SwiperSlide>Slide 1</SwiperSlide>
-        <SwiperSlide>Slide 2</SwiperSlide>
-        <SwiperSlide>Slide 3</SwiperSlide>
+        
+        <SwiperSlide><img src='https://thumb.zumst.com/530x0/https://static.news.zumst.com/images/25/2022/08/12/dae3c74f8066493987ec0e23cf4f94fd.jpg'/></SwiperSlide>
+        <SwiperSlide><img src='http://www.boardgamefesta.com/data/upload/banner/17392466712.jpg'/></SwiperSlide>
+        {/* <SwiperSlide>Slide 3</SwiperSlide>
         <SwiperSlide>Slide 4</SwiperSlide>
         <SwiperSlide>Slide 5</SwiperSlide>
         <SwiperSlide>Slide 6</SwiperSlide>
         <SwiperSlide>Slide 7</SwiperSlide>
         <SwiperSlide>Slide 8</SwiperSlide>
-        <SwiperSlide>Slide 9</SwiperSlide>
+        <SwiperSlide>Slide 9</SwiperSlide> */}
         <div className="autoplay-progress" slot="container-end">
           <svg viewBox="0 0 48 48" ref={progressCircle}>
             <circle cx="24" cy="24" r="20"></circle>

@@ -1,10 +1,9 @@
 "use client";
 import { getGames } from "@/api/game/gameapi";
+import LogoutButton from "@/components/LogoutButton";
 import BasicMenu from "@/components/menus/BasicMenu";
 import CategoryIcons from "@/components/menus/CategoryIcons";
-import MainCarousel from "@/components/menus/MainCarousel";
 import MainSwiper from "@/components/menus/MainSwiper";
-import { ModeToggle } from "@/components/ModeToggle";
 import { Button } from "@/components/ui/button";
 import {
     Card,
@@ -76,6 +75,7 @@ export default function Home() {
                 </div>
                 {/* 로그인 상태창 */}
                 <div className="w-2/6 flex justify-end items-end">
+                    <Button onClick={()=> router.push('/gamer/new')}>회원가입</Button>
                 {nickname ? 
                     (<Card className="border border-black">
                         <CardHeader>
@@ -88,7 +88,7 @@ export default function Home() {
                                 </Link>                                
                             </CardDescription>
                         </CardHeader>
-                        <CardContent className="-mt-4 -mb-4"><Button variant="destructive">LogOut</Button></CardContent>
+                        <CardContent className="-mt-4 -mb-4"><LogoutButton/></CardContent>
                     </Card>
                 ):(
                     <Button className="text-xl dark:text-white" onClick={()=> router.push(`/gamer`)}>로그인</Button>
@@ -106,8 +106,8 @@ export default function Home() {
             </div>
 
             {/* 캐로주얼 */}
-            <div className="max-w-6xl mx-auto mt-2 h-[350px]"> 
-                <MainSwiper/>
+            <div className="rounded max-w-6xl mx-auto mt-2"> 
+                <MainSwiper />
             </div>
 
             {/* 아래 게시판 추가 공간 */}
