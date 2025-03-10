@@ -25,6 +25,7 @@ export default function MainSwiper() {
       <Swiper
         spaceBetween={30}
         centeredSlides={true}
+        loop={true}
         autoplay={{
             //오토플레이 시간 설정 1000 = 1초
           delay: 5000,
@@ -42,10 +43,10 @@ export default function MainSwiper() {
         
         <SwiperSlide><img src='https://thumb.zumst.com/530x0/https://static.news.zumst.com/images/25/2022/08/12/dae3c74f8066493987ec0e23cf4f94fd.jpg'/></SwiperSlide>
         <SwiperSlide><img src='http://www.boardgamefesta.com/data/upload/banner/17392466712.jpg'/></SwiperSlide>
-        {/* <SwiperSlide>Slide 3</SwiperSlide>
-        <SwiperSlide>Slide 4</SwiperSlide>
-        <SwiperSlide>Slide 5</SwiperSlide>
-        <SwiperSlide>Slide 6</SwiperSlide>
+        <SwiperSlide><img src='/1.png'/></SwiperSlide>
+        <SwiperSlide><img src='/2.png'/></SwiperSlide>
+        <SwiperSlide><img src='/3.png'/></SwiperSlide>
+        {/* <SwiperSlide>Slide 6</SwiperSlide>
         <SwiperSlide>Slide 7</SwiperSlide>
         <SwiperSlide>Slide 8</SwiperSlide>
         <SwiperSlide>Slide 9</SwiperSlide> */}
