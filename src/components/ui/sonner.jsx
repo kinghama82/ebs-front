@@ -28,6 +28,7 @@ const Toaster = ({
 
 export { Toaster }
 
+//토스트 뜨는 위치
 export function SonnerToaster() {
-    return <Toaster position="top-right" />;
+    return <Toaster position="bottom-right" />;
 }

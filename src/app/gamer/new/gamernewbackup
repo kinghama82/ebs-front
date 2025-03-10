@@ -176,19 +176,6 @@ const GamerForm = () => {
                     </Button>
                 </DialogContent>
             </Dialog>
-
-            {/* 주소찾기 */}
-            <div className="mx-auto border border-black p-4">
-                <label className="block mb-2">주소</label>
-                <input
-                    type="text"
-                    value={address}
-                    readOnly
-                    className="border p-2 w-full mb-2"
-                />
-                <AddressSearch onSelect={(selectedAddress) => setAddress(selectedAddress)} />
-            </div>
-
         </div>
     );
 };

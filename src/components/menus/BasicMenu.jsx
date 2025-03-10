@@ -83,16 +83,16 @@ const BasicMenu = () => {
                 
 
                 {/* 네비게이션 메뉴 */}
-                <div className="hidden no-underline md:flex space-x-6 dark:text-white">
-                  <NavLink href="/news">뉴스</NavLink>
-                  <NavLink href="/free">자유</NavLink>
-                  <NavLink href="/question">질문</NavLink>
-                  <NavLink href="/rulebook">룰북</NavLink>
-                  <NavLink href="/games">게임정보</NavLink>
+                <div className="hidden no-underline md:flex space-x-6 text-amber-800 font-semibold dark:text-white">
+                  <Link href="/news">뉴스</Link>
+                  <Link href="/free">자유</Link>
+                  <Link href="/question">질문</Link>
+                  <Link href="/rulebook">룰북</Link>
+                  <Link href="/games">게임정보</Link>
                   {userInfo ? (
-                    <NavLink href={`/history?page=1&size=10&gamerid=${userInfo.id}`}>
+                    <Link href={`/history?page=1&size=10&gamerid=${userInfo.id}`}>
                       게임기록
-                    </NavLink>
+                    </Link>
                   ) : null}
                 </div>
               </div>
