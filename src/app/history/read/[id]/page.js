@@ -70,9 +70,7 @@ const HistoryReadPage = () => {
             router.push('/history')
             toast("게임기록 삭제 완료",{
                 description: "삭제 완료",
-                action: {
-                    label: "확인"
-                }
+                
             })
         })
     }
