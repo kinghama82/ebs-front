@@ -41,3 +41,14 @@ export const incrementViewCount = async (id) => {
     const res = await axios.post(`${host}/rulebook/${id}/view`);  // 조회수 증가를 위한 POST 요청
     return res.data;
 };
+
+export const createAnswer = async (rulebookId, formData) => {
+    const res = await axios.post(`${host}/rulebook/${rulebookId}/answers/create`, formData);
+    return res.data;
+};
+
+export const getAnswer = async (rulebookId) => {
+    const res = await axios.get(`${host}/rulebook/${rulebookId}/answers`);
+
+    return res.data;
+}

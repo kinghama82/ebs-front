@@ -79,7 +79,7 @@ export default function ListComponent() {
 
 
     return (
-        <div className="mx-auto w-full max-w-6xl">
+        <div className="mx-auto w-full max-w-6xl dark:text-white">
             <div className="flex justify-center text-4xl py-1" style={{ marginTop: '40px', backgroundColor: 'transparent', color: '#D97706', borderBottom: '2px solid #D97706' }}>
                 <Dices size={30}/>룰북 게시판
             </div>
