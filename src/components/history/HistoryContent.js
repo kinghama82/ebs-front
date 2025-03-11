@@ -105,6 +105,7 @@ const HistoryContent = ({ userInfo }) => {
             <div className=" max-w-6xl mx-auto bg-gray-300 dark:bg-[#0a0b0c] rounded -mt-7 dark:text-white" >
                 <HistoryList userInfo={userInfo} selectedYear={selectedYear} />
             </div>
+            
         </div>
     )
 }
