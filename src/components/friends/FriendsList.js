@@ -54,10 +54,9 @@ const FriendsList = ({ userId }) => {
     };
 
     return (
-        <div className="p-4 bg-slate-200 rounded-lg">
-
+        <div className="p-4 bg-slate-200 rounded-lg max-h-96 overflow-y-auto">
             {/* 친구 추가 입력창 */}
-            <div className="flex mb-4">
+            <div className="flex mb-2 -mt-4">
                 <input
                     type="text"
                     placeholder="닉네임 입력"
@@ -74,11 +73,25 @@ const FriendsList = ({ userId }) => {
             {friends.length > 0 ? (
                 <ul>
                     {friends.map((friend) => (
-                        <li key={friend.id} className="py-2 border-b flex justify-between items-center">
-                            {friend.friendNickname ? friend.friendNickname : "알 수 없는 친구"}
+                        <li key={friend.id} className="bg-white py-0.5 px-3 border-b flex justify-between items-center border-2 rounded shadow">
+                            <div className="flex items-center">
+                                {friend.friendNickname ? (
+                                    <>
+                                        <img
+                                            src="allIcon.png"
+                                            // src={`http://43.202.30.85:8080${friend.gameImg}`} // 실제 이미지 경로 사용
+                                            alt="친구프사"
+                                            className="w-8 h-8 object-cover rounded-full mr-3 border-1"
+                                        />
+                                        <span>{friend.friendNickname}</span>
+                                    </>
+                                ) : (
+                                    <span>알 수 없는 친구</span>
+                                )}
+                            </div>
                             <button
                                 onClick={() => removeFriend(friend.id)}
-                                className="bg-red-500 text-white px-2 py-1 rounded"
+                                className="bg-red-500 text-white px-3 py-0.5 rounded me-2"
                             >
                                 X
                             </button>

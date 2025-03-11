@@ -16,7 +16,6 @@ export async function GET(request) {
     const url = `https://www.koreaexim.go.kr/site/program/financial/exchangeJSON?authkey=${apiKey}&searchdate=${formattedDate}&data=AP01`;
 
     try {
-        console.log("📡 API 요청 URL:", url);
 
         const response = await fetch(url);
         if (!response.ok) {
@@ -25,7 +24,6 @@ export async function GET(request) {
         }
 
         const data = await response.json();
-        console.log("📡 API 응답 데이터:", data);
 
         // API 오류 응답 (result: 3) 처리
         if (!Array.isArray(data) || data.length === 0 || (data[0].result && data[0].result === 3)) {

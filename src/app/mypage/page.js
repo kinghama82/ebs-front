@@ -29,34 +29,49 @@ const MyPage = () => {
                 <h1 className="mt-4 text-4xl font-bold text-center">마이 페이지</h1>
 
                 {/* 프로필 & 탭 영역 */}
-                <div className="bg-white my-2 w-full flex flex-col md:flex-row md:space-x-12 justify-between">
-
+                <div className="bg-white my-2 w-full flex flex-col md:flex-row md:space-x-12 justify-between h-[450px]  ">
                     {/* 유저 정보 */}
-                    <main className="bg-slate-200 w-full px-10 py-10 rounded-lg">
+                    <div className=" w-full px-10 py-10 rounded-lg  content-center bg-no-repeat bg-cover bg-center"
+                         style={{ backgroundImage: "url('/8c18_66p5_210415.jpg')",
+                             backgroundSize: "700px 500px", // 배경 이미지 크기 조절
+                             backgroundPosition: "center"}}>
                         {user ? (
-                            <div>
+                            <div className="m-auto flex flex-row justify-between h-72 "
+                                >
+                                <div >
                                 <img
                                     src="allIcon.png"
                                     alt="프로필 이미지"
-                                    className="w-32 h-32 rounded-full mx-auto"
+                                    className="w-44 h-44 rounded-full mx-auto border-2 border-red-700 "
                                 />
-                                <h2 className="text-center text-2xl font-semibold mt-4">{user.nickname}</h2>
-                                <p className="text-center text-gray-600">{user.email}</p>
+                                <h2 className=" text-center text-2xl font-semibold mt-4">{user.nickname}</h2>
+                                </div>
 
-                                <div className="mt-6 space-y-2 text-left">
-                                    <p><strong>이름:</strong> {user.name}</p>
-                                    <p><strong>전화번호:</strong> {user.phone}</p>
-                                    <p><strong>주소:</strong> {user.address}</p>
-                                    <p><strong>가입일:</strong> {new Date(user.createdate).toLocaleDateString()}</p>
+
+                                <div className=" space-y-2 text-justify text-xl justify-end w-60 ">
+                                    <div className="flex justify-between">
+                                        <strong>아이디:</strong> {user.email}</div>
+                                    <div className="flex justify-between">
+                                        <strong>이름:</strong> {user.name}</div>
+                                    <div className="flex justify-between">
+                                        <strong>나이:</strong> {user.age}</div>
+                                    <div className="flex justify-between">
+                                        <strong>전화번호:</strong> {user.phone}</div>
+                                    <div className="flex justify-between">
+                                        <strong>활동점수:</strong> {user.level}</div>
+                                    <div className="flex justify-between">
+                                        <strong>가입일:</strong> {new Date(user.createdate).toLocaleDateString()}</div>
+                                    <div className="flex justify-between">
+                                        <strong>주소:</strong> {user.address}</div>
                                 </div>
                             </div>
                         ) : (
                             <p className="text-center text-lg">로그인이 필요합니다.</p>
                         )}
-                    </main>
+                    </div>
 
                     {/* 친구 목록 & 게임 북마크 */}
-                    <aside className="bg-slate-200 w-full px-10 py-10 rounded-lg">
+                    <aside className="bg-slate-200 w-full  rounded-lg">
                         <Tabs defaultValue="mate" className="w-full dark:bg-[#0a0b0c]">
                             <TabsList className="grid w-full grid-cols-2">
                                 <TabsTrigger value="mate">친구목록</TabsTrigger>
