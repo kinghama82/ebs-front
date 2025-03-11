@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState, use } from "react";
-import Image from "next/image";
 import { getGames } from "@/api/game/gameapi";
 import {
     Accordion,
