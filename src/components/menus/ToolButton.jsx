@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, ChevronUp, Pencil, Plus } from "lucide-react";
 import { motion } from "framer-motion";
@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 export default function ToolButton() {
   const [isOpen, setIsOpen] = useState(false);
   const [isAtTop, setIsAtTop] = useState(true);
+  const menuRef = useRef(null); // 메뉴 컨테이너 참조
 
   useEffect(() => {
     const handleScroll = () => {
@@ -19,6 +20,25 @@ export default function ToolButton() {
     };
   }, []);
 
+  // 바깥 클릭 감지 핸들러
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
+
   const handleScrollButtonClick = () => {
     if (isAtTop) {
       window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
@@ -28,11 +48,12 @@ export default function ToolButton() {
   };
 
   return (
-    <div className="fixed bottom-5 right-5 flex flex-col items-end gap-2 z-50">
+    <div ref={menuRef} className="fixed bottom-5 right-5 flex flex-col items-end gap-2 z-50">
       {isOpen && (
         <div className="flex flex-col gap-2">
           {/* 글 작성 버튼 */}
-          <Button title="글 작성"
+          <Button
+            title="글 작성"
             onClick={() => (window.location.href = "/write")}
             className="w-12 h-12 rounded-full shadow-lg bg-[#AD927A] text-white font-bold hover:bg-[#8C7A65]"
           >

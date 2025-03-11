@@ -95,7 +95,7 @@ const HistoryContent = ({ userInfo }) => {
                 
                 {/* 기록작성버튼 쿠키없으면 버튼 안보임*/}
                 {userInfo ?
-                    <Button variant="secondary" className="text-white text-md"
+                    <Button variant="mocha" className="text-white text-md"
                         onClick={() => router.push('/history/new')}>
                         기록 작성
                     </Button>

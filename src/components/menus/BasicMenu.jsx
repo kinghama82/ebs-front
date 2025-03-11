@@ -11,6 +11,7 @@ import { useTheme } from "next-themes";
 import ExRateComponent from "./ExRateComponent";
 import ToolButton from "./ToolButton";
 import './styles.css';
+import LoginOutButton from "./LoginOutButton";
 
 const BasicMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -191,7 +192,7 @@ const BasicMenu = () => {
                     ))}
                   </ul>
                 )}*/}
-                <ModeToggle/>
+                <LoginOutButton/>
               </div>
               
 
