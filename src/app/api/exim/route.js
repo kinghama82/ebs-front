@@ -11,9 +11,9 @@ export async function GET(request) {
     // 오늘 날짜 구하기 (YYYYMMDD 형식)
     const today = new Date();
     const hour = today.getHours(); // 현재 시간(hour 가져옴)
-        if (hour < 11) {               // 11시 이전인 경우
-            today.setDate(today.getDate() - 1); // 날짜를 하루 전으로 설정
-        }
+    if (hour < 11) {               // 11시 이전인 경우
+        today.setDate(today.getDate() - 1); // 날짜를 하루 전으로 설정
+    }
     const year = today.getFullYear();
     const month = String(today.getMonth() + 1).padStart(2, '0');
     const day = String(today.getDate()).padStart(2, '0');
@@ -27,12 +27,16 @@ export async function GET(request) {
 
     // API 요청
     try {
+        
         const response = await fetch(url);
+        
         if (!response.ok) {
             throw new Error(`Failed to fetch data: ${response.status}`);
         }
-
         const data = await response.json();
+        if (!data || data.length === 0) {
+            throw new Error("API에서 유효한 데이터를 받지 못했습니다.");
+        }
 
         // 필터링할 통화 종류 (USD, EUR, JPY(100))
         const filteredRates = data.filter(item =>
@@ -41,7 +45,10 @@ export async function GET(request) {
 
         return new Response(JSON.stringify(filteredRates), {
             status: 200,
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+             },
         });
     } catch (error) {
         return new Response(JSON.stringify({ error: error.message }), {
