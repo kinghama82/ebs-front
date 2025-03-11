@@ -36,6 +36,7 @@ export default function CategoryPage({ params }) {
             } finally {
                 setLoading(false);
             }
+            
         };
 
         fetchGames();
