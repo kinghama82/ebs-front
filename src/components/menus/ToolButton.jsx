@@ -28,7 +28,7 @@ export default function ToolButton() {
   };
 
   return (
-    <div className="fixed bottom-5 right-5 flex flex-col items-end gap-2">
+    <div className="fixed bottom-5 right-5 flex flex-col items-end gap-2 z-50">
       {isOpen && (
         <div className="flex flex-col gap-2">
           {/* 글 작성 버튼 */}
