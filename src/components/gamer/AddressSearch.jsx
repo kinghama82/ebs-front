@@ -19,10 +19,12 @@ const AddressSearch = ({ onSelect }) => {
   };
 
   return (
-    <div>
-      <button><Search onClick={openPostcode}/></button>
-      
-    </div>
+      <div>
+        {/* 🔥 폼 제출을 방지하기 위해 `type="button"` 추가 */}
+        <button type="button" onClick={openPostcode} className="p-2 bg-blue-500 text-white rounded-md">
+          <Search size={18} />
+        </button>
+      </div>
   );
 };
 
