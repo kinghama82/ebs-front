@@ -15,6 +15,7 @@ import Color from '@tiptap/extension-color'
 import { Mark, mergeAttributes } from '@tiptap/core';
 import { SketchPicker } from 'react-color'
 import {useCustomCookie} from "@/components/common/useCustomCookie";
+import {useRouter} from "next/navigation";
 
 // 글자 크기 확장 정의
 export const FontSize = Mark.create({
@@ -107,6 +108,7 @@ const EditorComponent = () => {
   const dropdownRef = useRef(null);
   const buttonRef = useRef(null); // 글자 크기 버튼에 대한 참조 추가
   const userInfo = useCustomCookie();
+  const router = useRouter();
 
   // 글자 크기 드롭다운 위치 조정
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
@@ -173,7 +175,7 @@ const EditorComponent = () => {
   // 게시글 작성 함수
   const submitPost = async () => {
     const content = editor.getHTML();
-
+    const nickname = userInfo.nickname
 
     console.log("writerid : ", userInfo.id)
 
@@ -185,9 +187,8 @@ const EditorComponent = () => {
     }
 
     const formData = new FormData();
-    const rulebookData = { title: title, content: content , writerId: userInfo.id };
+    const rulebookData = { title: title, content: content, nickname: nickname};
     formData.append('rulebook', new Blob([JSON.stringify(rulebookData)], { type: 'application/json' }));
-
 
     try {
       // 서버에 게시글 데이터 전송
@@ -195,16 +196,22 @@ const EditorComponent = () => {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
+
+      console.log("----제발2----", rulebookData)
+      console.log("보내는 데이터:", JSON.stringify(rulebookData, null, 2));
+      console.log("FormData 확인:", formData.get("rulebook"));
+
       alert('게시글 작성 완료');
 
-      window.location.href = '/rulebook';
+      router.push('/rulebook')
+
 
     } catch (err) {
       console.error('게시글 작성 오류', err.response || err);
       alert('게시글 작성에 실패했습니다.');
     }
 
-    console.log("writerid 2 : ", writer_id)
+
   };
 
   // 색상 선택기 토글 함수
