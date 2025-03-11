@@ -74,8 +74,8 @@ export default function Home() {
                     <img src="/logo.png" />
                 </div>
                 {/* 로그인 상태창 */}
-                <div className="w-2/6 flex justify-end items-end">
-                    <Button onClick={()=> router.push('/gamer/new')}>회원가입</Button>
+                <div className="w-2/6 flex justify-end items-end gap-2">
+                    <Button variant="mocha" onClick={()=> router.push('/gamer/new')}>회원가입</Button>
                 {nickname ? 
                     (<Card className="border border-black">
                         <CardHeader>
@@ -91,7 +91,8 @@ export default function Home() {
                         <CardContent className="-mt-4 -mb-4"><LogoutButton/></CardContent>
                     </Card>
                 ):(
-                    <Button className="text-xl dark:text-white" onClick={()=> router.push(`/gamer`)}>로그인</Button>
+                    <Button variant="mocha" className="text-md dark:text-white" 
+                            onClick={()=> router.push(`/gamer`)}>로그인</Button>
                 )}
                     
                 </div>
