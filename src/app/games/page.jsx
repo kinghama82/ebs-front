@@ -7,11 +7,17 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion";
+import { useRouter, useSearchParams } from "next/navigation";
+import CopyUrlButton from "@/components/menus/copyUrlButton";
 
 export default function GamesPage() {
     const [games, setGames] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    const searchParams = useSearchParams()
+    const router = useRouter()
+    const gameParam = searchParams.get("game")
 
     useEffect(() => {
         const fetchGames = async () => {
@@ -29,6 +35,18 @@ export default function GamesPage() {
         fetchGames();
     }, []);
 
+    // 게임 데이터 로드 후 스크롤 이동
+    useEffect(() => {
+        if (gameParam && games.length > 0) {
+            setTimeout(() => {
+                const element = document.getElementById(gameParam);
+                if (element) {
+                    element.scrollIntoView({ behavior: "smooth", block: "start" });
+                }
+            }, 100); // DOM 렌더링 지연 해결
+        }
+    }, [gameParam, games]); // 🔥 게임 리스트가 로드된 후 실행
+
     if (loading) {
         return <div className="container mx-auto p-4 text-center">게임 데이터를 불러오는 중...</div>;
     }
@@ -41,10 +59,12 @@ export default function GamesPage() {
         <div className="container mx-auto p-4 max-w-6xl">
             <h1 className="text-2xl font-bold mb-4">보드게임 목록</h1>
 
-            <Accordion type="single" collapsible >
-                {games.map((game) => (
-                    <AccordionItem key={game.id} value={`item-${game.id}`} >
-                        <AccordionTrigger>
+            <Accordion type="single" collapsible defaultValue={gameParam || undefined}>
+                {games.map((game) => {
+                    const gameValue = `item-${game.id}`
+                    return (
+                    <AccordionItem key={game.id} value={gameValue} id={gameValue}>
+                        <AccordionTrigger onClick={() => router.push(`/games?game=${gameValue}`)}>
                             <div className="flex flex-1 p-3 rounded-lg shadow cursor-pointer hover:bg-gray-100 items-center ">
                                 {game.img ? (
                                     <div className="m-1 ms-2 border-2">
@@ -103,13 +123,17 @@ export default function GamesPage() {
 
                                 <div className="basis-2/5 mr-4 w-full p-2  ms-3">
                                     <div className="flex flex-col h-16">
-                                        <h3 className="text-xl font-bold  border-b-2">
+                                        <h3 className="text-xl font-bold  border-b-2 flex justify-between items-center">
                                             {game.gameName}
-                                            <div className="shrink w-56 text-sm text-gray-500 flex justify-between">
-                                                {game.enGameName}
-                                                <span className="text-base font-bold"> {game.year}</span>
-                                            </div>
+                                            {/* url복사버튼 */}
+                                            <div>
+                                                <CopyUrlButton url={`${window.location.origin}/games?game=${gameValue}`}/>
+                                            </div>                        
                                         </h3>
+                                        <div className="shrink w-56 text-sm text-gray-500 flex justify-between">
+                                            {game.enGameName}
+                                            <span className="text-base font-bold"> {game.year}</span>
+                                        </div>
                                     </div>
 
                                     <div className="flex flex-row">
@@ -163,7 +187,7 @@ export default function GamesPage() {
                             </div>
                         </AccordionContent>
                     </AccordionItem>
-                ))}
+                )})}
             </Accordion>
         </div>
     );

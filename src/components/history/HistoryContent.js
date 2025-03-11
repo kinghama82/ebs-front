@@ -9,6 +9,7 @@ import HistoryList from "./HistoryList"
 import RecentGameComponent from "./RecentGameComponent"
 import { useHistoryRecord } from "./useHistoryRecord"
 import Link from "next/link"
+import CopyUrlButton from "../menus/copyUrlButton"
 
 const HistoryContent = ({ userInfo }) => {
     const router = useRouter()
@@ -92,6 +93,7 @@ const HistoryContent = ({ userInfo }) => {
             </div >
             {/* 사이공간 */}
             <div className="m-2 max-w-6xl mx-auto flex justify-end relative" >
+                
                 {/* 기록작성버튼 쿠키없으면 버튼 안보임*/}
                 {userInfo ?
                     <Button variant="secondary" className="text-white text-md"
