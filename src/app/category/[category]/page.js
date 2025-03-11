@@ -1,5 +1,7 @@
 "use client";
 
+import React, { useEffect, useState, use } from "react";
+import Image from "next/image";
 import { getGames } from "@/api/game/gameapi";
 import {
     Accordion,
@@ -7,16 +9,13 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion";
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
 
 export default function CategoryPage({ params }) {
     // ✅ `params`는 Promise이므로 `use()`로 비동기 처리
-    const { category } = useParams();
+    const { category } = use(params);
 
     // ✅ URL 디코딩 적용
-    const decodedCategory = decodeURI(category);
-    console.log("현재 카테고리 이름 : ", decodedCategory);
+    const decodedCategory = decodeURIComponent(category);
 
     const [games, setGames] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -27,25 +26,9 @@ export default function CategoryPage({ params }) {
         const fetchGames = async () => {
             try {
                 const data = await getGames();
-                const filteredGames = data.filter((game) => {
-                    let gameCategories = game.gameCategory;
-                    console.log("==========================================");
-                    console.log("🎯 게임 이름:", game.gameName);
-                    console.log("🎯 gameCategory 존재 여부:", !!game.gameCategory);
-                    console.log("🎯 gameCategory 값:", game.gameCategory);
-
-                    // ✅ gameCategory가 배열이 아니거나 빈 배열이면 필터링 제외
-                    if (!Array.isArray(gameCategories) || gameCategories.length === 0) {
-                        console.log("⚠️ gameCategory가 빈 배열이므로 제외됨:", gameCategories);
-                        return false;
-                    }
-
-                    return gameCategories.some((c) => {
-                        console.log("✅ some() 실행됨!");
-                        console.log("🎯 개별 게임 카테고리:", c);
-                        return c.toString().trim().normalize("NFC") === decodedCategory.trim().normalize("NFC");
-                    });
-                });
+                const filteredGames = data.filter((game) =>
+                    game.gameCategory.some((c) => c.gameCategory === decodedCategory)
+                );
                 setGames(filteredGames);
             } catch (err) {
                 console.error("Error fetching games:", err);
@@ -53,7 +36,6 @@ export default function CategoryPage({ params }) {
             } finally {
                 setLoading(false);
             }
-
         };
 
         fetchGames();
@@ -178,8 +160,8 @@ export default function CategoryPage({ params }) {
                                                                 className="px-2 py-1 bg-indigo-600 text-white rounded-md text-sm"
                                                                 title={category.description}
                                                             >
-                                                                {category.gameCategory}
-                                                            </span>
+                                                {category.gameCategory}
+                                            </span>
                                                         ))
                                                     ) : (
                                                         <div className="text-gray-400">카테고리 정보 없음</div>

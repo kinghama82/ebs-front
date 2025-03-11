@@ -74,10 +74,10 @@ const GameBookmarks = ({ userId }) => {
     };
 
     return (
-        <div className="p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
+        <div className="p-4 dark:bg-gray-800 rounded-lg overflow-y-auto  max-h-96 overscroll-contain">
 
-            {/* ✅ 검색창과 추가 버튼을 나란히 배치 */}
-            <div className="flex items-center gap-2 mb-4">
+            {/* ✅ 검색창과 추가 버튼 */}
+            <div className="flex items-center gap-2 -mt-4">
                 <div className="relative w-full">
                     <input
                         type="text"
@@ -89,7 +89,7 @@ const GameBookmarks = ({ userId }) => {
                         ref={searchRef}
                     />
                     {searchResults.length > 0 && (
-                        <ul className="absolute left-0 top-full mt-1 w-full bg-white border shadow-lg rounded-md max-h-60 overflow-y-auto z-50">
+                        <ul className="absolute left-0 top-full mt-1 w-full bg-white border shadow-lg rounded-md max-h-60 z-50">
                             {searchResults.map((game) => (
                                 <li
                                     key={game.id}
@@ -121,33 +121,29 @@ const GameBookmarks = ({ userId }) => {
                 </button>
             </div>
 
-            {/* ✅ 북마크 목록 출력 */}
-            {bookmarks.length > 0 ? (
-                <ul className="mt-4 space-y-2">
-                    {bookmarks.map((bookmark) => (
-                        <li key={bookmark.id} className="py-2 px-4 bg-white rounded shadow-md flex justify-between items-center">
-                            <div className="flex items-center">
-                                {bookmark.gameImg && (
-                                    <img
-                                        src={`http://43.202.30.85:8080${bookmark.gameImg}`}
-                                        alt={bookmark.gameName}
-                                        className="w-12 h-12 object-cover rounded mr-3"
-                                    />
-                                )}
-                                <span className="font-medium">{bookmark.gameName}</span> {/* ✅ 올바른 게임 이름 표시 */}
-                            </div>
-                            <button
-                                onClick={() => removeBookmark(bookmark.id)}
-                                className="bg-red-500 text-white px-3 py-1 rounded-lg"
-                            >
-                                X
-                            </button>
-                        </li>
-                    ))}
-                </ul>
-            ) : (
-                <p className="text-center text-gray-600">북마크한 게임이 없습니다.</p>
-            )}
+            {/* ✅ 북마크 목록 (조건문 없이 스크롤 적용) */}
+            <ul className="mt-3 space-y-2  ">
+                {bookmarks.map((bookmark) => (
+                    <li key={bookmark.id} className="py-0.5 px-4 bg-white rounded shadow-md flex justify-between items-center">
+                        <div className="flex items-center">
+                            {bookmark.gameImg && (
+                                <img
+                                    src={`http://43.202.30.85:8080${bookmark.gameImg}`}
+                                    alt={bookmark.gameName}
+                                    className="w-8 h-8 object-cover rounded mr-3"
+                                />
+                            )}
+                            <span className="font-medium">{bookmark.gameName}</span>
+                        </div>
+                        <button
+                            onClick={() => removeBookmark(bookmark.id)}
+                            className="bg-red-500 text-white px-3 py-1 rounded-lg"
+                        >
+                            X
+                        </button>
+                    </li>
+                ))}
+            </ul>
         </div>
     );
 };
