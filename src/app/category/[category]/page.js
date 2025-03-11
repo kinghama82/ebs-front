@@ -27,35 +27,25 @@ export default function CategoryPage({ params }) {
         const fetchGames = async () => {
             try {
                 const data = await getGames();
-                console.log("게임 데이터:", data);
-                const filteredGames = data.filter((game) =>
-                    game.gameCategory.some((c) => {
-                        console.log("==========================================");
-                        console.log("🎯 게임 카테고리 원본 데이터:", c.gameCategory);
-                        console.log("🎯 게임 카테고리 데이터 타입:", typeof c.gameCategory);
-                        console.log("🎯 필터링 기준:", decodedCategory);
-                        console.log("🎯 필터링 기준 데이터 타입:", typeof decodedCategory);
-                        
-                        // ✅ 배열이면 문자열로 변환
-                        let gameCategoryStr;
-                        if (Array.isArray(c.gameCategory)) {
-                            gameCategoryStr = c.gameCategory.map((cat) => cat.toString().trim().normalize("NFC")).join(", ");
-                        } else if (typeof c.gameCategory === "object") {
-                            gameCategoryStr = JSON.stringify(c.gameCategory).trim().normalize("NFC");
-                        } else {
-                            gameCategoryStr = c.gameCategory.toString().trim().normalize("NFC");
-                        }
-                
-                        // ✅ 디코딩된 카테고리도 동일한 방식으로 처리
-                        const decodedCategoryStr = decodedCategory.trim().normalize("NFC");
-                
-                        console.log(`🔍 비교 대상: '${gameCategoryStr}' vs '${decodedCategoryStr}'`);
-                        console.log("==========================================");
-                
-                        return gameCategoryStr === decodedCategoryStr;
-                    })
-                );
-                console.log("필터링된 게임 데이터:", filteredGames);
+                const filteredGames = data.filter((game) => {
+                    let gameCategories = game.gameCategory;
+                    console.log("==========================================");
+                    console.log("🎯 게임 이름:", game.gameName);
+                    console.log("🎯 gameCategory 존재 여부:", !!game.gameCategory);
+                    console.log("🎯 gameCategory 값:", game.gameCategory);
+
+                    // ✅ gameCategory가 배열이 아니거나 빈 배열이면 필터링 제외
+                    if (!Array.isArray(gameCategories) || gameCategories.length === 0) {
+                        console.log("⚠️ gameCategory가 빈 배열이므로 제외됨:", gameCategories);
+                        return false;
+                    }
+
+                    return gameCategories.some((c) => {
+                        console.log("✅ some() 실행됨!");
+                        console.log("🎯 개별 게임 카테고리:", c);
+                        return c.toString().trim().normalize("NFC") === decodedCategory.trim().normalize("NFC");
+                    });
+                });
                 setGames(filteredGames);
             } catch (err) {
                 console.error("Error fetching games:", err);
@@ -63,7 +53,7 @@ export default function CategoryPage({ params }) {
             } finally {
                 setLoading(false);
             }
-            
+
         };
 
         fetchGames();
@@ -188,8 +178,8 @@ export default function CategoryPage({ params }) {
                                                                 className="px-2 py-1 bg-indigo-600 text-white rounded-md text-sm"
                                                                 title={category.description}
                                                             >
-                                                {category.gameCategory}
-                                            </span>
+                                                                {category.gameCategory}
+                                                            </span>
                                                         ))
                                                     ) : (
                                                         <div className="text-gray-400">카테고리 정보 없음</div>
