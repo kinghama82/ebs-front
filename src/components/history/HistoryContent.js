@@ -9,7 +9,7 @@ import HistoryList from "./HistoryList"
 import RecentGameComponent from "./RecentGameComponent"
 import { useHistoryRecord } from "./useHistoryRecord"
 import Link from "next/link"
-import CopyUrlButton from "../menus/copyUrlButton"
+import CopyUrlButton from "../menus/CopyUrlButton"
 
 const HistoryContent = ({ userInfo }) => {
     const router = useRouter()

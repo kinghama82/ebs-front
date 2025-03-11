@@ -8,7 +8,8 @@ import {
     AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useRouter, useSearchParams } from "next/navigation";
-import CopyUrlButton from "@/components/menus/copyUrlButton";
+import CopyUrlButton from "@/components/menus/CopyUrlButton";
+import BookMarkButton from "@/components/bookmarks/BookMarkButton";
 
 export default function GamesPage() {
     const [games, setGames] = useState([]);
@@ -125,9 +126,10 @@ export default function GamesPage() {
                                     <div className="flex flex-col h-16">
                                         <h3 className="text-xl font-bold  border-b-2 flex justify-between items-center">
                                             {game.gameName}
-                                            {/* url복사버튼 */}
-                                            <div>
+                                            {/* url복사 + 게임 북마크 */}
+                                            <div className="flex justify-between gap-3" >
                                                 <CopyUrlButton url={`${window.location.origin}/games?game=${gameValue}`}/>
+                                                <BookMarkButton gameId={game.id}/>
                                             </div>                        
                                         </h3>
                                         <div className="shrink w-56 text-sm text-gray-500 flex justify-between">
