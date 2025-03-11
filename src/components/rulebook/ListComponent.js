@@ -7,23 +7,42 @@ export default function ListComponent() {
 
     const [rulebook, setRulebook] = useState([]);
     const [isClient, setIsClient] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);  // 현재 페이지 상태
+    const [totalPages, setTotalPages] = useState(1);    // 총 페이지 수 상태
+    const [allRules, setAllRules] = useState([]);  // 전체 룰북 데이터
+
+    const pageSize = 20;  // 한 페이지에 표시할 아이템 수
 
     useEffect(() => {
         setIsClient(true);  // 클라이언트에서만 렌더링되도록 설정
     }, []);
 
     useEffect(() => {
-        fetch("http://localhost:8080/rulebook/list")
+        // 전체 룰북 데이터를 한번만 가져옵니다 (인기글용)
+        fetch('http://localhost:8080/rulebook/list')
+            .then((res) => res.json())
+            .then((data) => {
+                if (Array.isArray(data.dtoList)) {
+                    setAllRules(data.dtoList);
+                } else {
+                    console.error("Fetched data is not an array:", data);
+                }
+            })
+            .catch((error) => console.error("Error fetching all rules:", error));
+
+        // 현재 페이지에 맞는 룰북 데이터를 가져옵니다.
+        fetch(`http://localhost:8080/rulebook/list?page=${currentPage}&size=${pageSize}`)
             .then((res) => res.json())
             .then((data) => {
                 if (Array.isArray(data.dtoList)) {
                     setRulebook(data.dtoList);
+                    setTotalPages(Math.ceil(data.totalCount / pageSize));  // 총 페이지 수 설정
                 } else {
                     console.error("Fetched data is not an array:", data);
                 }
             })
             .catch((error) => console.error("Error fetching rulebook:", error));
-    }, []);
+    }, [currentPage]);  // currentPage가 변경될 때마다 데이터를 다시 가져옴
 
     const handlePost = (id) => {
         if (isClient) {
@@ -66,17 +85,25 @@ export default function ListComponent() {
         }
     };
 
-    // 조회수 기준으로 내림차순 정렬
-    const sortedByViewCount = [...rulebook].sort((a, b) => b.viewCount - a.viewCount).slice(0, 5);
+    // 전체 데이터 기준으로 조회수 내림차순 정렬
+    const sortedByViewCount = [...allRules]
+        .sort((a, b) => b.viewCount - a.viewCount)
+        .slice(0, 5);  // TOP 5만 가져옵니다
 
     const rankingIcons = [
         <Dice1 key={1} style={{ fontSize: '50px' }} color="#E6C200" />, // 1위 - 금메달 느낌
         <Dice2 key={2} style={{ fontSize: '50px' }} color="#C0C0C0" />, // 2위 - 은메달 느낌
         <Dice3 key={3} style={{ fontSize: '50px' }} color="#CD7F32" />, // 3위 - 동메달 느낌
-        <Dice4 key={4} style={{ fontSize: '50px' }} color="#000" />, // 3위 - 동메달 느낌
-        <Dice5 key={5} style={{ fontSize: '50px' }} color="#000" />, // 3위 - 동메달 느낌
+        <Dice4 key={4} style={{ fontSize: '50px' }} color="#000" />, // 4위 - 일반 아이콘
+        <Dice5 key={5} style={{ fontSize: '50px' }} color="#000" />, // 5위 - 일반 아이콘
     ];
 
+    // 페이지네이션 버튼 클릭 처리 함수
+    const goToPage = (page) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+        }
+    };
 
     return (
         <div className="mx-auto w-full max-w-6xl dark:text-white">
@@ -85,12 +112,11 @@ export default function ListComponent() {
             </div>
             {/* 인기글 두 개 나란히 배치 */}
             <div className="flex justify-between w-full">
-
                 {/* 첫 번째 인기글 */}
                 <div className="mx-auto w-2/4 max-w-xl">
                     <div className="flex justify-center py-1" style={{ margin: '50px', backgroundColor: 'transparent'}}>
                         <div className="w-full">
-                            <div className="flex" style={{ marginBottom: '1px' , borderBottom: '2px solid #000' }}>
+                            <div className="flex" style={{ marginBottom: '1px', borderBottom: '2px solid #000' }}>
                                 <div className="p-1 flex items-center justify-center" style={{ flex: 1 }}>
                                     조회수 TOP5 인기글<Flame size={30} style={{ color: 'red' }}/>
                                 </div>
@@ -102,37 +128,32 @@ export default function ListComponent() {
                             {sortedByViewCount.map((rule, index) => (
                                 <div key={rule.id} className="flex border-bottom-none">
                                     {/* 숫자 부분 - 1, 2, 3만 메달 아이콘으로 변경 */}
-                                    <div
-                                        className="flex-1/2 p-2 flex items-center justify-center"
-                                        style={{
-
-                                            width: 'auto',  // 너비를 자동으로 설정
-                                            height: 'auto', // 높이를 자동으로 설정
-                                            borderRadius: '50%',
-                                            display: 'flex',
-                                            justifyContent: 'center',
-                                            alignItems: 'center',
-                                            fontSize: index < 3 ? '50px' : '24px',  // 1, 2, 3위는 50px 크기로, 나머지는 24px
-                                            padding: '0',
-                                            lineHeight: 'auto',  // 자동으로 높이를 맞추기
-                                            textAlign: 'center',
-                                        }}
-                                    >
+                                    <div className="flex-1/2 p-2 flex items-center justify-center" style={{
+                                        width: 'auto',
+                                        height: 'auto',
+                                        borderRadius: '50%',
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        fontSize: index < 3 ? '50px' : '24px',
+                                        padding: '0',
+                                        lineHeight: 'auto',
+                                        textAlign: 'center',
+                                    }}>
                                         {index < 5 ? rankingIcons[index] : index + 1}
                                     </div>
-
 
                                     {/* 제목 부분 - 클릭 가능하도록 링크 유지 */}
                                     <div
                                         className="p-2 cursor-pointer text-blue-600 underline"
                                         onClick={() => handlePost(rule.id)}
                                         style={{
-                                            flex: '1',               // flex-grow를 제한
-                                            display: 'block',        // 블록 요소로 변경
-                                            whiteSpace: 'nowrap',    // 한 줄만 표시
-                                            overflow: 'hidden',      // 넘치는 내용 숨김
-                                            textOverflow: 'ellipsis',// 넘치는 부분 "..."으로 표시
-                                            maxWidth: '100%',        // 부모 요소 내에서 최대한 확장
+                                            flex: '1',
+                                            display: 'block',
+                                            whiteSpace: 'nowrap',
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            maxWidth: '100%',
                                         }}
                                     >
                                         {rule.title}
@@ -152,7 +173,7 @@ export default function ListComponent() {
                 <div className="mx-auto w-2/4 max-w-xl">
                     <div className="flex justify-center py-1" style={{ margin: '50px', backgroundColor: 'transparent'}}>
                         <div className="w-full">
-                            <div className="flex" style={{ marginBottom: '1px' , borderBottom: '2px solid #000' }}>
+                            <div className="flex" style={{ marginBottom: '1px', borderBottom: '2px solid #000' }}>
                                 <div className="p-1 flex items-center justify-center" style={{ flex: 1 }}>
                                     조회수 TOP5 인기글<Flame size={30} style={{ color: 'red' }}/>
                                 </div>
@@ -167,34 +188,32 @@ export default function ListComponent() {
                                     <div
                                         className="flex-1/2 p-2 flex items-center justify-center"
                                         style={{
-
-                                            width: 'auto',  // 너비를 자동으로 설정
-                                            height: 'auto', // 높이를 자동으로 설정
+                                            width: 'auto',
+                                            height: 'auto',
                                             borderRadius: '50%',
                                             display: 'flex',
                                             justifyContent: 'center',
                                             alignItems: 'center',
-                                            fontSize: index < 3 ? '50px' : '24px',  // 1, 2, 3위는 50px 크기로, 나머지는 24px
+                                            fontSize: index < 3 ? '50px' : '24px',
                                             padding: '0',
-                                            lineHeight: 'auto',  // 자동으로 높이를 맞추기
+                                            lineHeight: 'auto',
                                             textAlign: 'center',
                                         }}
                                     >
                                         {index < 5 ? rankingIcons[index] : index + 1}
                                     </div>
 
-
                                     {/* 제목 부분 - 클릭 가능하도록 링크 유지 */}
                                     <div
                                         className="p-2 cursor-pointer text-blue-600 underline"
                                         onClick={() => handlePost(rule.id)}
                                         style={{
-                                            flex: '1',               // flex-grow를 제한
-                                            display: 'block',        // 블록 요소로 변경
-                                            whiteSpace: 'nowrap',    // 한 줄만 표시
-                                            overflow: 'hidden',      // 넘치는 내용 숨김
-                                            textOverflow: 'ellipsis',// 넘치는 부분 "..."으로 표시
-                                            maxWidth: '100%',        // 부모 요소 내에서 최대한 확장
+                                            flex: '1',
+                                            display: 'block',
+                                            whiteSpace: 'nowrap',
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            maxWidth: '100%',
                                         }}
                                     >
                                         {rule.title}
@@ -206,7 +225,6 @@ export default function ListComponent() {
                                     </div>
                                 </div>
                             ))}
-
                         </div>
                     </div>
                 </div>
@@ -223,13 +241,10 @@ export default function ListComponent() {
 
                 {rulebook.map((rule) => (
                     <div key={rule.id} className="flex border-b">
-                        <div
-                            className="flex-1 p-2 flex items-center justify-center cursor-pointer text-blue-600 underline"
-                            onClick={() => handlePost(rule.id)} style={{ flex: 3 }}
-                        >
+                        <div className="flex-1 p-2 flex items-center justify-center cursor-pointer text-blue-600 underline" onClick={() => handlePost(rule.id)} style={{ flex: 3 }}>
                             {rule.title}
                         </div>
-                        <div className="flex-1 p-2 flex items-center justify-center" style={{ flex: 1 }}>{rule.writerId}</div>
+                        <div className="flex-1 p-2 flex items-center justify-center" style={{ flex: 1 }}>{rule.nickname}</div>
                         <div className="flex-1 p-2 flex items-center justify-center" style={{ flex: 1 }}>{formatDate(rule.createdate)}</div>
                         <div className="flex-1 p-2 flex items-center justify-center" style={{ flex: 1 }}>
                             {rule.viewCount !== undefined && rule.viewCount !== null ? rule.viewCount : 0}
@@ -238,8 +253,14 @@ export default function ListComponent() {
                 ))}
             </div>
 
-            <button onClick={moveCreate}
-                    style={{ ...buttonStyle, marginTop: '20px', backgroundColor: '#D97706', display: 'flex', alignItems: 'center', gap: '7px' }} >
+            {/* 페이지네이션 버튼 */}
+            <div className="flex justify-center mt-4">
+                <button onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1} style={buttonStyle}>이전</button>
+                <span className="mx-2">{currentPage} / {totalPages}</span>
+                <button onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages} style={buttonStyle}>다음</button>
+            </div>
+
+            <button onClick={moveCreate} style={{ ...buttonStyle, marginTop: '20px', backgroundColor: '#D97706', display: 'flex', alignItems: 'center', gap: '7px' }}>
                 글 작성 <Pencil size={15} />
             </button>
         </div>

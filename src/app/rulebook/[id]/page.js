@@ -18,6 +18,8 @@ const PostDetailPage = () => {
     const idFromUrl = url.split("/").pop();
     setId(idFromUrl);
   }, []);
+  
+  
 
   useEffect(() => {
     if (id) {
@@ -76,6 +78,12 @@ const PostDetailPage = () => {
     return <div>No data available</div>;
   }
 
+  //날짜 포맷 함수
+    const formatDate = (date) => {
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
+        return new Date(date).toLocaleString('ko-KR', options);  // 한국식 날짜 포맷
+    };
+  
   return (
       <div>
         <BasicMenu />
@@ -87,8 +95,8 @@ const PostDetailPage = () => {
 
           <div className="w-full" style={{ borderBlock: '2px solid #D97706' }}>
             <div className="flex justify-end text-sm text-gray-600 gap-4">
-              <p><strong>작성자:</strong>{ruleDetail.writerId} 원태연</p>
-              <p><strong>작성일:</strong> {ruleDetail.createdate}</p>
+              <p><strong>작성자:</strong>{ruleDetail.nickname}</p>
+              <p><strong>작성일:</strong> {formatDate(ruleDetail.createdate)}</p>
               <p><strong>조회수:</strong> {ruleDetail.viewCount}</p>
             </div>
 
