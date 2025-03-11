@@ -1,4 +1,5 @@
 "use client"
+import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { Button } from "../ui/button"
@@ -8,8 +9,6 @@ import HistoryChart from "./HistoryChart"
 import HistoryList from "./HistoryList"
 import RecentGameComponent from "./RecentGameComponent"
 import { useHistoryRecord } from "./useHistoryRecord"
-import Link from "next/link"
-import CopyUrlButton from "../menus/CopyUrlButton"
 
 const HistoryContent = ({ userInfo }) => {
     const router = useRouter()

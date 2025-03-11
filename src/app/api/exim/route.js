@@ -1,12 +1,15 @@
 
-
 export async function GET(request) {
     // .env에서 API_KEY 가져오기
     const apiKey = process.env.API_KEY;
+    if (!apiKey) {
+        console.error("❌ API_KEY가 설정되지 않았습니다.");
+        return new Response(JSON.stringify({ error: "API_KEY가 설정되지 않았습니다." }), { status: 500 });
+    }
 
     // 요청 파라미터 추출
     const url = new URL('https://www.koreaexim.go.kr/site/program/financial/exchangeJSON');
-    const searchParams = new URLSearchParams(request.url.split('?')[1]);
+    const searchParams = new URLSearchParams(new URL(request.url).search);
 
     // 오늘 날짜 구하기 (YYYYMMDD 형식)
     const today = new Date();
@@ -25,17 +28,21 @@ export async function GET(request) {
     searchParams.append('data', 'AP01');
     url.search = searchParams.toString();
 
+    console.log("API 요청 URL : ", url.toString())
+
     // API 요청
     try {
         
         const response = await fetch(url);
         
         if (!response.ok) {
-            throw new Error(`Failed to fetch data: ${response.status}`);
+            console.error(`API 요청 실패: ${response.status}`);
+            return new Response(JSON.stringify({ error: `API 요청 실패: ${response.status}` }), { status: 500 });
         }
         const data = await response.json();
         if (!data || data.length === 0) {
-            throw new Error("API에서 유효한 데이터를 받지 못했습니다.");
+            console.error("API에서 데이터를 받지 못했습니다.");
+            return new Response(JSON.stringify({ error: "API에서 데이터를 받지 못했습니다." }), { status: 500 });
         }
 
         // 필터링할 통화 종류 (USD, EUR, JPY(100))

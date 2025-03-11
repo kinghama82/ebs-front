@@ -1,11 +1,10 @@
 "use client";
 import { getHistoryByYear, getList } from "@/api/history/historyApi";
+import { ArrowUpDown } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import FetchingModal from "../common/FetchingModal";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "../ui/pagination";
-import { ArrowUpDown } from "lucide-react";
 
 const initState = {
     dtoList: [],
