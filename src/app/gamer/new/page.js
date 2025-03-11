@@ -8,9 +8,10 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Mail, Lock, Phone, MapPin, User, KeyRound, Calendar } from "lucide-react";
+import { Mail, Lock, Phone, User, KeyRound, Calendar } from "lucide-react";
 import { motion } from "framer-motion";
 import AddressSearch from "@/components/gamer/AddressSearch";
+import { useEffect } from "react";
 
 const GamerForm = () => {
     const router = useRouter();
@@ -29,13 +30,38 @@ const GamerForm = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [successModal, setSuccessModal] = useState(false);
     const [focusedField, setFocusedField] = useState(""); // 🔹 입력 중인 필드 상태
-    const [address, setAddress] = useState("");
+    // 주소 검색 창 상태 추가
+    const [isAddressSearchOpen, setIsAddressSearchOpen] = useState(false);
+    const [address, setAddress] = useState(""); // 🔹 기본 주소
+    const [detailAddress, setDetailAddress] = useState(""); // 🔹 상세 주소
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
+    // 주소 검색 후 선택한 주소를 반영
+    const handleAddressSelect = (selectedAddress) => {
+        setAddress(selectedAddress);
+        setFormData((prev) => ({
+            ...prev,
+            address: selectedAddress, // 기본 주소 저장
+        }));
+    };
+
+// 상세주소 입력 핸들러
+    const handleDetailAddressChange = (e) => {
+        setDetailAddress(e.target.value);
+    };
+
+    // 🚀 주소와 상세주소가 변경될 때 formData 업데이트
+    useEffect(() => {
+        setFormData((prev) => ({
+            ...prev,
+            address: detailAddress ? `${address} ${detailAddress}` : address,
+        }));
+    }, [address, detailAddress]);
     const handleFocus = (field) => {
         setFocusedField(field);
     };
@@ -73,7 +99,7 @@ const GamerForm = () => {
         }
 
         try {
-            await newgamer(formData);
+            await newGamer(formData);
             setSuccessModal(true);
         } catch (error) {
             console.error("게이머 등록에 실패했습니다.", error);
@@ -106,7 +132,6 @@ const GamerForm = () => {
         password2: <Lock size={18} />,
         nickname: <KeyRound size={18} />,
         phone: <Phone size={18} />,
-        address: <MapPin size={18} />,
     };
 
     return (
@@ -119,30 +144,56 @@ const GamerForm = () => {
                 <Card className="w-[400px] shadow-xl rounded-2xl">
                     <CardContent className="p-6">
                         <h2 className="text-2xl font-bold text-center text-gray-700 mb-4">새 게이머 등록</h2>
-                        <form className="space-y-4" onSubmit={handleSubmit}>
-                            {Object.keys(formData).map((key) => (
-                                <div key={key}>
-                                    <Label htmlFor={key} className="text-sm font-semibold text-gray-600">
-                                        {fieldLabels[key]}
-                                    </Label>
-                                    <div className="relative">
-                                        {focusedField !== key && fieldIcons[key] && (
-                                            <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
-                                                {fieldIcons[key]}
-                                            </div>
-                                        )}
-                                        <Input
-                                            type={key.includes("password") ? "password" : key === "email" ? "email" : "text"}
-                                            name={key}
-                                            value={formData[key]}
-                                            onChange={handleChange}
-                                            onFocus={() => handleFocus(key)}
-                                            onBlur={handleBlur}
-                                            className="pl-12 h-10 border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none rounded-md w-full"
-                                        />
+                        <form className="space-y-4" onSubmit={handleSubmit} noValidate>
+                        {Object.keys(formData).map((key) => (
+                                key !== "address" && ( // 🔹 주소 필드는 따로 처리
+                                    <div key={key}>
+                                        <Label htmlFor={key} className="text-sm font-semibold text-gray-600">
+                                            {fieldLabels[key]}
+                                        </Label>
+                                        <div className="relative">
+                                            {focusedField !== key && fieldIcons[key] && (
+                                                <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
+                                                    {fieldIcons[key]}
+                                                </div>
+                                            )}
+                                            <Input
+                                                type={key.includes("password") ? "password" : key === "email" ? "email" : "text"}
+                                                name={key}
+                                                value={formData[key]}
+                                                onChange={handleChange}
+                                                onFocus={() => handleFocus(key)}
+                                                onBlur={handleBlur}
+                                                className="pl-12 h-10 border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none rounded-md w-full"
+                                            />
+                                        </div>
                                     </div>
-                                </div>
+                                )
                             ))}
+
+                            {/* 🚀 주소 입력 필드 */}
+                            <div>
+                                <Label className="text-sm font-semibold text-gray-600">주소</Label>
+                                <div className="flex items-center gap-2">
+                                    <input
+                                        type="text"
+                                        value={address}
+                                        readOnly
+                                        className="border p-2 w-full rounded-md bg-gray-100"
+                                    />
+                                    <AddressSearch onSelect={handleAddressSelect} />
+                                </div>
+
+                                {/* 🚀 상세주소 입력 필드 */}
+                                <Label className="text-sm font-semibold text-gray-600 mt-2">상세주소</Label>
+                                <input
+                                    type="text"
+                                    value={detailAddress}
+                                    onChange={handleDetailAddressChange} // 🔥 상세주소 입력 처리
+                                    className="border p-2 w-full rounded-md"
+                                />
+                            </div>
+
                             <Button className="w-full mt-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:opacity-90">
                                 등록하기
                             </Button>
@@ -176,19 +227,6 @@ const GamerForm = () => {
                     </Button>
                 </DialogContent>
             </Dialog>
-
-            {/* 주소찾기 */}
-            <div className="mx-auto border border-black p-4">
-                <label className="block mb-2">주소</label>
-                <input
-                    type="text"
-                    value={address}
-                    readOnly
-                    className="border p-2 w-full mb-2"
-                />
-                <AddressSearch onSelect={(selectedAddress) => setAddress(selectedAddress)} />
-            </div>
-
         </div>
     );
 };
