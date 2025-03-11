@@ -1,15 +1,13 @@
 "use client"
-
 import { useEffect, useState } from "react";
 
 const ExRateComponent = () => {
-    const [exchangeRates, setExchangeRates] = useState([]);   //api로 가져온 환율 데이터 저장 초기값은 빈 배열
-    const [currentRateIndex, setCurrentRateIndex] = useState(0); //현재 보여줄 환율데이터의 인덱스 관리(슬라이드 애니메이션마다 이 인덱스 변경)
-    const [error, setError] = useState(null); //api호출중 발생한 에러메세지 저장
-    const [loading, setLoading] = useState(true); //api호출 상태를 관리 -> 로딩이 끝나면 false
-    const [isAnimating, setIsAnimating] = useState(true); //애니메이션 상태 관리 true - 슬라이드인 /false- 슬라이드 아웃
+    const [exchangeRates, setExchangeRates] = useState([]);
+    const [currentRateIndex, setCurrentRateIndex] = useState(0);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [isAnimating, setIsAnimating] = useState(true);
 
-    // 통화 기호 매핑
     const currencySymbols = {
         USD: "$",
         EUR: "€",
@@ -17,60 +15,60 @@ const ExRateComponent = () => {
     };
 
     useEffect(() => {
-        // API 호출
-        const fetchExchangeRates = async () => {                                                                                                           
+        const fetchExchangeRates = async () => {
             try {
-                const response = await fetch('http://localhost:3000/api/exim');  // Next.js API Route에 요청
+                const response = await fetch('http://localhost:3000/api/exim');
                 const data = await response.json();
                 if (response.ok) {
-                  setExchangeRates(data); // 데이터를 상태에 저장
+                    setExchangeRates(data);
                 } else {
-                  setError(data.error || "API 요청 실패");
+                    setError(data.error || "환율 데이터를 가져올 수 없습니다.");
                 }
-              } catch (err) {
-                setError(err.message); // 에러 처리
-              } finally {
-                setLoading(false); // 로딩 끝
-              }
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
         };
         fetchExchangeRates();
     }, []);
 
     useEffect(() => {
-        // 통화를 주기적으로 변경하는 타이머 설정    슬라이드 아웃 -> 인덱스 변경 -> 슬라이드 인
+        if (exchangeRates.length === 0) return;
+
         const interval = setInterval(() => {
-            setIsAnimating(false); //슬라이드 아웃 시작
+            setIsAnimating(false);
             setTimeout(() => {
                 setCurrentRateIndex((prevIndex) =>
-                    exchangeRates.length > 0 ? (prevIndex + 1) % exchangeRates.length : 0
+                    (prevIndex + 1) % exchangeRates.length
                 );
-                setIsAnimating(true); //슬라이드 인 시작
-            }, 500); //슬라이드 아웃 후 대기 시간
-        }, 4000); // 4초마다 실행
+                setIsAnimating(true);
+            }, 500);
+        }, 4000);
 
-        return () => clearInterval(interval); // 컴포넌트 언마운트 시 타이머 해제
+        return () => clearInterval(interval);
     }, [exchangeRates]);
 
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p>Error: {error}</p>;
+    if (loading) return <p>로딩 중...</p>;
+    if (error) return <p>❌ 오류: {error}</p>;
+    if (exchangeRates.length === 0) return <p>환율 데이터 없음</p>;
 
     const currentRate = exchangeRates[currentRateIndex];
 
-    //스타일 정의
-    const slideInStyle = {     //슬라이드인 : 아래에서 위로
+    const slideInStyle = {
         animation: "slideIn 0.7s ease forwards",
     };
-    const slideOutStyle = {    //현재 표시된 데이터가 위로 사라짐
+    const slideOutStyle = {
         animation: "slideOut 0.7s ease forwards",
     };
     const keyframes = `
         @keyframes slideIn {
-            from{ transform: translateY(100%); opacity: 0; }
-            to{ transform: translateY(0); opacity: 1; }
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
         @keyframes slideOut {
-            from{ transform: translateY(0); opacity: 1; }
-            to{ transform: translateY(-100%); opacity: 0; }
+            from { transform: translateY(0); opacity: 1; }
+            to { transform: translateY(-100%); opacity: 0; }
         }
     `;
 
@@ -79,10 +77,12 @@ const ExRateComponent = () => {
             <style>{keyframes}</style>
             {currentRate ? (
                 <div style={isAnimating ? slideInStyle : slideOutStyle}>
-                    <p>{currentRate.cur_nm}({currencySymbols[currentRate.cur_unit]}) : {currentRate.kftc_deal_bas_r}</p>
-                </div>                     // 통화 이름(통화 기호) : 환율 값
-            ) : (<p>No exchange rate data available.</p>)}
-        </div>         //데이터가 없을 때 출력
+                    <p>{currentRate.cur_nm} ({currencySymbols[currentRate.cur_unit]}) : {currentRate.kftc_deal_bas_r}</p>
+                </div>
+            ) : (
+                <p>환율 데이터 없음</p>
+            )}
+        </div>
     );
 };
 
