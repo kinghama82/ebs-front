@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/accordion";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import CopyUrlButton from "@/components/menus/CopyUrlButton";
 
 export default function GamesPage() {
     const [games, setGames] = useState([]);
@@ -142,7 +141,7 @@ export default function GamesPage() {
                                                 {game.gameName}
                                                 {/* url복사 + 게임 북마크 */}
                                                 <div className="flex justify-between gap-3" >
-                                                    <CopyUrlButton url={`${window.location.origin}/games?game=${gameValue}`}/>
+                                                    {/* <CopyUrlButton url={`${window.location.origin}/games?game=${gameValue}`}/> */}
                                                     <BookMarkButton gameId={game.id}/>
                                                 </div>
                                             </h3>
