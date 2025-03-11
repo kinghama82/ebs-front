@@ -1,6 +1,5 @@
 "use client";
 
-import React, { useEffect, useState, use } from "react";
 import { getGames } from "@/api/game/gameapi";
 import {
     Accordion,
@@ -8,13 +7,16 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function CategoryPage({ params }) {
     // ✅ `params`는 Promise이므로 `use()`로 비동기 처리
-    const { category } = use(params);
+    const { category } = useParams();
 
     // ✅ URL 디코딩 적용
-    const decodedCategory = decodeURIComponent(category);
+    const decodedCategory = decodeURI(category);
+    console.log("현재 카테고리 이름 : ", decodedCategory);
 
     const [games, setGames] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -25,9 +27,35 @@ export default function CategoryPage({ params }) {
         const fetchGames = async () => {
             try {
                 const data = await getGames();
+                console.log("게임 데이터:", data);
                 const filteredGames = data.filter((game) =>
-                    game.gameCategory.some((c) => c.gameCategory === decodedCategory)
+                    game.gameCategory.some((c) => {
+                        console.log("==========================================");
+                        console.log("🎯 게임 카테고리 원본 데이터:", c.gameCategory);
+                        console.log("🎯 게임 카테고리 데이터 타입:", typeof c.gameCategory);
+                        console.log("🎯 필터링 기준:", decodedCategory);
+                        console.log("🎯 필터링 기준 데이터 타입:", typeof decodedCategory);
+                        
+                        // ✅ 배열이면 문자열로 변환
+                        let gameCategoryStr;
+                        if (Array.isArray(c.gameCategory)) {
+                            gameCategoryStr = c.gameCategory.map((cat) => cat.toString().trim().normalize("NFC")).join(", ");
+                        } else if (typeof c.gameCategory === "object") {
+                            gameCategoryStr = JSON.stringify(c.gameCategory).trim().normalize("NFC");
+                        } else {
+                            gameCategoryStr = c.gameCategory.toString().trim().normalize("NFC");
+                        }
+                
+                        // ✅ 디코딩된 카테고리도 동일한 방식으로 처리
+                        const decodedCategoryStr = decodedCategory.trim().normalize("NFC");
+                
+                        console.log(`🔍 비교 대상: '${gameCategoryStr}' vs '${decodedCategoryStr}'`);
+                        console.log("==========================================");
+                
+                        return gameCategoryStr === decodedCategoryStr;
+                    })
                 );
+                console.log("필터링된 게임 데이터:", filteredGames);
                 setGames(filteredGames);
             } catch (err) {
                 console.error("Error fetching games:", err);
