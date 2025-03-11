@@ -1,6 +1,7 @@
 "use client";
 import { getGames } from "@/api/game/gameapi";
 import BookMarkButton from "@/components/bookmarks/BookMarkButton";
+import CopyUrlButton from "@/components/common/CopyUrlButton";
 
 import {
     Accordion,
@@ -141,7 +142,7 @@ export default function GamesPage() {
                                                 {game.gameName}
                                                 {/* url복사 + 게임 북마크 */}
                                                 <div className="flex justify-between gap-3" >
-                                                    {/* <CopyUrlButton url={`${window.location.origin}/games?game=${gameValue}`}/> */}
+                                                    <CopyUrlButton url={`${window.location.origin}/games?game=${gameValue}`}/>
                                                     <BookMarkButton gameId={game.id}/>
                                                 </div>
                                             </h3>
