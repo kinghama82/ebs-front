@@ -9,6 +9,7 @@ import { useCustomCookie } from "../common/useCustomCookie";
 import { ModeToggle } from "../ModeToggle";
 import { useTheme } from "next-themes";
 import ExRateComponent from "./ExRateComponent";
+import ToolButton from "./ToolButton";
 
 const BasicMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -205,6 +206,7 @@ const BasicMenu = () => {
           </div>
         </nav>
       </div>
+      <ToolButton/>
     </>
   );
 };
