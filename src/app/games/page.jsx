@@ -1,25 +1,34 @@
 "use client";
-import React, { useEffect, useState } from "react";
 import { getGames } from "@/api/game/gameapi";
+import BookMarkButton from "@/components/bookmarks/BookMarkButton";
+import CopyUrlButton from "@/components/menus/CopyUrlButton";
 import {
     Accordion,
     AccordionContent,
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion";
-import { useRouter, useSearchParams } from "next/navigation";
-import CopyUrlButton from "@/components/menus/CopyUrlButton";
-import BookMarkButton from "@/components/bookmarks/BookMarkButton";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function GamesPage() {
     const [games, setGames] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [gameParam, setGameParam] = useState(null);
+    const [activeGame, setActiveGame] = useState(null);
 
-    const searchParams = useSearchParams()
     const router = useRouter()
-    const gameParam = searchParams.get("game")
-
+    
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            const params = new URLSearchParams(window.location.search);
+            const gameValue = params.get("game");
+            setGameParam(params.get("game"));
+            setActiveGame(gameValue);
+        }
+    }, []);
+    
     useEffect(() => {
         const fetchGames = async () => {
             try {
@@ -44,7 +53,7 @@ export default function GamesPage() {
                 if (element) {
                     element.scrollIntoView({ behavior: "smooth", block: "start" });
                 }
-            }, 100); // DOM 렌더링 지연 해결
+            }, 300); // DOM 렌더링 지연 해결
         }
     }, [gameParam, games]); // 🔥 게임 리스트가 로드된 후 실행
 
@@ -60,12 +69,16 @@ export default function GamesPage() {
         <div className="container mx-auto p-4 max-w-6xl">
             <h1 className="text-2xl font-bold mb-4">보드게임 목록</h1>
 
-            <Accordion type="single" collapsible defaultValue={gameParam || undefined}>
+            <Accordion type="single" collapsible value={activeGame} 
+                       onValueChange={(value) => {
+                            setActiveGame(value)
+                            router.replace(`/games?game=${value}`, { scroll: false }); // URL 변경하지만 스크롤 이동 방지
+                        }}>
                 {games.map((game) => {
                     const gameValue = `item-${game.id}`
                     return (
                     <AccordionItem key={game.id} value={gameValue} id={gameValue}>
-                        <AccordionTrigger onClick={() => router.push(`/games?game=${gameValue}`)}>
+                        <AccordionTrigger>
                             <div className="flex flex-1 p-3 rounded-lg shadow cursor-pointer hover:bg-gray-100 items-center ">
                                 {game.img ? (
                                     <div className="m-1 ms-2 border-2">
