@@ -10,6 +10,7 @@ import { ModeToggle } from "../ModeToggle";
 import { useTheme } from "next-themes";
 import ExRateComponent from "./ExRateComponent";
 import ToolButton from "./ToolButton";
+import './styles.css';
 
 const BasicMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,6 +22,23 @@ const BasicMenu = () => {
   const router = useRouter();
   const userInfo = useCustomCookie();
   const { theme } = useTheme()
+  const [isSticky, setIsSticky] = useState(false);
+
+
+  //일정 스크롤 이상 내려가면 화면 상단 고정
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 100) {
+        // ✅ 스크롤이 100px 이상 내려가면 상단 고정
+        setIsSticky(true);
+      } else {
+        setIsSticky(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // ✅ 검색창 외부 클릭 시 드롭다운 닫기
   useEffect(() => {
@@ -66,7 +84,7 @@ const BasicMenu = () => {
 
   return (
     <>
-      <div className="mt-2 sticky-top">
+      <div className={`mt-2 transition-all duration-300 ${ isSticky ? "sticky-header" : ""}`}>
         <nav className={`shadow-md border border-opacity-100 rounded-md max-w-6xl mx-auto top-0 left-0 z-50 
           ${theme === "dark" ? "bg-[#0a0b0c] text-white border-white" : "bg-white text-black border-black"}`}>
           <div className="px-4 sm:px-6 lg:px-8">
@@ -221,3 +239,5 @@ function NavLink({ href, children, onClick }) {
     </Link>
   );
 }
+
+
