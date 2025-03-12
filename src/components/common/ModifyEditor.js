@@ -14,7 +14,7 @@ import { TextAlign } from '@tiptap/extension-text-align'
 import Color from '@tiptap/extension-color'
 import { Mark, mergeAttributes } from '@tiptap/core';
 import { SketchPicker } from 'react-color'
-import {FontSize} from "@/components/common/EditorComponent";
+/*import {FontSize} from "@/components/common/EditorComponent";*/
 
 // YouTube 노드 정의
 const YouTube = Node.create({
