@@ -134,7 +134,7 @@ const HistoryList = ({ userInfo, selectedYear }) => {
                         <PaginationItem key={pageNum}>
                             <PaginationLink
                                 href={`?page=${pageNum}&size=${size}${gamerid ? `&gamerid=${gamerid}` : ""}`}
-                                className={serverData.current === pageNum ? "bg-gray-500 text-white" : ""}
+                                className={serverData.current === pageNum ? "bg-gray-500 text-black text-lg font-bold" : ""}
                                 onClick={(e) => {
                                     e.preventDefault()
                                     moveToPage(pageNum)

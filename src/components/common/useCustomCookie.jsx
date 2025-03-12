@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken"; // ✅ `jsonwebtoken` 직접 사용
 import { useEffect, useState } from "react";
 
 export function useCustomCookie() {
-  const [userInfo, setUserInfo] = useState(null);
+  const [userInfo, setUserInfo] = useState(undefined);
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
@@ -35,5 +35,5 @@ export function useCustomCookie() {
     }
   }, []);
 
-  return isLoaded ? userInfo : null;
+  return isLoaded ? userInfo || null : undefined;
 }

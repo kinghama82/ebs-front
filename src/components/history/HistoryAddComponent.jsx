@@ -10,6 +10,7 @@ import GameBoxComponent from "../common/GameBoxComponent";
 import { useCustomCookie } from "../common/useCustomCookie";
 import { searchGames } from "@/api/game/gameapi";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import PartyFriendsList from "./PartyFriendsList";
 
 const initState = {
     title: '',
@@ -80,7 +81,7 @@ const HistoryAddComponent = () => {
         }));
     };
 
-    //파티원 추가 부분
+    //파티원 추가 부분(직접 입력)
     const handleAddPartyMember = () => {
         let newMember = partyMember.trim();
 
@@ -96,6 +97,14 @@ const HistoryAddComponent = () => {
         }));
 
         setPartyMember(""); // 입력 필드 초기화
+    };
+
+    // 친구 목록에서 선택하여 파티원 추가
+    const handleSelectFriend = (friendNickname) => {
+        setHistory((prev) => ({
+            ...prev,
+            mate: [...prev.mate, friendNickname]
+        }));
     };
 
 
@@ -255,6 +264,10 @@ const HistoryAddComponent = () => {
                     {/* 파티원 추가 입력 + 추가된 파티원 목록 */}
                     <div className="flex flex-col gap-4">
                         <div className="font-bold">파티원 추가</div>
+
+                        <PartyFriendsList userId={userInfo?.id} onAddMember={handleSelectFriend}/>
+
+                        {/* 파티원직접입력 */}
                         <div className="flex items-center gap-2">
                             <input className="w-[324px] p-3 border border-solid border-neutral-300 shadow-md rounded"
                                 type="text" placeholder="파티원 이름 입력" value={partyMember}
