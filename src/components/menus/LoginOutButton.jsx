@@ -2,23 +2,30 @@
 import { FolderOutput, FolderInput } from "lucide-react";
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
+import { useCustomCookie } from "../common/useCustomCookie";
 
 export default function LoginOutButton() {
-    const isLoggedIn = Cookies.get("gamerCooki");
-    const [isHomePage, setIsHomePage] = useState(false);
+    const [isClient, setIsClient] = useState(false);
+    const [isHomePage, setIsHomePage] = useState(false);    
+    const userInfo = useCustomCookie()
 
     useEffect(() => {
-        if (window.location.pathname === "/") {
+        setIsClient(true);
+    },[])
+    
+
+    useEffect(() => {
+        if (typeof window !== "undefined" && window.location.pathname === "/") {
             setIsHomePage(true);
         }
     }, []);
     // 홈페이지에서는 버튼을 숨김
-    if (isHomePage) return null; 
+    if (!isClient || isHomePage) return null; 
 
     return (
         <button
             onClick={() => {
-                if (isLoggedIn) {
+                if (userInfo) {
                     // 로그아웃
                     Cookies.remove("gamerCooki");
                     window.location.href = "/";
@@ -27,10 +34,10 @@ export default function LoginOutButton() {
                     window.location.href = "/gamer";
                 }
             }}
-            title={isLoggedIn ? "로그아웃" : "로그인"}
-            className={`p-2 rounded-md ${isLoggedIn ? 'text-red-500' : ' text-amber-800'}`}
+            title={isClient && userInfo ? "로그아웃" : "로그인"}
+            className={`p-2 rounded-md ${userInfo ? 'text-red-500' : ' text-amber-800'}`}
         >
-            {isLoggedIn ? 
+            {userInfo ? 
                 <FolderOutput size={24} /> 
                 : 
                 <FolderInput size={24} />}
