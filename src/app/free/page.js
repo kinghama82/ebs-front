@@ -21,10 +21,8 @@ const freePage = () => {
       </div>
 
       {/* 하단 리스트 부분 */}
-      <div className="container max-w-6xl mx-auto p-2 mt-2 rounded">
-        <div>
+      <div className="container max-w-6xl mx-auto border border-black mt-2 rounded">
             <FreeList/>
-        </div>
       </div>
     </>
   );
