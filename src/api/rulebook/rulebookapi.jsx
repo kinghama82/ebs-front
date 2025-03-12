@@ -10,12 +10,13 @@ export const getList = async () => {
 };
 
 //작성
-export const create = async (formData) => {
-    const response = await axios.post(`${host}/rulebook/create`, formData);
+export const create = async (rulebookData) => {
+    const response = await axios.post(`${host}/rulebook/create`, rulebookData, {
+        headers: { 'Content-Type': 'application/json' }, // JSON 전송을 명시
+    });
 
     return response.data;
 };
-
 // 게시글 상세 조회 함수
 export const getOne = async (id) => {
     const res = await axios.get(`${host}/rulebook/${id}`);  // 상세 조회를 위한 GET 요청
