@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "../ui/pagination";
 import { getFreeList } from "@/api/free/freeapi";
 import { Button } from "../ui/button";
+import Link from "next/link";
 
 const initState = {
     dtoList: [],
@@ -25,6 +26,7 @@ const FreeList = () => {
     const [serverData, setServerData] = useState(initState)
     const [page, setPage] = useState(parseInt(searchParams.get("page")) || 1)
     const size = parseInt(searchParams.get("size")) || 10
+    const [free, setFree] = useState([])   
 
     useEffect(() => {
         getFreeList({page, size}).then(data => {
@@ -46,7 +48,7 @@ const FreeList = () => {
 
     return (
         <div>
-            {/* 히스토리 리스트 */}
+            {/* 자유 리스트 */}
             <div className="flex flex-col mx-auto space-y-2">
                 <div className="flex items-center justify-between w-full p-2 border-b border-black">
                     <span className="w-1/12  text-center font-bold border border-black">글번호</span>
@@ -54,15 +56,17 @@ const FreeList = () => {
                     <span className="w-2/12  text-center font-bold border border-black">작 성 자</span>
                     <span className="w-2/12  text-center font-bold border border-black" >기 록 일</span>
                 </div>
-                {serverData.length > 0 ? (
-                    serverData.map((free, index) => (
+                {serverData.dtoList.length > 0 ? (
+                    serverData.dtoList.map((free, index) => (
+                        console.log("현재 free : ", free),
                         <div key={free.id}
                             className="flex items-center justify-between w-full p-2 border-b border-black ">
                             <span className="w-1/12 text-center ">{startNumber - index}</span>
                             <span className="w-5/12 text-center " >
                                 <Link href={`/free/read/${free.id}`}>{free.title}</Link>
-                            </span>                            
-                            <span className="w-2/12 text-center ">{free.date}</span>
+                            </span> 
+                            <span className="w-2/12 text-center ">{free.gamernickname}</span>                           
+                            <span className="w-2/12 text-center ">{free.createdate}</span>
                         </div>
                     ))
                 ) : (
