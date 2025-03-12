@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, ChevronUp, Pencil, Plus } from "lucide-react";
 import { motion } from "framer-motion";
+import { usePathname } from "next/navigation";
 
 export default function ToolButton() {
   const [isOpen, setIsOpen] = useState(false);
@@ -19,6 +20,14 @@ export default function ToolButton() {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  //현재 주소 읽어오기(localhost:8080/free <-- 여까지 읽어옴)
+  const getBaseURL = () => {
+    const pathname = usePathname(); // "/free/create"
+    const basePath = pathname.split('/').slice(0, 2).join('/'); // "/free"
+    return `${window.location.origin}${basePath}`;
+  };
+  console.log("현재 읽어온 주소 : ",getBaseURL());
 
   // 바깥 클릭 감지 핸들러
   useEffect(() => {
@@ -54,7 +63,7 @@ export default function ToolButton() {
           {/* 글 작성 버튼 */}
           <Button
             title="글 작성"
-            onClick={() => (window.location.href = "/write")}
+            onClick={() => (window.location.href = "/create")}
             className="w-12 h-12 rounded-full shadow-lg bg-[#AD927A] text-white font-bold hover:bg-[#8C7A65]"
           >
             <Pencil size={30} />
