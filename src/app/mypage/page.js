@@ -23,7 +23,7 @@ const MyPage = () => {
     }, [user]);
 
     return (
-        <div className="overflow-auto">
+        <div>
             <BasicMenu />
             <div className="w-full max-w-6xl mx-auto">
                 <h1 className="mt-4 text-4xl font-bold text-center">마이 페이지</h1>

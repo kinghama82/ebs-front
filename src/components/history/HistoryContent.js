@@ -58,10 +58,10 @@ const HistoryContent = ({ userInfo }) => {
                             <p className="text-gray-700 font-bold dark:text-white">Lose :
                                 <span className="text-red-500 font-semibold"> {userRecord.lose}</span> 회
                             </p>
-                            <p className="text-gray-700 mt-3 font-bold dark:text-white">승률 :
-                                <span className="text-green-500 font-semibold"> 
-                                    {userRecord && totalRecord > 0 
-                                        ? Math.floor((userRecord.win/totalRecord)*100) 
+                            <p className="text-gray-700 mt-3 font-bold dark:text-white">승률 : 
+                                <span className="text-green-500 font-semibold">  
+                                     {userRecord && totalRecord > 0 
+                                        ?  Math.floor((userRecord.win/totalRecord)*100) 
                                         : 0 }                                    
                                 </span> %
                             </p>
@@ -100,7 +100,7 @@ const HistoryContent = ({ userInfo }) => {
                 {/* 기록작성버튼 쿠키없으면 버튼 안보임*/}
                 {userInfo ?
                     <Button variant="mocha" className="text-white text-md"
-                        onClick={() => router.push('/history/new')}>
+                        onClick={() => router.push('/history/create')}>
                         기록 작성
                     </Button>
                     : <></>}
