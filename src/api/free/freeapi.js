@@ -1,24 +1,36 @@
 import axios from "axios";
+import { API_SERVER_HOST } from "../publicapi";
 
-const { API_SERVER_HOST } = require("../publicapi");
+
 
 const host = `${API_SERVER_HOST}/api/free`
 
-export const getList = async (pageParam) => {
+//리스트
+export const getFreeList = async (pageParam) => {
     const {page, size} = pageParam
-    const res = await axios.get(`${host}/list`,{params:{page:page, size:size}})
+    const res = await axios.get(`${host}/`,{params:{page:page, size:size}})
     return res.data
 }
 
-export const getOne = async (id) => {
-    const res = await axios.get(`${host}/${id}`)
+//등록
+export const addFree = async (free) => {
+    const res = await axios.post(`${host}/`, free)
     return res.data
 }
-export const deleteOne = async (id) => {
+
+//상세
+export const getFree = async (id) => {
+    const res = await axios.get(`${host}/read/${id}`)
+    return res.data
+}
+//삭제
+export const deleteFree = async (id) => {
     const res = await axios.delete(`${host}/${id}`)
     return res.data
 }
-export const putOne = async (id, free) => {
+
+//수정
+export const putFree = async (id, free) => {
     const header = {headers : {"Content-Type" : "multipart/form-data"}}
     const res = await axios.put(`${host}/${id}`, free, header)
     return res.data
