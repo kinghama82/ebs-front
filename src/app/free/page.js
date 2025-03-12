@@ -1,18 +1,26 @@
+import FreeList from "@/components/free/FreeList";
 import BasicMenu from "@/components/menus/BasicMenu";
 import ToolButton from "@/components/menus/ToolButton";
+import { Dices } from "lucide-react";
 
 const freePage = () => {
   return (
     <>
       <BasicMenu />
-      <div className="container max-w-6xl mx-auto p-4 border-black border bg-gray-400 mt-2 rounded">
-        <h1>조회수 / 추천수 공간</h1>
+      <div className="mx-auto w-full max-w-6xl dark:text-white">
+            <div className="flex justify-center text-4xl py-1" 
+                 style={{ marginTop: '20px', backgroundColor: 'transparent', color: '#D97706', borderBottom: '2px solid #D97706' }}>
+                <Dices size={30}/>자유 게시판
+            </div>
       </div>
       <div className="container max-w-6xl mx-auto p-4 border-black border bg-gray-400 mt-2 rounded">
-        <h1>자유게시판 공간</h1>
-        <div>페이지네이션</div>
+        <div >조회수 / 추천수 공간</div>
       </div>
-      <ToolButton/>
+      <div className="container max-w-6xl mx-auto p-4 border-black border bg-gray-400 mt-2 rounded">
+        <div>
+            <FreeList/>
+        </div>
+      </div>
     </>
   );
 }
