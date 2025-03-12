@@ -14,7 +14,7 @@ const HistoryContent = ({ userInfo }) => {
     const router = useRouter()
     const [selectedYear, setSelectedYear] = useState(null)
     const { record: userRecord, loading, error } = useHistoryRecord(userInfo?.id, selectedYear || null)
-
+    const totalRecord = userRecord ? (userRecord.win || 0) + (userRecord.draw || 0) + (userRecord.lose || 0) : 0;
     return (
         <div>
             <div className="flex flex-row gap-12 rounded-md mt-2 max-w-6xl mx-auto border-1 bg-gray-300 min-h-96">
@@ -59,7 +59,11 @@ const HistoryContent = ({ userInfo }) => {
                                 <span className="text-red-500 font-semibold"> {userRecord.lose}</span> 회
                             </p>
                             <p className="text-gray-700 mt-3 font-bold dark:text-white">승률 :
-                                <span className="text-green-500 font-semibold"> {Math.floor(userRecord.win/(userRecord.win+userRecord.draw+userRecord.lose)*100)}</span> %
+                                <span className="text-green-500 font-semibold"> 
+                                    {userRecord && totalRecord > 0 
+                                        ? Math.floor((userRecord.win/totalRecord)*100) 
+                                        : 0 }                                    
+                                </span> %
                             </p>
                         </div>
                     </div>

@@ -34,7 +34,7 @@ const RecentGameComponent = ({ gamerid }) => {
                             </span>
                         )}
                         {/* 게임 이름 */}
-                        <Link className="dark:text-white" href={`/games/${game.id}`}>{game.gameName}</Link>
+                        <Link className="dark:text-white" href={`/games?game=item-${game.id}`}>{game.gameName}</Link>
                     </li>
                 ))}
             </ul>

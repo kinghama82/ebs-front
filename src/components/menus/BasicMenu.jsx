@@ -2,16 +2,15 @@
 
 import { searchGames } from "@/api/game/gameapi"; // ✅ 검색 API 추가
 import { CircleUserRound, Dices, Menu, Search, X } from "lucide-react";
+import { useTheme } from "next-themes";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useCustomCookie } from "../common/useCustomCookie";
-import { ModeToggle } from "../ModeToggle";
-import { useTheme } from "next-themes";
 import ExRateComponent from "./ExRateComponent";
-import ToolButton from "./ToolButton";
-import './styles.css';
 import LoginOutButton from "./LoginOutButton";
+import './styles.css';
+import ToolButton from "./ToolButton";
 
 const BasicMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
