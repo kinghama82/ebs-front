@@ -17,6 +17,15 @@ export const create = async (rulebookData) => {
 
     return response.data;
 };
+
+export const upload = async (formData) => {
+    const response = await axios.post(`${host}/rulebook/upload`, formData, {
+        headers:{'Content-Type': 'multipart/form-data' }
+    });
+
+    return response.data;
+}
+
 // 게시글 상세 조회 함수
 export const getOne = async (id) => {
     const res = await axios.get(`${host}/rulebook/${id}`);  // 상세 조회를 위한 GET 요청
