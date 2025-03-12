@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Pencil, Dices, Flame, Medal, Dice1, Dice2, Dice3, Dice4, Dice5 } from 'lucide-react';
+import { Pencil, Dices, Flame, Dice1, Dice2, Dice3, Dice4, Dice5, ChevronRight, ChevronLeft } from 'lucide-react';
+import React from 'react';
 
 export default function ListComponent() {
 
@@ -11,7 +12,7 @@ export default function ListComponent() {
     const [totalPages, setTotalPages] = useState(1);    // 총 페이지 수 상태
     const [allRules, setAllRules] = useState([]);  // 전체 룰북 데이터
 
-    const pageSize = 20;  // 한 페이지에 표시할 아이템 수
+    const pageSize = 3;  // 한 페이지에 표시할 아이템 수
 
     useEffect(() => {
         setIsClient(true);  // 클라이언트에서만 렌더링되도록 설정
@@ -104,6 +105,8 @@ export default function ListComponent() {
             setCurrentPage(page);
         }
     };
+
+
 
     return (
         <div className="mx-auto w-full max-w-6xl dark:text-white">
@@ -233,43 +236,107 @@ export default function ListComponent() {
             {/* 일반게시판 */}
             <div className="w-full" style={{ borderTop: '3px solid #000' }}>
                 <div className="flex" style={{ marginBottom: '5px' }}>
+                    <div className="p-2 flex items-center justify-center" style={{ flex: 1 }}>글 번호</div>
                     <div className="p-2 flex items-center justify-center" style={{ flex: 3 }}>제목</div>
                     <div className="p-2 flex items-center justify-center" style={{ flex: 1 }}>작성자</div>
                     <div className="p-2 flex items-center justify-center" style={{ flex: 1 }}>작성일</div>
                     <div className="p-2 flex items-center justify-center" style={{ flex: 1 }}>조회수</div>
                 </div>
 
-                {rulebook.map((rule) => (
+                {rulebook.map((rule, index) => (
                     <div key={rule.id} className="flex border-b">
-                        <div className="flex-1 p-2 flex items-center justify-center cursor-pointer text-blue-600 underline" onClick={() => handlePost(rule.id)} style={{ flex: 3 }}>
+                        {/* 글 번호 추가 */}
+                        <div className="p-2 flex items-center justify-center" style={{ flex: 1 }}>
+                            {totalPages * pageSize - (currentPage - 1) * pageSize - index}
+                        </div>
+                        <div className="flex-1 p-2 flex items-center justify-center cursor-pointer text-blue-600 underline"
+                             onClick={() => handlePost(rule.id)} style={{ flex: 3 }}>
                             {rule.title}
                         </div>
-                        <div className="flex-1 p-2 flex items-center justify-center" style={{ flex: 1 }}>{rule.nickname}</div>
-                        <div className="flex-1 p-2 flex items-center justify-center" style={{ flex: 1 }}>{formatDate(rule.createdate)}</div>
+                        <div className="flex-1 p-2 flex items-center justify-center" style={{ flex: 1 }}>
+                            {rule.writer.nickname}
+                        </div>
+                        <div className="flex-1 p-2 flex items-center justify-center" style={{ flex: 1 }}>
+                            {formatDate(rule.createdate)}
+                        </div>
                         <div className="flex-1 p-2 flex items-center justify-center" style={{ flex: 1 }}>
                             {rule.viewCount !== undefined && rule.viewCount !== null ? rule.viewCount : 0}
                         </div>
                     </div>
                 ))}
+
             </div>
 
             {/* 페이지네이션 버튼 */}
-            <div className="flex justify-center mt-4">
-                <button onClick={() => goToPage(currentPage - 1)} disabled={currentPage === 1} style={buttonStyle}>이전</button>
-                <span className="mx-2">{currentPage} / {totalPages}</span>
-                <button onClick={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages} style={buttonStyle}>다음</button>
+            <div className="flex justify-center mt-4 gap-2">
+                <button
+                    onClick={() => goToPage(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    style={buttonStyle}
+                >
+                    <ChevronLeft />
+                </button>
+
+                {Array.from({ length: totalPages }, (_, index) => index + 1)
+                    .filter((page) => {
+                        return (
+                            page === 1 ||
+                            page === totalPages ||
+                            (page >= currentPage - 2 && page <= currentPage + 2)
+                        );
+                    })
+                    .map((page, index, pages) => (
+                        <React.Fragment key={page}>
+                            {index > 0 && page !== pages[index - 1] + 1 && (
+                                <span style={{ padding: '7px' }}>....</span>
+                            )}
+
+                            <button
+                                onClick={() => goToPage(page)}
+                                style={{
+                                    ...buttonStyle,
+                                    fontWeight: currentPage === page ? 'bold' : 'normal',
+                                    color: currentPage === page ? 'skyblue' : 'black'
+                                }}
+                            >
+                                {page}
+                            </button>
+                        </React.Fragment>
+                    ))
+                }
+
+                <button
+                    onClick={() => goToPage(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    style={buttonStyle}
+                >
+                    <ChevronRight/>
+                </button>
             </div>
 
-            <button onClick={moveCreate} style={{ ...buttonStyle, marginTop: '20px', backgroundColor: '#D97706', display: 'flex', alignItems: 'center', gap: '7px' }}>
+
+            {/* 글 작성 버튼 */}
+            <button
+                onClick={moveCreate}
+                style={{
+                    ...buttonStyle,
+                    marginTop: '20px',
+                    backgroundColor: '#D97706',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '7px'
+                }}
+            >
                 글 작성 <Pencil size={15} />
             </button>
+
         </div>
     );
 }
 
 const buttonStyle = {
-    backgroundColor: '#4CAF50',
-    color: 'white',
+    backgroundColor: 'transparent',
+    color: 'black',
     padding: '10px 15px',
     margin: '0 5px',
     border: 'none',
