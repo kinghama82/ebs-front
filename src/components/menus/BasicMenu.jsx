@@ -84,7 +84,7 @@ const BasicMenu = () => {
 
   return (
     <>
-      <div className={`mt-2 transition-all duration-300 ${ isSticky ? "sticky-header" : ""}`}>
+      <div className={`mt-2 transition-all duration-300 sticky-top`}>
         <nav className={`shadow-md border border-opacity-100 rounded-md max-w-6xl mx-auto top-0 left-0 z-50 
           ${theme === "dark" ? "bg-[#0a0b0c] text-white border-white" : "bg-white text-black border-black"}`}>
           <div className="px-4 sm:px-6 lg:px-8">
