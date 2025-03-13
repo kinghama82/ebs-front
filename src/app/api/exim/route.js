@@ -27,12 +27,15 @@ export async function GET(request) {
 
     // API 요청
     try {
+        console.log("현재 요청 Url : ", url)
         const response = await fetch(url,{
+            
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
+                'Access-Control-Allow-Origin': '*'
             },
-            mode: "no-cors", 
+            mode: "cors", 
         })
         if (!response.ok) {
             throw new Error(`Failed to fetch data: ${response.status}`);
