@@ -202,101 +202,162 @@ const EditorComponent = () => {
   };
 
   return (
-      <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
-        <h1>게시글 작성</h1>
+      <div
+          style={{ maxWidth: '800px', margin: '0 auto', padding: '20px', backgroundColor: 'transparent', borderRadius: '8px' }}
+      >
+        <h1 style={{ textAlign: 'center', fontSize: '24px', marginBottom: '20px', marginTop: '50px' }}>게시글 수정</h1>
 
+        {/* 제목 입력 */}
         <input
             type="text"
             placeholder="게시글 제목을 입력하세요"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            style={{ width: '100%', padding: '10px', fontSize: '16px', marginBottom: '20px' }}
+            style={{ width: '100%', padding: '10px', fontSize: '16px', marginBottom: '30px', outline: '2px solid #D97706', borderRadius: '5px' }}
         />
 
+        {/* 파일 입력 엘리먼트 */}
         <input
             ref={fileInputRef}
             type="file"
             accept="image/*"
             style={{ display: 'none' }}
-            onChange={(e) => uploadImageToServer(e.target.files[0])}
+            onChange={(event) => {
+              const file = event.target.files[0];
+              if (file && file.type.startsWith('image/')) {
+                setImageUrl(URL.createObjectURL(file));  // 미리보기용 이미지 설정
+                editor.chain().focus().setImage({ src: URL.createObjectURL(file) }).run(); // 에디터에 이미지 삽입
+              }
+            }}
         />
-        <button onClick={() => fileInputRef.current.click()}><FileImage /></button>
 
-        <button onClick={() => insertYouTube(prompt('유튜브 링크를 입력하세요:'))}><TvMinimalPlay /></button>
+        {/* 에디터 콘텐츠 */}
+        <div
+            style={{
+              outline: '2px solid #D97706',
+              borderRadius: '5px',
+              minHeight: '350px',
+              cursor: 'text',
+              backgroundColor: 'transparent',
+            }}
+            onClick={() => editor?.commands.focus()}
+        >
+          {/* 에디터 툴바 */}
+          <div style={{ display: 'flex', gap: '30px', borderRadius: '5px' }}>
+            <div>
+              <button onClick={() => editor.chain().focus().toggleBold().run()} style={GetButtonStyle(editor, 'bold')}><strong>B</strong></button>
+              <button onClick={() => editor.chain().focus().toggleItalic().run()} style={GetButtonStyle(editor, 'italic')}><em>I</em></button>
+              <button onClick={() => editor.chain().focus().toggleStrike().run()} style={GetButtonStyle(editor, 'strike')}><s>S</s></button>
 
-        <div style={{ display: 'flex', gap: '30px', marginBottom: '20px' }}>
-          <div>
-            <button onClick={() => editor.chain().focus().toggleBold().run()} style={GetButtonStyle(editor, 'bold')}><strong>B</strong></button>
-            <button onClick={() => editor.chain().focus().toggleItalic().run()} style={GetButtonStyle(editor, 'italic')}><em>I</em></button>
-            <button onClick={() => editor.chain().focus().toggleStrike().run()} style={GetButtonStyle(editor, 'strike')}><s>S</s></button>
+              {/* 색상 팔레트 버튼 */}
+              <button onClick={toggleColorPicker} style={buttonStyle}>색상</button>
+              {colorPickerVisible && (
+                  <div style={{ position: 'absolute', zIndex: 1000 }}>
+                    <SketchPicker color={selectedColor} onChangeComplete={handleColorChange} />
+                  </div>
+              )}
 
-            <button onClick={toggleColorPicker} style={buttonStyle}>색상</button>
-            {colorPickerVisible && (
-                <div style={{ position: 'absolute', zIndex: 1000 }}>
-                  <SketchPicker color={selectedColor} onChangeComplete={handleColorChange} />
-                </div>
-            )}
+              {/* 글자 크기 버튼 */}
+              <button
+                  ref={buttonRef} // 글자 크기 버튼에 참조 추가
+                  onClick={handleFontSizeDropdownClick} // 클릭 시 드롭다운 토글
+                  style={buttonStyle}
+              >
+                글자 크기
+              </button>
+              {dropdownVisible && (
+                  <div
+                      ref={dropdownRef} // 드롭다운 참조
+                      style={{
+                        position: 'absolute',
+                        top: `${dropdownPosition.top}px`, // 동적으로 위치 설정
+                        left: `${dropdownPosition.left}px`, // 동적으로 위치 설정
+                        backgroundColor: 'white',
+                        border: '1px solid #D97706',
+                        borderRadius: '5px',
+                        padding: '10px',
+                        maxHeight: '160px', // 최대 높이를 설정하여 스크롤 생기도록 함
+                        overflowY: 'auto',
+                      }}
+                  >
+                    <div
+                        className={styles.dropdownItemp}
+                        onClick={() => handleFontSizeChange(16)}
+                    >
+                      16px
+                    </div>
+                    <div
+                        className="dropdownItem"
+                        onClick={() => handleFontSizeChange(18)}
+                    >
+                      18px
+                    </div>
+                    <div
+                        className="dropdownItem"
+                        onClick={() => handleFontSizeChange(20)}
+                    >
+                      20px
+                    </div>
+                    <div
+                        className="dropdownItem"
+                        onClick={() => handleFontSizeChange(24)}
+                    >
+                      24px
+                    </div>
+                    <div
+                        className="dropdownItem"
+                        onClick={() => handleFontSizeChange(30)}
+                    >
+                      30px
+                    </div>
+                    <div
+                        className="dropdownItem"
+                        onClick={() => handleFontSizeChange(36)}
+                    >
+                      36px
+                    </div>
+                    <div
+                        className="dropdownItem"
+                        onClick={() => handleFontSizeChange(40)}
+                    >
+                      40px
+                    </div>
+                    <div
+                        className="dropdownItem"
+                        onClick={() => handleFontSizeChange(48)}
+                    >
+                      48px
+                    </div>
+                  </div>
+              )}
 
-            <button
-                ref={buttonRef}
-                onClick={handleFontSizeDropdownClick}
-                style={buttonStyle}
-            >
-              글자 크기
-            </button>
-            {dropdownVisible && (
-                <div
-                    ref={dropdownRef}
-                    style={{
-                      position: 'absolute',
-                      top: `${dropdownPosition.top}px`,
-                      left: `${dropdownPosition.left}px`,
-                      backgroundColor: 'white',
-                      border: '1px solid #D97706',
-                      borderRadius: '5px',
-                      padding: '10px',
-                      maxHeight: '160px',
-                      overflowY: 'auto',
-                    }}
-                >
-                  <div className="dropdownItem" onClick={() => handleFontSizeChange(16)}>16px</div>
-                  <div className="dropdownItem" onClick={() => handleFontSizeChange(18)}>18px</div>
-                  <div className="dropdownItem" onClick={() => handleFontSizeChange(20)}>20px</div>
-                  <div className="dropdownItem" onClick={() => handleFontSizeChange(24)}>24px</div>
-                  <div className="dropdownItem" onClick={() => handleFontSizeChange(30)}>30px</div>
-                  <div className="dropdownItem" onClick={() => handleFontSizeChange(36)}>36px</div>
-                  <div className="dropdownItem" onClick={() => handleFontSizeChange(40)}>40px</div>
-                  <div className="dropdownItem" onClick={() => handleFontSizeChange(48)}>48px</div>
-                </div>
-            )}
+              {/* 밑줄 버튼 */}
+              <button onClick={() => editor.chain().focus().toggleUnderline().run()} style={buttonStyle}><u>U</u></button>
 
-            <button onClick={() => editor.chain().focus().toggleUnderline().run()} style={buttonStyle}><u>U</u></button>
+              <button onClick={() => editor.chain().focus().setTextAlign('left').run()} style={AlignButtonStyle(editor, 'left')}><AlignLeft /></button>
+              <button onClick={() => editor.chain().focus().setTextAlign('center').run()} style={AlignButtonStyle(editor, 'center')}><AlignJustify /></button>
+              <button onClick={() => editor.chain().focus().setTextAlign('right').run()} style={AlignButtonStyle(editor, 'right')}><AlignRight /></button>
+            </div>
 
-            <button onClick={() => editor.chain().focus().setTextAlign('left').run()} style={AlignButtonStyle(editor, 'left')}><AlignLeft /></button>
-            <button onClick={() => editor.chain().focus().setTextAlign('center').run()} style={AlignButtonStyle(editor, 'center')}><AlignJustify /></button>
-            <button onClick={() => editor.chain().focus().setTextAlign('right').run()} style={AlignButtonStyle(editor, 'right')}><AlignRight /></button>
+            <div>
+              <button onClick={() => insertYouTube(prompt('유튜브 링크를 입력하세요:'))} style={buttonStyle}><TvMinimalPlay /></button>
+              <button onClick={() => fileInputRef.current.click()} style={buttonStyle}><FileImage /></button>
+            </div>
+          </div>
+
+          {/* 텍스트 입력 */}
+          <div className={styles.ProseMirror} style={{ padding: '10px' }}>
+            <EditorContent editor={editor} />
           </div>
         </div>
 
-        <div className={styles.ProseMirror} style={{ padding: '10px', cursor: 'text' }} onClick={handleEditorClick}>
-          <EditorContent editor={editor} style={{ border: '1px solid #ccc', minHeight: '200px', padding: '10px', borderRadius: '5px', outline: 'none' }} />
-        </div>
+        {/* 게시글 작성 버튼 */}
+        <button onClick={submitPost} style={{ ...buttonStyle, marginTop: '20px', backgroundColor: '#D97706' }}>
+          게시글 수정
+        </button>
 
-        <button onClick={submitPost} style={{ marginTop: '20px' }}>게시글 작성</button>
       </div>
   );
-};
-
-
-const dropdownItemStyle = {
-  padding: '5px 10px',
-  cursor: 'pointer',
-  transition: 'background-color 0.2s ease-in-out', // 부드러운 색상 전환 효과 추가
-};
-
-const dropdownItemHoverStyle = {
-  backgroundColor: '#007bff',  // 마우스를 올렸을 때 배경색 (파란색)
-  color: 'white',  // 텍스트 색상 변경
 };
 
 const buttonStyle = {
@@ -340,7 +401,7 @@ const AlignButtonStyle = (editor, type) => {
     border: 'none',
     borderRadius: '5px',
     cursor: 'pointer',
-    fontSize: '16px',
+    fontSize: '15px',
   };
 };
 

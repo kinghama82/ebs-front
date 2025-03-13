@@ -14,55 +14,50 @@ import { TextAlign } from '@tiptap/extension-text-align'
 import Color from '@tiptap/extension-color'
 import { Mark, mergeAttributes } from '@tiptap/core';
 import { SketchPicker } from 'react-color'
-/*import {FontSize} from "@/components/common/EditorComponent";*/
+import YouTube from '@/components/common/Youtube'
 
-// YouTube 노드 정의
-const YouTube = Node.create({
-  name: 'youtube',
-  group: 'block',  // 블록 요소로 설정
-  content: 'inline*',
-  inline: false,
-  draggable: true,
+// 글자 크기 확장 정의
+export const FontSize = Mark.create({
+  name: 'fontSize',
+
   addAttributes() {
     return {
-      src: {
+      size: {
         default: null,
+        parseHTML: (element) => element.style.fontSize.replace('px', ''),
+        renderHTML: (attributes) => {
+          if (!attributes.size) return {};
+          return { style: `font-size: ${attributes.size}px` };
+        },
       },
-    }
+    };
   },
+
   parseHTML() {
-    return [
-      {
-        tag: 'iframe[src^="https://www.youtube.com/embed/"]',
-      },
-    ]
+    return [{ tag: 'span[style]' }];
   },
+
   renderHTML({ HTMLAttributes }) {
-    return [
-      'iframe',
-      {
-        ...HTMLAttributes,
-        width: '100%',
-        height: '315',
-        frameborder: '0',
-        allow: 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture',
-        allowFullScreen: true,
-      },
-    ]
+    return ['span', mergeAttributes(HTMLAttributes), 0];
   },
+
   addCommands() {
     return {
-      setYouTube: (src) => ({ chain }) => {
-        return chain().insertContent(`<iframe src="${src}" width="100%" height="315" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>`).run()
-      },
-    }
+      setFontSize:
+          (size) =>
+              ({ chain }) => {
+                return chain().setMark('fontSize', { size }).run();
+              },
+    };
   },
-})
+});
+
 
 //수정에디터
 const ModifyEditor = ({ postId, initialContent, initialTitle }) => {
   const [title, setTitle] = useState(initialTitle);
   const [content, setContent] = useState(initialContent);
+  const [imageUrl, setImageUrl] = useState('');
   const fileInputRef = useRef(null)
   const [colorPickerVisible, setColorPickerVisible] = useState(false) // 색상 선택기 상태 정의
   const [selectedColor, setSelectedColor] = useState('#000000') // 기본 색상 검정색

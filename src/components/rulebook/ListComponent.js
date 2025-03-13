@@ -91,6 +91,11 @@ export default function ListComponent() {
         .sort((a, b) => b.viewCount - a.viewCount)
         .slice(0, 5);  // TOP 5만 가져옵니다
 
+    // 전체 데이터 기준으로 추천수 내림차순 정렬
+    const sortedByVoteCount = [...allRules]
+        .sort((a, b) => b.voteCount - a.voteCount)  // 추천수를 기준으로 내림차순 정렬
+        .slice(0, 5);  // TOP 5만 가져옵니다
+
     const rankingIcons = [
         <Dice1 key={1} style={{ fontSize: '50px' }} color="#E6C200" />, // 1위 - 금메달 느낌
         <Dice2 key={2} style={{ fontSize: '50px' }} color="#C0C0C0" />, // 2위 - 은메달 느낌
@@ -121,14 +126,14 @@ export default function ListComponent() {
                         <div className="w-full">
                             <div className="flex" style={{ marginBottom: '1px', borderBottom: '2px solid #000' }}>
                                 <div className="p-1 flex items-center justify-center" style={{ flex: 1 }}>
-                                    조회수 TOP5 인기글<Flame size={30} style={{ color: 'red' }}/>
+                                    추천수 TOP5 인기글<Flame size={30} style={{ color: 'red' }}/>
                                 </div>
                                 <div className="p-1 flex items-center justify-center" style={{ flex: 1}}>
-                                    조회수
+                                    추천수
                                 </div>
                             </div>
 
-                            {sortedByViewCount.map((rule, index) => (
+                            {sortedByVoteCount.map((rule, index) => (
                                 <div key={rule.id} className="flex border-bottom-none">
                                     {/* 숫자 부분 - 1, 2, 3만 메달 아이콘으로 변경 */}
                                     <div className="flex-1/2 p-2 flex items-center justify-center" style={{
@@ -164,7 +169,7 @@ export default function ListComponent() {
 
                                     {/* 조회수 */}
                                     <div className="flex-1 p-2 flex items-center justify-center">
-                                        {rule.viewCount !== undefined && rule.viewCount !== null ? rule.viewCount : 0}
+                                        {rule.voteCount}
                                     </div>
                                 </div>
                             ))}
@@ -234,12 +239,13 @@ export default function ListComponent() {
             </div>
 
             {/* 일반게시판 */}
-            <div className="w-full" style={{ borderTop: '3px solid #000' }}>
+            <div className="w-full" style={{ borderTop: '3px solid #000'}}>
                 <div className="flex" style={{ marginBottom: '5px' }}>
                     <div className="p-2 flex items-center justify-center" style={{ flex: 1 }}>글 번호</div>
                     <div className="p-2 flex items-center justify-center" style={{ flex: 3 }}>제목</div>
                     <div className="p-2 flex items-center justify-center" style={{ flex: 1 }}>작성자</div>
                     <div className="p-2 flex items-center justify-center" style={{ flex: 1 }}>작성일</div>
+                    <div className="p-2 flex items-center justify-center" style={{ flex: 1 }}>추천수</div>
                     <div className="p-2 flex items-center justify-center" style={{ flex: 1 }}>조회수</div>
                 </div>
 
@@ -258,6 +264,9 @@ export default function ListComponent() {
                         </div>
                         <div className="flex-1 p-2 flex items-center justify-center" style={{ flex: 1 }}>
                             {formatDate(rule.createdate)}
+                        </div>
+                        <div className="flex-1 p-2 flex items-center justify-center" style={{ flex: 1 }}>
+                            {rule.voteCount}
                         </div>
                         <div className="flex-1 p-2 flex items-center justify-center" style={{ flex: 1 }}>
                             {rule.viewCount !== undefined && rule.viewCount !== null ? rule.viewCount : 0}

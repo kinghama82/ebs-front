@@ -6,12 +6,18 @@ import axios from "axios";
 import { X } from 'lucide-react';
 import AnswerList from "@/components/common/AnswerList"
 import AnswerForm from "@/components/common/AnswerForm";
+import {useCustomCookie} from "@/components/common/useCustomCookie";
+import {router} from "next/client";
+import { useRouter } from "next/navigation";
 
 const PostDetailPage = () => {
   const [ruleDetail, setRuleDetail] = useState(null);
   const [loading, setLoading] = useState(true);
   const [id, setId] = useState(null);
   const [answers, setAnswers] = useState([]); // 답글 목록 상태 추가
+     const [isVoted, setIsVoted] = useState(false); // 추천 여부 상태 추가
+    const userInfo = useCustomCookie();
+    const router = useRouter();
 
   useEffect(() => {
     const url = window.location.href;
@@ -83,6 +89,24 @@ const PostDetailPage = () => {
         const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
         return new Date(date).toLocaleString('ko-KR', options);  // 한국식 날짜 포맷
     };
+
+
+    const handleVoteClick = async () => {
+        try {
+            const response = await axios.post(`http://localhost:8080/rulebook/${id}/vote`, null, {
+                params: { gamerId: userInfo.id } // 쿠키에서 가져온 사용자 ID
+            });
+
+            console.log("추천 성공", response.data);
+            alert("추천이 완료되었습니다!"); // ✅ 추천 성공 알림창 띄우기
+
+            window.location.href = `/rulebook/${id}`;
+        } catch (error) {
+            console.error("추천 오류", error);
+            alert("중복 추천은 불가능 합니다!"); // ✅ 추천 실패 알림창 띄우기
+        }
+    };
+
   
   return (
       <div>
@@ -98,6 +122,7 @@ const PostDetailPage = () => {
               <p><strong>작성자:</strong>{ruleDetail.nickname}</p>
               <p><strong>작성일:</strong> {formatDate(ruleDetail.createdate)}</p>
               <p><strong>조회수:</strong> {ruleDetail.viewCount}</p>
+              <p><strong>추천수:</strong> {ruleDetail.voteCount}</p> {/* 추천수 표시 */}
             </div>
 
             <div
@@ -109,6 +134,16 @@ const PostDetailPage = () => {
               <button onClick={handleEditClick} style={{ color: 'white', background: '#D97706', borderRadius: '15%', padding: '3px' }}>수정</button>
               <button onClick={() => handleDeleteClick(id)} style={{ background: '#D97706', borderRadius: '15%', padding: '3px', color: 'white' }}><X size={25} /></button>
             </div>
+
+              {/* 추천 버튼 추가 */}
+              <div className="flex justify-center mt-4">
+                  <button
+                      onClick={handleVoteClick}
+                      disabled={isVoted}  // 이미 추천한 경우 버튼 비활성화
+                      style={{ background: '#D97706', color: 'white', padding: '10px 20px', borderRadius: '10px', cursor: 'pointer' }}>
+                      {isVoted ? "이미 추천하셨습니다" : "추천하기"}
+                  </button>
+              </div>
           </div>
 
             {/* 답글 목록 */}
