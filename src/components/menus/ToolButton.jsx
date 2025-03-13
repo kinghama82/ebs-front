@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { usePathname, useRouter } from "next/navigation";
 
 //특정주소에서 안보이게 하는 컴포넌트
-const HIDDEN_PATHS = ["","/games", "/news"]
+const HIDDEN_PATHS = ["/games", "/news"]
 
 //현재 주소 읽어오기(localhost:8080/free <-- 여까지 읽어옴)
 const useBaseURL = () => {
@@ -83,7 +83,7 @@ export default function ToolButton() {
       {isOpen && (
         <div className="flex flex-col gap-2">
           {/* 글 작성 버튼 */}
-          {!HIDDEN_PATHS.some((path) => pathname.startsWith(path)) && (
+          {!(pathname === "/" ||HIDDEN_PATHS.some((path) => pathname.startsWith(path))) && (
             <Button
               title="글 작성"
               onClick={goToBaseUrl}
