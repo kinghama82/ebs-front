@@ -22,22 +22,28 @@ const CreateNews = () => {
     const [title, setTitle] = useState("");
 
     const handleSave = async (editorContent, youtubeUrl, selectedImages = []) => {
-        const extractedYouTubeURL = extractYouTubeURL(editorContent);
+        const extractedYouTubeURL = extractYouTubeURL(editorContent); // ✅ 올바르게 추출되는지 확인
+        console.log("Extracted YouTube URL in handleSave:", extractedYouTubeURL); // ✅ 디버깅
 
         const formData = new FormData();
         formData.append("title", title);
         formData.append("content", editorContent);
         formData.append("writerId", 1);
         formData.append("typeId", 3);
-        formData.append("youtubeUrl", extractedYouTubeURL || "");
+        formData.append("youtubeUrl", extractedYouTubeURL || ""); // ✅ 올바른 값 저장
 
         selectedImages.forEach((file) => {
             formData.append("images[]", file);
         });
 
+        console.log("=== FormData Debugging ===");
+        for (let pair of formData.entries()) {
+            console.log(`${pair[0]}:`, pair[1]); // ✅ youtubeUrl 값 출력 확인
+        }
+
         try {
             const res = await createNews(formData);
-            router.replace(`/news/${res.id}`);  // ✅ replace()로 변경
+            router.push(`/news/${res.id}`);
         } catch (error) {
             console.error("뉴스 생성 실패", error);
         }

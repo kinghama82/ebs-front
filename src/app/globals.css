@@ -67,6 +67,14 @@
   }
 }
 
+/*팁탭기본넓이설정*/
+.ProseMirror {
+  min-height: 200px;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+}
 
 
 @layer base {

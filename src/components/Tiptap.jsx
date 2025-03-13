@@ -1,15 +1,23 @@
-'use client'
+"use client";
 
-import { useEditor, EditorContent } from '@tiptap/react'
-import StarterKit from '@tiptap/starter-kit'
+import { useEditor, EditorContent } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
 
 const Tiptap = () => {
     const editor = useEditor({
         extensions: [StarterKit],
-        content: '<p>Hello World! 🌎️</p>',
-    })
+        content: "<p>안녕하세요! 🌟</p>",
+    });
 
-    return <EditorContent editor={editor} />
-}
+    if (!editor) {
+        return null; // 에디터가 로드될 때까지 null 반환
+    }
 
-export default Tiptap
+    return (
+        <div className="border p-4 rounded-lg">
+            <EditorContent editor={editor} />
+        </div>
+    );
+};
+
+export default Tiptap;

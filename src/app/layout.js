@@ -29,6 +29,7 @@ export default function RootLayout({ children }) {
                   href="https://cdn.jsdelivr.net/npm/pretendard@latest/dist/web/static/pretendard.css"/>
         </head>
         <body>
+
         <SonnerToaster /> {/* ✅ Toast 메시지 활성화 */}
         <BootstrapProvider> {/* ✅ BootstrapProvider 적용 */}
             <ThemeProvider >
