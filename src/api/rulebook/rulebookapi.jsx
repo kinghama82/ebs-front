@@ -62,3 +62,10 @@ export const getAnswer = async (rulebookId) => {
 
     return res.data;
 }
+
+export const vote = async( id ) => {
+    const res = await axios.post(`${host}/rulebook/${id}/vote`);
+
+    return res.data
+
+}
