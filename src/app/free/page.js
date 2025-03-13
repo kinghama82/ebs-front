@@ -16,12 +16,12 @@ const freePage = () => {
       </div>
 
       {/* 중단 조회수 / 추천수 부분 */}
-      <div className="container max-w-6xl mx-auto p-4 border-black border bg-gray-400 mt-2 rounded">
+      <div className="max-w-6xl mx-auto p-4 border-black border bg-gray-400 mt-2 rounded">
         <div >조회수 / 추천수 공간</div>
       </div>
 
       {/* 하단 리스트 부분 */}
-      <div className="container max-w-6xl mx-auto border border-black mt-2 rounded">
+      <div className="max-w-6xl mx-auto mt-2 rounded">
             <FreeList/>
       </div>
     </>
