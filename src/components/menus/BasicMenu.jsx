@@ -92,18 +92,18 @@ const BasicMenu = () => {
               
               {/* 🔹 로고 & 네비게이션 메뉴 */}
               <div className="flex items-center space-x-6">
-                <Link href="/" className="text-xl font-bold text-amber-800 dark:text-white" title="홈으로">
+                <Link href="/" className="text-xl font-bold text-amber-800" title="홈으로">
                   <Dices />
                 </Link>
                 {userInfo ? 
-                  <Link className="text-amber-800 dark:text-white" href={`/mypage`}>
+                  <Link className="text-amber-800" href={`/mypage`}>
                     <CircleUserRound />
                   </Link>
                   : <></>}
                 
 
                 {/* 네비게이션 메뉴 */}
-                <div className="hidden no-underline md:flex space-x-6 text-amber-800 font-semibold dark:text-white">
+                <div className="hidden no-underline md:flex space-x-6 text-amber-800 font-semibold">
                   <Link href="/news">뉴스</Link>
                   <Link href="/free">자유</Link>
                   <Link href="/question">질문</Link>
@@ -141,7 +141,7 @@ const BasicMenu = () => {
                     setIsSearchOpen(true)
                   }}
                 >
-                  <Search size={20} className="text-amber-800 dark:text-white" />
+                  <Search size={20} className="text-amber-800" />
                 </button>
 
 

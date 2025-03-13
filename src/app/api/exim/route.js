@@ -27,9 +27,13 @@ export async function GET(request) {
 
     // API 요청
     try {
-
-        const response = await fetch(url);
-
+        const response = await fetch(url,{
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            mode: "no-cors", 
+        })
         if (!response.ok) {
             throw new Error(`Failed to fetch data: ${response.status}`);
         }

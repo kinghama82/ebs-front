@@ -30,6 +30,7 @@
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
   }
+
   .dark {
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
@@ -62,6 +63,7 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
@@ -76,11 +78,50 @@
   outline: none;
 }
 
+/* tiptap css옵션 */
+.tiptap {
+  :first-child {
+    margin-top: 0;
+  }
+
+  p {
+    margin-bottom: 10px;
+  }
+
+  h1, h2, h3 {
+    margin: 15px 0;
+  }
+
+  ul, ol {
+    padding-left: 20px;
+  }
+
+  hr {
+    border: none;
+    height: 1px;
+    background-color: #000;
+    border-top: 1px solid var(--black-2);
+    cursor: pointer;
+    margin: 1rem 0;
+
+    &.ProseMirror-selectednode {
+      border-top: 1px solid var(--purple);
+    }
+  }
+}
+
+
+
+
+
+
+
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
@@ -95,6 +136,7 @@
     font-family: var(--font-pretendard);
   }
 }
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -148,8 +190,5 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
-    }
+  }
 }
-
-
-

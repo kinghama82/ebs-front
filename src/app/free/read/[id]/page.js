@@ -27,7 +27,8 @@ const FreeReadPage = () => {
         try {
             await navigator.clipboard.writeText(url);
             setCopied(true);
-            setTimeout(() => setCopied(false), 2000); // 2초 후 "복사됨" 문구 숨기기
+            setTimeout(() => setCopied(false), 2000);
+            alert("클립보드에 주소 복사 완료") // 2초 후 "복사됨" 문구 숨기기
         } catch (err) {
             console.error("URL 복사 실패:", err);
         }
