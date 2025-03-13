@@ -80,7 +80,7 @@ const FreeReadPage = () => {
 
                     <div className="text-center"><Button variant="outline">추천버튼</Button></div>
                     <div className="grid grid-cols-6 font-bold border-b-2 border-amber-600">
-                        <div className="grid grid-cols-4 flex items-center">
+                        <div className=" grid-cols-4 flex items-center">
                             <div className=""><Link href={'/free'}>목록 | </Link></div>
                             <div>댓글</div>
                         </div>
