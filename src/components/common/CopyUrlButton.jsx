@@ -4,7 +4,7 @@ import { Clipboard, ClipboardCheck } from "lucide-react";
 import { useState } from "react";
 
 // 사용방법
-// 사용할 컴포넌트에서 const [url, setUrl] = useState("")
+// 사용할 페이지에서 const [url, setUrl] = useState("")
 // useEffect 구문 안에서 setUrl(복사할 url 만들어서 셋팅)
 // 그리고 버튼 소환해서 <CopyUrlButton url={url}/> 이렇게 넣어주면 됨
 

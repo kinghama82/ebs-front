@@ -25,14 +25,14 @@ const FreeList = () => {
     const searchParams = useSearchParams();
     const [serverData, setServerData] = useState(initState)
     const [page, setPage] = useState(parseInt(searchParams.get("page")) || 1)
-    const size = parseInt(searchParams.get("size")) || 10  
+    const size = parseInt(searchParams.get("size")) || 10
 
     useEffect(() => {
-        getFreeList({page, size}).then(data => {
+        getFreeList({ page, size }).then(data => {
             console.log("현재 자유게시판 데이터 : ", data)
             setServerData(data)
         })
-    },[page, size])
+    }, [page, size])
 
     // 날짜 포맷 함수
     const formatDate = (isoString) => {
@@ -60,8 +60,6 @@ const FreeList = () => {
         }
     };
 
-
-
     //글번호 변경(id값 말고)
     const startNumber = serverData.totalCount - (page - 1) * size;
 
@@ -74,14 +72,14 @@ const FreeList = () => {
     return (
         <div>
             {/* 자유 리스트 */}
-            <div className="flex flex-col mx-auto space-y-2 mb-2 ">
-                <div className="flex items-center justify-between w-full p-2 border-b rounded border-black bg-[#AD927A]">
-                    <span className="w-1/12  text-center font-bold border border-black ">번 호</span>
-                    <span className="w-5/12  text-center font-bold border border-black">제 목</span>
-                    <span className="w-2/12  text-center font-bold border border-black">작성자</span>
-                    <span className="w-1/12  text-center font-bold border border-black" >등록일</span>
-                    <span className="w-1/12  text-center font-bold border border-black" >조회</span>
-                    <span className="w-1/12  text-center font-bold border border-black" >추천</span>
+            <div className="flex flex-col space-y-2 mb-2 ">
+                <div className="flex items-center justify-between w-full p-2 bg-[#AD927A]">
+                    <span className="w-1/12  text-center font-bold ">번 호</span>
+                    <span className="w-5/12  text-center font-bold ">제 목</span>
+                    <span className="w-2/12  text-center font-bold ">작성자</span>
+                    <span className="w-1/12  text-center font-bold ">등록일</span>
+                    <span className="w-1/12  text-center font-bold ">조회</span>
+                    <span className="w-1/12  text-center font-bold ">추천</span>
                 </div>
                 {serverData.dtoList.length > 0 ? (
                     serverData.dtoList.map((free, index) => (
@@ -89,9 +87,13 @@ const FreeList = () => {
                             className="flex items-center justify-between w-full p-2 border-b border-black ">
                             <span className="w-1/12 text-center ">{startNumber - index}</span>
                             <span className="w-5/12 text-center " >
-                                <Link href={`/free/read/${free.id}`}>{free.title}</Link>
-                            </span> 
-                            <span className="w-2/12 text-center ">{free.gamer.nickname}</span>                           
+                                <Link href={`/free/read/${free.id}`}>{free.title}
+                                    <span className="w-1/12 text-center ml-1 ">
+                                        [{free.answerList ? free.answerList.length : 0}]
+                                    </span>
+                                </Link>
+                            </span>
+                            <span className="w-2/12 text-center ">{free.gamer.nickname}</span>
                             <span className="w-1/12 text-center ">{formatDate(free.createdate)}</span>
                             <span className="w-1/12 text-center ">조회수</span>
                             <span className="w-1/12 text-center ">추천수</span>
@@ -108,21 +110,21 @@ const FreeList = () => {
                     {serverData.prev && (
                         <PaginationItem>
                             <PaginationPrevious href={`?page=${serverData.prevPage}&size=${size}`}
-                                                onClick={(e) => {
-                                                    e.preventDefault()
-                                                    moveToPage(serverData.prevPage)
-                                                }}/>
+                                onClick={(e) => {
+                                    e.preventDefault()
+                                    moveToPage(serverData.prevPage)
+                                }} />
                         </PaginationItem>
                     )}
 
                     {serverData.pageNumList.map(pageNum => (
                         <PaginationItem key={pageNum}>
                             <PaginationLink href={`?page=${pageNum}&size=${size}`}
-                                            className={serverData.current === pageNum ? "bg-[#ad927a] hover:bg-[#8C7A65] text-black text-lg font-bold" : ""}
-                                            onClick={(e) => {
-                                                e.preventDefault()
-                                                moveToPage(pageNum)
-                                            }}>
+                                className={serverData.current === pageNum ? " hover:bg-[#8C7A65] border border-black text-black text-lg font-bold" : ""}
+                                onClick={(e) => {
+                                    e.preventDefault()
+                                    moveToPage(pageNum)
+                                }}>
                                 {pageNum}
                             </PaginationLink>
                         </PaginationItem>
@@ -131,10 +133,10 @@ const FreeList = () => {
                     {serverData.next && (
                         <PaginationItem>
                             <PaginationNext href={`?page=${serverData.nextPage}&size=${size}`}
-                                            onClick={(e) => {
-                                                e.preventDefault()
-                                                moveToPage(serverData.nextPage)
-                                            }} />
+                                onClick={(e) => {
+                                    e.preventDefault()
+                                    moveToPage(serverData.nextPage)
+                                }} />
                         </PaginationItem>
                     )}
                 </PaginationContent>

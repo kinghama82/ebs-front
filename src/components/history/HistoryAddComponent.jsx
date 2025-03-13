@@ -1,5 +1,6 @@
 "use client";
 
+import { searchGames } from "@/api/game/gameapi";
 import { addHistory } from "@/api/history/historyApi";
 import { Plus, RotateCcw } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -8,8 +9,6 @@ import { toast } from "sonner";
 import FetchingModal from "../common/FetchingModal";
 import GameBoxComponent from "../common/GameBoxComponent";
 import { useCustomCookie } from "../common/useCustomCookie";
-import { searchGames } from "@/api/game/gameapi";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import PartyFriendsList from "./PartyFriendsList";
 
 const initState = {
