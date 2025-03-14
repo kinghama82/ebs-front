@@ -7,20 +7,86 @@ import HistoryChart from "@/components/history/HistoryChart";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import FriendsList from "@/components/friends/FriendsList";
 import GameBookmarks from "@/components/bookmarks/GameBookmarks";
+import { uploadProfileImage, getGamer  } from "@/api/gamerApi"; // 업로드 API 함수
+
 
 const MyPage = () => {
     const user = useCustomCookie();
     const [selectedStatsTab, setSelectedStatsTab] = useState("stats");
     const [record, setRecord] = useState({ win: 0, draw: 0, lose: 0 });
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [gamer, setUser] = useState(null);
 
     useEffect(() => {
-        if (!user || !user.id) return;
-
-        // 전적 데이터 가져오기
-        getTotalRecord(user.id)
-            .then(recordResponse => setRecord(recordResponse))
-            .catch(error => console.error("전적 데이터 불러오기 실패:", error));
+        if (!user || !user.email) return;
+        const fetchUser = async () => {
+            try {
+                const userData = await getGamer(user.email);
+                setUser(userData);
+            } catch (error) {
+                console.error("사용자 정보 불러오기 실패:", error);
+            }
+        };
+        fetchUser();
     }, [user]);
+
+    // 파일 선택 시 상태에 저장
+    const handleFileChange = async (e) => {
+        const file = e.target.files[0];
+        if (!file || !gamer?.email) return;
+
+        setSelectedFile(file); // 선택된 파일을 상태로 저장 (선택적)
+
+        try {
+            const res = await uploadProfileImage(gamer.email, file);
+            console.log("업로드 결과:", res);
+
+            // 서버에서 삭제 후 새 이미지 업로드 완료 -> 새 데이터 가져오기
+            const updatedUser = await getGamer(gamer.email);
+            setUser(updatedUser);
+        } catch (error) {
+            console.error("프로필 업로드 실패:", error);
+        }
+    };
+
+    /*const handleFileChange = (e) => {
+        setSelectedFile(e.target.files[0]);
+    };*/
+
+    // 프로필 변경 버튼 클릭 시 업로드
+    const handleProfileUpload = async () => {
+        if (!selectedFile || !gamer?.email) return;
+
+        try {
+            const res = await uploadProfileImage(gamer.email, selectedFile);
+            console.log("업로드 결과:", res);
+
+            // 서버에서 삭제 후 새 이미지 업로드 완료 -> 새 데이터 가져오기
+            const updatedUser = await getGamer(gamer.email);
+            setUser(updatedUser);
+
+            setSelectedFile(null);
+        } catch (error) {
+            console.error("프로필 업로드 실패:", error);
+        }
+    };
+
+    /*const handleProfileUpload = async () => {
+        if (!selectedFile || !gamer?.email) return;
+
+        try {
+            const res = await uploadProfileImage(gamer.email, selectedFile);
+            console.log("업로드 결과:", res);
+
+            // 업데이트 후, 다시 전체 사용자 정보를 가져올 때 이메일 전달
+            const updatedUser = await getGamer(gamer.email);
+            setUser(updatedUser);
+
+            setSelectedFile(null);
+        } catch (error) {
+            console.error("프로필 업로드 실패:", error);
+        }
+    };*/
 
     return (
         <div>
@@ -39,12 +105,44 @@ const MyPage = () => {
                             <div className="m-auto flex flex-row justify-between h-72 "
                                 >
                                 <div >
-                                <img
-                                    src="allIcon.png"
-                                    alt="프로필 이미지"
-                                    className="w-44 h-44 rounded-full mx-auto border-2 border-red-700 "
-                                />
-                                <h2 className=" text-center text-2xl font-semibold mt-4">{user.nickname}</h2>
+                                    {/*<img
+                                        src={
+                                            user?.profileImage && user.profileImage.trim() !== ""
+                                                ? `http://localhost:8080${user.profileImage}` // 백엔드 도메인 포함
+                                                : "/allIcon.png" // 기본 이미지 경로
+                                        }
+                                        alt="프로필 이미지"
+                                        className="w-44 h-44 rounded-full mx-auto border-2 border-red-700"
+                                    />*/}
+
+                                    <img
+                                        src={
+                                            gamer?.profileImage && gamer.profileImage.trim() !== ""
+                                                ? `http://localhost:8080${gamer.profileImage}`
+                                                : "/allIcon.png"
+                                        }
+                                        alt="프로필 이미지"
+                                        className="w-44 h-44 rounded-full mx-auto border-2 border-red-700"
+                                    />
+
+
+                                    <h2 className=" text-center text-2xl font-semibold mt-4">{user.nickname}</h2>
+                                    {/* 파일 선택 + 업로드 버튼 */}
+                                    <div className="mt-4 text-center">
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={handleFileChange}
+                                            className="hidden"
+                                            id="profileUpload"
+                                        />
+                                        <button
+                                            onClick={() => document.getElementById("profileUpload").click()} // 버튼 클릭 -> input 실행
+                                            className="ml-2 px-3 py-2 bg-blue-500 text-white rounded-md"
+                                        >
+                                            프로필 변경
+                                        </button>
+                                    </div>
                                 </div>
 
 
