@@ -45,6 +45,29 @@ export const updateGamerProfile = async (formData) => {
     }
 };
 
+// 이메일 중복 체크 API
+export const checkEmailExists = async (email) => {
+    try {
+        const response = await axios.get(`${API_SERVER_HOST}/api/gamer/check-email`, { params: { email } });
+        return response.data.exists; // true: 이미 존재, false: 사용 가능
+    } catch (error) {
+        console.error("이메일 중복 체크 실패:", error);
+        throw error;
+    }
+};
+
+// 닉네임 중복 체크 API
+export const checkNicknameExists = async (nickname) => {
+    try {
+        const response = await axios.get(`${API_SERVER_HOST}/api/gamer/check-nickname`, { params: { nickname } });
+        return response.data.exists; // true: 이미 존재, false: 사용 가능
+    } catch (error) {
+        console.error("닉네임 중복 체크 실패:", error);
+        throw error;
+    }
+};
+
+
 
 
 

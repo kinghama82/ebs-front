@@ -1,20 +1,23 @@
+//src/app/gamer/new/page.js
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { newGamer } from "@/api/gamerApi";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
+import { newGamer, checkEmailExists, checkNicknameExists } from "@/api/gamerApi";
 import { Card, CardContent } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Mail, Lock, Phone, User, KeyRound, Calendar } from "lucide-react";
 import { motion } from "framer-motion";
-import AddressSearch from "@/components/gamer/AddressSearch";
-import { useEffect } from "react";
+import { Mail, Lock, Phone, User, KeyRound, Calendar } from "lucide-react";
+import FormField from "@/components/gamer/FormField";
+import DuplicateCheckField from "@/components/gamer/DuplicateCheckField";
+import AddressField from "@/components/gamer/AddressField";
+import ModalDialog from "@/components/gamer/ModalDialog";
+import { Button } from "@/components/ui/button";
+
 
 const GamerForm = () => {
     const router = useRouter();
+    const [password1Error, setPassword1Error] = useState("");
+    const [password2Error, setPassword2Error] = useState("");
     const [formData, setFormData] = useState({
         name: "",
         age: "",
@@ -26,64 +29,168 @@ const GamerForm = () => {
         address: "",
     });
 
+    // 중복 체크 상태
+    const [emailChecked, setEmailChecked] = useState(false);
+    const [nicknameChecked, setNicknameChecked] = useState(false);
+    const [emailMessage, setEmailMessage] = useState("");
+    const [nicknameMessage, setNicknameMessage] = useState("");
+
+    // 모달 관련 상태
     const [errorMessage, setErrorMessage] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [successModal, setSuccessModal] = useState(false);
-    const [focusedField, setFocusedField] = useState(""); // 🔹 입력 중인 필드 상태
-    // 주소 검색 창 상태 추가
-    const [isAddressSearchOpen, setIsAddressSearchOpen] = useState(false);
-    const [address, setAddress] = useState(""); // 🔹 기본 주소
-    const [detailAddress, setDetailAddress] = useState(""); // 🔹 상세 주소
 
+    // 주소 관련 상태
+    const [address, setAddress] = useState("");
+    const [detailAddress, setDetailAddress] = useState("");
+
+    // 라벨/아이콘 설정
+    const fieldLabels = {
+        name: "이름",
+        email: "이메일",
+        nickname: "닉네임",
+        age: "나이",
+        password1: "비밀번호",
+        password2: "비밀번호 확인",
+        phone: "핸드폰번호",
+    };
+
+    const fieldIcons = {
+        name: <User size={18} />,
+        email: <Mail size={18} />,
+        nickname: <KeyRound size={18} />,
+        age: <Calendar size={18} />,
+        password1: <Lock size={18} />,
+        password2: <Lock size={18} />,
+        phone: <Phone size={18} />,
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+
+        // 공통 formData 업데이트
         setFormData((prev) => ({ ...prev, [name]: value }));
+
+        // 이메일, 닉네임 중복 체크 상태 초기화
+        if (name === "email") {
+            setEmailChecked(false);
+            setEmailMessage("");
+        }
+        if (name === "nickname") {
+            setNicknameChecked(false);
+            setNicknameMessage("");
+        }
+
+        // 비밀번호1 유효성 검사
+        if (name === "password1") {
+            // 비어있거나 정규식 불일치인 경우 동일 메시지
+            if (
+                !value || // <-- 비어있는 경우
+                !/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/.test(value) // 패턴 불일치
+            ) {
+                setPassword1Error("비밀번호는 6자 이상이며, 알파벳과 숫자를 포함해야 합니다.");
+            } else {
+                setPassword1Error("");
+            }
+
+            // password2가 이미 입력되어 있으면, 비밀번호가 달라졌을 수 있으므로 재검사
+            if (formData.password2 && value !== formData.password2) {
+                setPassword2Error("비밀번호가 일치하지 않습니다.");
+            } else {
+                setPassword2Error("");
+            }
+        }
+
     };
 
-    // 주소 검색 후 선택한 주소를 반영
+    const handlePhoneChange = (e) => {
+        // 숫자 이외 문자 제거
+        let value = e.target.value.replace(/\D/g, "");
+        // 최대 11자리로 제한
+        if (value.length > 11) {
+            value = value.slice(0, 11);
+        }
+
+        // 하이픈(-) 삽입 로직
+        // 010-1234-5678 형태
+        if (value.length > 3 && value.length <= 7) {
+            // 010-1234
+            value = value.slice(0, 3) + "-" + value.slice(3);
+        } else if (value.length > 7) {
+            // 010-1234-5678
+            value = value.slice(0, 3) + "-" + value.slice(3, 7) + "-" + value.slice(7);
+        }
+
+        setFormData((prev) => ({ ...prev, phone: value }));
+    };
+
+
+    const handleCheckEmail = async () => {
+        if (!formData.email) {
+            setEmailMessage("이메일을 입력해주세요.");
+            return;
+        }
+        try {
+            const exists = await checkEmailExists(formData.email);
+            if (exists) {
+                setEmailMessage("❌ 이미 사용 중인 이메일입니다.");
+                setEmailChecked(false);
+            } else {
+                setEmailMessage("✅ 사용 가능한 이메일입니다.");
+                setEmailChecked(true);
+            }
+        } catch (error) {
+            setEmailMessage("오류 발생");
+        }
+    };
+
+    const handleCheckNickname = async () => {
+        if (!formData.nickname) {
+            setNicknameMessage("닉네임을 입력해주세요.");
+            return;
+        }
+        try {
+            const exists = await checkNicknameExists(formData.nickname);
+            if (exists) {
+                setNicknameMessage("❌ 이미 사용 중인 닉네임입니다.");
+                setNicknameChecked(false);
+            } else {
+                setNicknameMessage("✅ 사용 가능한 닉네임입니다.");
+                setNicknameChecked(true);
+            }
+        } catch (error) {
+            setNicknameMessage("오류 발생");
+        }
+    };
+
     const handleAddressSelect = (selectedAddress) => {
         setAddress(selectedAddress);
-        setFormData((prev) => ({
-            ...prev,
-            address: selectedAddress, // 기본 주소 저장
-        }));
+        setFormData((prev) => ({ ...prev, address: selectedAddress }));
     };
 
-// 상세주소 입력 핸들러
     const handleDetailAddressChange = (e) => {
         setDetailAddress(e.target.value);
     };
 
-    // 🚀 주소와 상세주소가 변경될 때 formData 업데이트
     useEffect(() => {
         setFormData((prev) => ({
             ...prev,
             address: detailAddress ? `${address} ${detailAddress}` : address,
         }));
     }, [address, detailAddress]);
-    const handleFocus = (field) => {
-        setFocusedField(field);
-    };
-
-    const handleBlur = () => {
-        setFocusedField("");
-    };
 
     const validateForm = () => {
         if (!formData.name) return "이름을 입력해주세요.";
-        if (!formData.age) return "나이를 입력해주세요.";
         if (!formData.email) return "이메일을 입력해주세요.";
+        if (!emailChecked) return "이메일 중복 확인을 해주세요.";
+        if (!formData.nickname) return "닉네임을 입력해주세요.";
+        if (!nicknameChecked) return "닉네임 중복 확인을 해주세요.";
+        if (!formData.age) return "나이를 입력해주세요.";
         if (!formData.password1) return "비밀번호를 입력해주세요.";
-
         if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/.test(formData.password1)) {
             return "비밀번호는 6자 이상이며, 알파벳과 숫자를 포함해야 합니다.";
         }
-
-        if (formData.password1 !== formData.password2) {
-            return "비밀번호가 일치하지 않습니다.";
-        }
-        if (!formData.nickname) return "닉네임을 입력해주세요.";
+        if (formData.password1 !== formData.password2) return "비밀번호가 일치하지 않습니다.";
         if (!formData.phone) return "핸드폰번호를 입력해주세요.";
         if (!formData.address) return "주소를 입력해주세요.";
         return null;
@@ -97,12 +204,11 @@ const GamerForm = () => {
             setIsModalOpen(true);
             return;
         }
-
         try {
             await newGamer(formData);
             setSuccessModal(true);
         } catch (error) {
-            console.error("게이머 등록에 실패했습니다.", error);
+            console.error("게이머 등록 실패:", error);
             setErrorMessage("회원가입 중 오류가 발생했습니다.");
             setIsModalOpen(true);
         }
@@ -113,87 +219,81 @@ const GamerForm = () => {
         router.push("/gamer/");
     };
 
-    const fieldLabels = {
-        name: "이름",
-        age: "나이",
-        email: "이메일",
-        password1: "비밀번호",
-        password2: "비밀번호 확인",
-        nickname: "닉네임",
-        phone: "핸드폰번호",
-        address: "주소",
-    };
-
-    const fieldIcons = {
-        name: <User size={18} />,
-        age: <Calendar size={18} />,
-        email: <Mail size={18} />,
-        password1: <Lock size={18} />,
-        password2: <Lock size={18} />,
-        nickname: <KeyRound size={18} />,
-        phone: <Phone size={18} />,
-    };
-
     return (
         <div className="flex justify-center items-center min-h-screen bg-gray-100">
-            <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-            >
+            <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
                 <Card className="w-[400px] shadow-xl rounded-2xl">
                     <CardContent className="p-6">
                         <h2 className="text-2xl font-bold text-center text-gray-700 mb-4">새 게이머 등록</h2>
                         <form className="space-y-4" onSubmit={handleSubmit} noValidate>
-                        {Object.keys(formData).map((key) => (
-                                key !== "address" && ( // 🔹 주소 필드는 따로 처리
-                                    <div key={key}>
-                                        <Label htmlFor={key} className="text-sm font-semibold text-gray-600">
-                                            {fieldLabels[key]}
-                                        </Label>
-                                        <div className="relative">
-                                            {focusedField !== key && fieldIcons[key] && (
-                                                <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
-                                                    {fieldIcons[key]}
-                                                </div>
-                                            )}
-                                            <Input
-                                                type={key.includes("password") ? "password" : key === "email" ? "email" : "text"}
-                                                name={key}
-                                                value={formData[key]}
-                                                onChange={handleChange}
-                                                onFocus={() => handleFocus(key)}
-                                                onBlur={handleBlur}
-                                                className="pl-12 h-10 border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none rounded-md w-full"
-                                            />
-                                        </div>
-                                    </div>
-                                )
-                            ))}
+                            <FormField
+                                label={fieldLabels.name}
+                                name="name"
+                                value={formData.name}
+                                onChange={handleChange}
+                                icon={fieldIcons.name}
+                            />
+                            <DuplicateCheckField
+                                label={fieldLabels.email}
+                                type="email"
+                                name="email"
+                                value={formData.email}
+                                onChange={handleChange}
+                                icon={fieldIcons.email}
+                                onCheck={handleCheckEmail}
+                                message={emailMessage}
+                            />
+                            <DuplicateCheckField
+                                label={fieldLabels.nickname}
+                                name="nickname"
+                                value={formData.nickname}
+                                onChange={handleChange}
+                                icon={fieldIcons.nickname}
+                                onCheck={handleCheckNickname}
+                                message={nicknameMessage}
+                            />
+                            <FormField
+                                label={fieldLabels.age}
+                                name="age"
+                                value={formData.age}
+                                onChange={handleChange}
+                                icon={fieldIcons.age}
+                            />
+                            {/* 비밀번호1 */}
+                            <FormField
+                                label={fieldLabels.password1}
+                                type="password"
+                                name="password1"
+                                value={formData.password1}
+                                onChange={handleChange}
+                                icon={fieldIcons.password1}
+                                error={password1Error} // <-- 추가
+                            />
 
-                            {/* 🚀 주소 입력 필드 */}
-                            <div>
-                                <Label className="text-sm font-semibold text-gray-600">주소</Label>
-                                <div className="flex items-center gap-2">
-                                    <input
-                                        type="text"
-                                        value={address}
-                                        readOnly
-                                        className="border p-2 w-full rounded-md bg-gray-100"
-                                    />
-                                    <AddressSearch onSelect={handleAddressSelect} />
-                                </div>
+                            {/* 비밀번호2 */}
+                            <FormField
+                                label={fieldLabels.password2}
+                                type="password"
+                                name="password2"
+                                value={formData.password2}
+                                onChange={handleChange}
+                                icon={fieldIcons.password2}
+                                error={password2Error} // <-- 추가
+                            />
 
-                                {/* 🚀 상세주소 입력 필드 */}
-                                <Label className="text-sm font-semibold text-gray-600 mt-2">상세주소</Label>
-                                <input
-                                    type="text"
-                                    value={detailAddress}
-                                    onChange={handleDetailAddressChange} // 🔥 상세주소 입력 처리
-                                    className="border p-2 w-full rounded-md"
-                                />
-                            </div>
-
+                            <FormField
+                                label={fieldLabels.phone}
+                                name="phone"
+                                value={formData.phone}
+                                onChange={handlePhoneChange} // 자동 하이픈 적용
+                                icon={fieldIcons.phone}
+                            />
+                            <AddressField
+                                address={address}
+                                detailAddress={detailAddress}
+                                onAddressSelect={handleAddressSelect}
+                                onDetailChange={handleDetailAddressChange}
+                            />
                             <Button className="w-full mt-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:opacity-90">
                                 등록하기
                             </Button>
@@ -201,32 +301,20 @@ const GamerForm = () => {
                     </CardContent>
                 </Card>
             </motion.div>
-
-            {/* 🚀 오류 메시지 모달 */}
-            <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle className="text-lg font-semibold">입력 오류</DialogTitle>
-                    </DialogHeader>
-                    <p className="text-red-600 text-center">{errorMessage}</p>
-                    <Button onClick={() => setIsModalOpen(false)} className="mt-4 w-full">
-                        확인
-                    </Button>
-                </DialogContent>
-            </Dialog>
-
-            {/* 🚀 가입 완료 모달 */}
-            <Dialog open={successModal} onOpenChange={setSuccessModal}>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle className="text-lg font-semibold">회원가입 완료</DialogTitle>
-                    </DialogHeader>
-                    <p className="text-center">새 게이머가 등록되었습니다.</p>
-                    <Button onClick={handleRedirect} className="mt-4 w-full">
-                        로그인 페이지로 이동
-                    </Button>
-                </DialogContent>
-            </Dialog>
+            <ModalDialog
+                open={isModalOpen}
+                onOpenChange={setIsModalOpen}
+                title="입력 오류"
+                message={errorMessage}
+                onConfirm={() => setIsModalOpen(false)}
+            />
+            <ModalDialog
+                open={successModal}
+                onOpenChange={setSuccessModal}
+                title="회원가입 완료"
+                message="새 게이머가 등록되었습니다."
+                onConfirm={handleRedirect}
+            />
         </div>
     );
 };

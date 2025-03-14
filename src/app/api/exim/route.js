@@ -27,7 +27,7 @@ export async function GET(request) {
 
     // API 요청
     try {
-        console.log("현재 요청 Url : ", url)
+        // console.log("현재 요청 Url : ", url)
         const response = await fetch(url,{
             
             method: "GET",
