@@ -1,12 +1,13 @@
 "use client"
-import CopyUrlButton from "@/components/common/CopyUrlButton";
+import { getFree } from "@/api/free/freeapi";
 import { useCustomCookie } from "@/components/common/useCustomCookie";
+import FreeAnswer from "@/components/free/FreeAnswer";
 import BasicMenu from "@/components/menus/BasicMenu";
 import { Button } from "@/components/ui/button";
 import { Dices } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const initState = {
     title: '',
@@ -19,13 +20,37 @@ const initState = {
 
 const FreeReadPage = () => {
     const router = useRouter()
+    const params = useParams();
+    const id = params.id;
     const [copied, setCopied] = useState(false);
     const userInfo = useCustomCookie()
     const [free, setFree] = useState(initState)
+    const [currentUrl, setCurrentUrl] = useState("")
 
+    //주소복사
+    useEffect(() => {
+        setCurrentUrl(window.location.href);
+    }, []);
+
+    //자게글 불러오기
+    useEffect(() => {
+        if(!id) return
+        const fetchFree = async () => {
+            try {
+                const res = await getFree(id)
+                setFree(res)
+            }   
+            catch (error) {
+                console.error("Free 게시글 로드 실패 : ", error)
+            }
+        }
+        fetchFree()
+    },[id])
+
+    //주소복사버튼
     const handleCopy = async () => {
         try {
-            await navigator.clipboard.writeText(url);
+            await navigator.clipboard.writeText(window.location.href);
             setCopied(true);
             setTimeout(() => setCopied(false), 2000);
             alert("클립보드에 주소 복사 완료") // 2초 후 "복사됨" 문구 숨기기
@@ -54,8 +79,8 @@ const FreeReadPage = () => {
                 <div className="max-w-6xl mx-auto p-2 mt-2 border-b-2 border-t-2 border-amber-600">
                     {/* 헤드부분 */}
                     <div className="border-b-2 border-amber-600 justify-between p-1 flex font-bold" >
-                        <span className="w-1/12">작성자 : </span>
-                        <span className="w-2/12 text-center">작성일</span>
+                        <span className="w-2/12 text-lg">{free.gamer.nickname}</span>
+                        <span className="w-2/12 text-start text-lg">{free.createdate}</span>
                         <div>
                             <span className="w-2/12 text-end mr-8">조회 : </span>
                             <span className="w-2/12 text-end mr-4">추천 :</span>
@@ -67,21 +92,21 @@ const FreeReadPage = () => {
                         <div className="grid grid-cols-2">
                             <span/>
                             <div className="grid grid-cols-3">
-                                <span className="col-span-2 text-end"><Link href={'/free'}>목록 |</Link></span>
+                                <span className="col-span-2 text-end mr-1"><Link href={'/free'}>목록 </Link> | </span>
                                 <span className="text-center">댓글</span>
                             </div>
                         </div>
                     </div>
                     {/* 제목 내용 */}
-                    <div className="p-1">
-                        <div className="text-3xl font-bold">제목</div>
-                        <div>내용</div>
+                    <div>
+                        <div className="text-3xl font-bold mt-4">{free.title}</div>
+                        <div className="mt-4">{free.content}</div>
                     </div>
 
                     <div className="text-center"><Button variant="outline">추천버튼</Button></div>
                     <div className="grid grid-cols-6 font-bold border-b-2 border-amber-600">
                         <div className=" grid-cols-4 flex items-center">
-                            <div className=""><Link href={'/free'}>목록 | </Link></div>
+                            <div className="mr-2"><Link href={'/free'}>목록 </Link> | </div>
                             <div>댓글</div>
                         </div>
                         <div className="col-span-4"></div>
@@ -91,13 +116,16 @@ const FreeReadPage = () => {
                         </div>
                     </div>
                     <div className="mt-1">
-                        <CopyUrlButton url={window.location.href}/>
-                        {window.location.href}
+                        <Button variant="secondary" size="xs" className="mr-2 text-white"
+                                onClick={()=> handleCopy()}>주소복사</Button>
+                        {currentUrl}
                     </div>
                 </div>
 
                 {/* 댓글리스트부분 */}
-                <div className="max-w-6xl mx-auto p-2 bg-gray-400 mt-1">댓글부분</div>
+                <div className="max-w-6xl mx-auto bg-neutral-200 rounded p-2 bg mt-1">
+                    <FreeAnswer id={free.id}/>
+                </div>
             </div>
         </>
     )

@@ -35,3 +35,17 @@ export const putFree = async (id, free) => {
     const res = await axios.put(`${host}/${id}`, free, header)
     return res.data
 }
+
+//댓글 등록
+export const addFreeAnswer = async (answer) => {
+    try {
+      const response = await axios.post(`${host}/answers/`, answer, {
+        headers: { "Content-Type": "application/json" },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("댓글 등록 중 오류 발생:", error);
+      throw error;
+    }
+  };
+    
