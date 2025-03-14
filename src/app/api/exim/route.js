@@ -35,6 +35,7 @@ export async function GET(request) {
                 "Pragma": "no-cache",
                 "Expires": "0",
                 'Access-Control-Allow-Origin': '*',
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
             },
             mode: "cors",
         })
@@ -55,6 +56,9 @@ export async function GET(request) {
             status: 200,
             headers: {
                 'Content-Type': 'application/json',
+                'Cache-Control': 'no-cache, no-store, must-revalidate',
+                'Pragma': 'no-cache',
+                'Expires': '0',
                 'Access-Control-Allow-Origin': '*',
             },
         });

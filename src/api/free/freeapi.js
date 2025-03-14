@@ -1,9 +1,8 @@
 import axios from "axios";
-import { API_SERVER_HOST } from "../publicapi";
 
 
 
-const host = `${API_SERVER_HOST}/api/free`
+const host = `http://localhost:8080/api/free`
 
 //리스트
 export const getFreeList = async (pageParam) => {
@@ -20,7 +19,7 @@ export const addFree = async (free) => {
 
 //상세
 export const getFree = async (id) => {
-    const res = await axios.get(`${host}/read/${id}`)
+    const res = await axios.get(`${host}/${id}`)
     return res.data
 }
 //삭제
@@ -48,4 +47,10 @@ export const addFreeAnswer = async (answer) => {
       throw error;
     }
   };
+
+  //댓글 삭제
+  export const deleteFreeAnswer = async (id) => {
+    const res = await axios.delete(`${host}/answers/${id}`)
+    return res.data
+  }
     

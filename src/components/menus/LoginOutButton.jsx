@@ -28,7 +28,7 @@ export default function LoginOutButton() {
                 if (userInfo) {
                     // 로그아웃
                     Cookies.remove("gamerCooki");
-                    window.location.href = "/";
+                    window.location.reload()
                 } else {
                     // 로그인 페이지로 이동
                     window.location.href = "/gamer";

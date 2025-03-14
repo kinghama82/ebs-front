@@ -1,6 +1,8 @@
 "use client"
-import { getFree } from "@/api/free/freeapi";
+import { deleteFree, getFree } from "@/api/free/freeapi";
+import DeleteButton from "@/components/common/DeleteButton";
 import { useCustomCookie } from "@/components/common/useCustomCookie";
+import AnswerList from "@/components/free/FreeAnswer";
 import FreeAnswer from "@/components/free/FreeAnswer";
 import BasicMenu from "@/components/menus/BasicMenu";
 import { Button } from "@/components/ui/button";
@@ -34,18 +36,23 @@ const FreeReadPage = () => {
 
     //자게글 불러오기
     useEffect(() => {
-        if(!id) return
+        if (!id) return
         const fetchFree = async () => {
             try {
                 const res = await getFree(id)
-                setFree(res)
-            }   
+                setFree(res || initState)
+            }
             catch (error) {
                 console.error("Free 게시글 로드 실패 : ", error)
+                setFree(initState)
             }
         }
         fetchFree()
-    },[id])
+    }, [id])
+
+    const handleClickDelete = async (id) => {
+        return await deleteFree(id)
+    }
 
     //주소복사버튼
     const handleCopy = async () => {
@@ -90,7 +97,7 @@ const FreeReadPage = () => {
                     <div className="grid grid-cols-4 p-1 font-bold">
                         <span className="col-span-3">카테고리</span>
                         <div className="grid grid-cols-2">
-                            <span/>
+                            <span />
                             <div className="grid grid-cols-3">
                                 <span className="col-span-2 text-end mr-1"><Link href={'/free'}>목록 </Link> | </span>
                                 <span className="text-center">댓글</span>
@@ -110,21 +117,26 @@ const FreeReadPage = () => {
                             <div>댓글</div>
                         </div>
                         <div className="col-span-4"></div>
-                        <div className="flex justify-end gap-2 mb-1">
-                            <Button size="sm" className="font-bold">수정</Button>
-                            <Button variant="destructive" size="sm" className="font-bold">삭제</Button>
-                        </div>
+                        {userInfo?.id === free.gamer?.id ? (
+                            <div className="flex justify-end gap-2 mb-1">
+                                <Button size="sm" className="font-bold">수정</Button>
+                                <DeleteButton id={free.id} onDelete={handleClickDelete} 
+                                              redirectTo="/free"
+                                              triggerButton={<Button variant="destructive" size="sm">삭제</Button>}/>
+                            </div>
+                        ) : <></>}
+
                     </div>
                     <div className="mt-1">
                         <Button variant="secondary" size="xs" className="mr-2 text-white"
-                                onClick={()=> handleCopy()}>주소복사</Button>
+                            onClick={() => handleCopy()}>주소복사</Button>
                         {currentUrl}
                     </div>
                 </div>
 
                 {/* 댓글리스트부분 */}
                 <div className="max-w-6xl mx-auto bg-neutral-200 rounded p-2 bg mt-1">
-                    <FreeAnswer id={free.id}/>
+                    <AnswerList boardType="free" id={free.id} />
                 </div>
             </div>
         </>
