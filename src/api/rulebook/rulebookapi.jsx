@@ -1,4 +1,5 @@
 import axios from "axios";
+import answerList from "@/components/common/AnswerList";
 
 const host = "http://localhost:8080";
 
@@ -68,4 +69,8 @@ export const vote = async( id ) => {
 
     return res.data
 
+}
+
+export const deleteAnswer = async () => {
+    const res = await axios.delete(`${host}/rulebook/${rulebookId}/answers/${answerId}`)
 }

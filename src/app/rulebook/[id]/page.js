@@ -24,8 +24,8 @@ const PostDetailPage = () => {
     const idFromUrl = url.split("/").pop();
     setId(idFromUrl);
   }, []);
-  
-  
+
+
 
   useEffect(() => {
     if (id) {
@@ -107,7 +107,7 @@ const PostDetailPage = () => {
         }
     };
 
-  
+
   return (
       <div>
         <BasicMenu />
@@ -119,7 +119,7 @@ const PostDetailPage = () => {
 
           <div className="w-full" style={{ borderBlock: '2px solid #D97706' }}>
             <div className="flex justify-end text-sm text-gray-600 gap-4">
-              <p><strong>작성자:</strong>{ruleDetail.nickname}</p>
+              <p><strong>작성자:</strong>{ruleDetail.writer.nickname}</p>
               <p><strong>작성일:</strong> {formatDate(ruleDetail.createdate)}</p>
               <p><strong>조회수:</strong> {ruleDetail.viewCount}</p>
               <p><strong>추천수:</strong> {ruleDetail.voteCount}</p> {/* 추천수 표시 */}
@@ -130,10 +130,13 @@ const PostDetailPage = () => {
                 dangerouslySetInnerHTML={{ __html: ruleDetail.content }} style={{ marginTop: '20px' }}
             />
 
-            <div className="flex justify-end gap-3" style={{ marginBottom: '3px' }}>
-              <button onClick={handleEditClick} style={{ color: 'white', background: '#D97706', borderRadius: '15%', padding: '3px' }}>수정</button>
-              <button onClick={() => handleDeleteClick(id)} style={{ background: '#D97706', borderRadius: '15%', padding: '3px', color: 'white' }}><X size={25} /></button>
-            </div>
+              {/* 수정 및 삭제 버튼이 작성자만 보이도록 조건 추가 */}
+              {ruleDetail.writer.id === userInfo.id && (
+                  <div className="flex justify-end gap-3" style={{ marginBottom: '3px' }}>
+                      <button onClick={handleEditClick} style={{ color: 'white', background: '#D97706', borderRadius: '15%', padding: '3px' }}>수정</button>
+                      <button onClick={() => handleDeleteClick(id)} style={{ background: '#D97706', borderRadius: '15%', padding: '3px', color: 'white' }}><X size={25} /></button>
+                  </div>
+              )}
 
               {/* 추천 버튼 추가 */}
               <div className="flex justify-center mt-4">

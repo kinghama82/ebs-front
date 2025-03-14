@@ -17,6 +17,7 @@ import { SketchPicker } from "react-color";
 import styles from '@/styles/Editor.module.css'
 import { Mark, mergeAttributes } from '@tiptap/core';
 
+
 // 글자 크기 확장 정의
 export const FontSize = Mark.create({
   name: 'fontSize',
@@ -56,6 +57,9 @@ export const FontSize = Mark.create({
 const EditorComponent = () => {
   const fileInputRef = useRef(null);
   const [imageUrl, setImageUrl] = useState('');
+  const [imageWidth, setImageWidth] = useState(300); // 이미지의 기본 너비 상태
+  const [imageHeight, setImageHeight] = useState(200); // 이미지의 기본 높이 상태
+  const editorContainerRef = useRef(null); // 드래그 앤 드롭을 위한 ref 추가
   const [youtubeLink, setYoutubeLink] = useState('');
   const [title, setTitle] = useState('');
   const userInfo = useCustomCookie();
@@ -77,11 +81,33 @@ const EditorComponent = () => {
       TextStyle,
       Color,
       Underline,
-      Image,
+      Image.configure({
+        HTMLAttributes: {
+          style: 'width: 300px; height: auto;', // 초기 사이즈 설정
+        },
+      }),
       YouTube,
       FontSize,
     ],
     content: '',
+    editorProps: {
+      handleDrop(view, event, slice, moved) {
+        event.preventDefault(); // 기본 드롭 이벤트 방지
+
+        const files = event.dataTransfer.files;
+        if (files.length > 0) {
+          const file = files[0];
+
+          if (file.type.startsWith("image/")) {
+            uploadImageToServer(file);
+            return true; // 이미지 업로드 처리 완료
+          }
+        }
+
+        // 텍스트 드래그 & 드롭은 기본 동작 유지
+        return false;
+      },
+    },
   });
 
 
@@ -99,9 +125,15 @@ const EditorComponent = () => {
     }
   };
 
+
+
+  //이미지 업로드 함수
   const uploadImageToServer = async (file) => {
     const formData = new FormData();
     formData.append('file', file);
+
+    console.log("업로드할 파일:", file);
+    console.log("FormData 확인:", formData.get('file'));
 
     try {
       const response = await axios.post('http://localhost:8080/rulebook/upload', formData, {
@@ -109,8 +141,11 @@ const EditorComponent = () => {
       });
 
       const fullImageUrl = response.data;
+      console.log("업로드 성공:", fullImageUrl);
       setImageUrl(fullImageUrl);
       editor.commands.insertContent(`<img src="${fullImageUrl}" alt="uploaded image" />`);
+
+
 
     } catch (error) {
       console.error('이미지 업로드 오류:', error);
@@ -166,6 +201,20 @@ const EditorComponent = () => {
     }
   };
 
+  const handleDrag = (e) => {
+    e.preventDefault();
+
+    let newWidth = e.clientX - e.target.offsetLeft;
+    let newHeight = e.clientY - e.target.offsetTop;
+
+    // 이미지 크기를 제한 (최소, 최대 크기)
+    newWidth = Math.max(100, Math.min(newWidth, 600));
+    newHeight = Math.max(100, Math.min(newHeight, 400));
+
+    setImageWidth(newWidth);
+    setImageHeight(newHeight);
+  };
+
   const toggleColorPicker = () => {
     setColorPickerVisible(!colorPickerVisible);
   }
@@ -216,6 +265,7 @@ const EditorComponent = () => {
             style={{ width: '100%', padding: '10px', fontSize: '16px', marginBottom: '30px', outline: '2px solid #D97706', borderRadius: '5px' }}
         />
 
+
         {/* 파일 입력 엘리먼트 */}
         <input
             ref={fileInputRef}
@@ -227,6 +277,7 @@ const EditorComponent = () => {
               if (file && file.type.startsWith('image/')) {
                 setImageUrl(URL.createObjectURL(file));  // 미리보기용 이미지 설정
                 editor.chain().focus().setImage({ src: URL.createObjectURL(file) }).run(); // 에디터에 이미지 삽입
+                uploadImageToServer(file);  // 업로드 실행
               }
             }}
         />
@@ -242,6 +293,8 @@ const EditorComponent = () => {
             }}
             onClick={() => editor?.commands.focus()}
         >
+
+
           {/* 에디터 툴바 */}
           <div style={{ display: 'flex', gap: '30px', borderRadius: '5px' }}>
             <div>
@@ -278,53 +331,62 @@ const EditorComponent = () => {
                         padding: '10px',
                         maxHeight: '160px', // 최대 높이를 설정하여 스크롤 생기도록 함
                         overflowY: 'auto',
+                        zIndex: 1000,
                       }}
                   >
                     <div
-                        className={styles.dropdownItemp}
+                        className="dropdownItem"
                         onClick={() => handleFontSizeChange(16)}
+                        style={dropdownItem}
                     >
                       16px
                     </div>
                     <div
                         className="dropdownItem"
                         onClick={() => handleFontSizeChange(18)}
+                        style={dropdownItem}
                     >
                       18px
                     </div>
                     <div
                         className="dropdownItem"
                         onClick={() => handleFontSizeChange(20)}
+                        style={dropdownItem}
                     >
                       20px
                     </div>
                     <div
                         className="dropdownItem"
                         onClick={() => handleFontSizeChange(24)}
+                        style={dropdownItem}
                     >
                       24px
                     </div>
                     <div
                         className="dropdownItem"
                         onClick={() => handleFontSizeChange(30)}
+                        style={dropdownItem}
                     >
                       30px
                     </div>
                     <div
                         className="dropdownItem"
                         onClick={() => handleFontSizeChange(36)}
+                        style={dropdownItem}
                     >
                       36px
                     </div>
                     <div
                         className="dropdownItem"
                         onClick={() => handleFontSizeChange(40)}
+                        style={dropdownItem}
                     >
                       40px
                     </div>
                     <div
                         className="dropdownItem"
                         onClick={() => handleFontSizeChange(48)}
+                        style={dropdownItem}
                     >
                       48px
                     </div>
@@ -347,6 +409,7 @@ const EditorComponent = () => {
 
           {/* 텍스트 입력 */}
           <div className={styles.ProseMirror} style={{ padding: '10px' }}>
+
             <EditorContent editor={editor} />
           </div>
         </div>
@@ -358,6 +421,17 @@ const EditorComponent = () => {
 
       </div>
   );
+};
+
+const dropdownItem = {
+  padding: '5px 10px',
+  cursor: 'pointer',
+  transition: 'background-color 0.2s ease-in-out', // 부드러운 색상 전환 효과 추가
+};
+
+const dropdownItemHoverStyle = {
+  backgroundColor: '#007bff',  // 마우스를 올렸을 때 배경색 (파란색)
+  color: 'white',  // 텍스트 색상 변경
 };
 
 const buttonStyle = {
