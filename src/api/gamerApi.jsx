@@ -4,7 +4,13 @@ import axios from "axios";
 import { useCustomCookie } from "@/components/common/useCustomCookie"; // 커스텀 훅 가져오기
 
 // 게이머 정보 조회 API
-export const getGamer = async () => {
+export const getGamer = async (email) => {
+    if (!email) throw new Error("이메일이 없습니다.");
+    const response = await axios.get(`${API_SERVER_HOST}/api/gamer/detail?email=${email}`);
+    return response.data;
+};
+
+/*export const getGamer = async () => {
     try {
         const user = useCustomCookie(); // 쿠키에서 사용자 정보 가져오기
         if (!user || !user.email) throw new Error("로그인된 사용자의 이메일이 없습니다.");
@@ -15,7 +21,7 @@ export const getGamer = async () => {
         console.error("사용자 정보를 불러오는데 실패했습니다:", error);
         throw error;
     }
-};
+};*/
 
 
 // 로그인된 사용자의 이메일을 받아오는 함수 (쿠키 또는 localStorage 활용 가능)
@@ -65,6 +71,17 @@ export const checkNicknameExists = async (nickname) => {
         console.error("닉네임 중복 체크 실패:", error);
         throw error;
     }
+};
+
+export const uploadProfileImage = async (email, file) => {
+    const formData = new FormData();
+    formData.append("email", email);
+    formData.append("file", file);
+
+    const response = await axios.post(`${API_SERVER_HOST}/api/gamer/uploadProfile`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+    });
+    return response.data; // { msg: "...", profileImage: "..."}
 };
 
 

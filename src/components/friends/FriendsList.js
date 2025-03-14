@@ -78,9 +78,11 @@ const FriendsList = ({ userId }) => {
                                 {friend.friendNickname ? (
                                     <>
                                         <img
-                                            src="allIcon.png"
-                                            // src={`http://43.202.30.85:8080${friend.gameImg}`} // 실제 이미지 경로 사용
-                                            alt="친구프사"
+                                            src={friend.friendImg && friend.friendImg.trim() !== ""
+                                                ? `http://localhost:8080${friend.friendImg}`  // 실제 프로필 이미지 경로
+                                                : "/allIcon.png"  // 기본 프로필 이미지
+                                            }
+                                            alt="친구 프로필"
                                             className="w-8 h-8 object-cover rounded-full mr-3 border-1"
                                         />
                                         <span>{friend.friendNickname}</span>
