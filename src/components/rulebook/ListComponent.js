@@ -3,16 +3,20 @@
 import { useEffect, useState } from "react";
 import { Pencil, Dices, Flame, Dice1, Dice2, Dice3, Dice4, Dice5, ChevronRight, ChevronLeft } from 'lucide-react';
 import React from 'react';
+import { useRouter } from "next/navigation";
 
 export default function ListComponent() {
-
     const [rulebook, setRulebook] = useState([]);
+    const [filteredRulebook, setFilteredRulebook] = useState([]); // 필터링된 룰북 상태 추가
     const [isClient, setIsClient] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);  // 현재 페이지 상태
     const [totalPages, setTotalPages] = useState(1);    // 총 페이지 수 상태
     const [allRules, setAllRules] = useState([]);  // 전체 룰북 데이터
+    const [searchQuery, setSearchQuery] = useState("");  // 검색어 상태
+    const router = useRouter();
 
     const pageSize = 3;  // 한 페이지에 표시할 아이템 수
+
 
     useEffect(() => {
         setIsClient(true);  // 클라이언트에서만 렌더링되도록 설정
@@ -25,6 +29,7 @@ export default function ListComponent() {
             .then((data) => {
                 if (Array.isArray(data.dtoList)) {
                     setAllRules(data.dtoList);
+                    setFilteredRulebook(data.dtoList); // 필터링된 룰북 초기화
                 } else {
                     console.error("Fetched data is not an array:", data);
                 }
@@ -45,9 +50,24 @@ export default function ListComponent() {
             .catch((error) => console.error("Error fetching rulebook:", error));
     }, [currentPage]);  // currentPage가 변경될 때마다 데이터를 다시 가져옴
 
+    // 검색 버튼 클릭 시 룰북을 필터링
+    const handleSearch = () => {
+        if (searchQuery.trim() === "") {
+            setFilteredRulebook(allRules); // 검색어가 없으면 전체 룰북 표시
+            setTotalPages(Math.ceil(allRules.length / pageSize)); // 전체 룰북 기준으로 페이지 수 설정
+        } else {
+            const filtered = allRules.filter(rule =>
+                rule.title.toLowerCase().includes(searchQuery.toLowerCase()) // 제목에 검색어가 포함된 경우
+            );
+            setFilteredRulebook(filtered); // 필터링된 룰북 설정
+            setTotalPages(Math.ceil(filtered.length / pageSize)); // 총 페이지 수 업데이트
+            setCurrentPage(1); // 검색 후 첫 페이지로 이동
+        }
+    };
+
     const handlePost = (id) => {
         if (isClient) {
-            window.location.href = `/rulebook/${id}`;  // window.location을 이용해 페이지 이동
+            router.push(`rulebook/${id}`);  // 페이지 이동
         }
     };
 
@@ -57,7 +77,7 @@ export default function ListComponent() {
 
     // 글작성페이지 이동
     const moveCreate = () => {
-        window.location.href = '/rulebook/create'; // 페이지 이동
+        router.push('/rulebook/create'); // 페이지 이동
     };
 
     // 날짜 포맷 함수
@@ -104,6 +124,7 @@ export default function ListComponent() {
         <Dice5 key={5} style={{ fontSize: '50px' }} color="#000" />, // 5위 - 일반 아이콘
     ];
 
+
     // 페이지네이션 버튼 클릭 처리 함수
     const goToPage = (page) => {
         if (page >= 1 && page <= totalPages) {
@@ -118,6 +139,7 @@ export default function ListComponent() {
             <div className="flex justify-center text-4xl py-1" style={{ marginTop: '40px', backgroundColor: 'transparent', color: '#D97706', borderBottom: '2px solid #D97706' }}>
                 <Dices size={30}/>룰북 게시판
             </div>
+
             {/* 인기글 두 개 나란히 배치 */}
             <div className="flex justify-between w-full">
                 {/* 첫 번째 인기글 */}
@@ -135,39 +157,14 @@ export default function ListComponent() {
 
                             {sortedByVoteCount.map((rule, index) => (
                                 <div key={rule.id} className="flex border-bottom-none">
-                                    {/* 숫자 부분 - 1, 2, 3만 메달 아이콘으로 변경 */}
-                                    <div className="flex-1/2 p-2 flex items-center justify-center" style={{
-                                        width: 'auto',
-                                        height: 'auto',
-                                        borderRadius: '50%',
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        fontSize: index < 3 ? '50px' : '24px',
-                                        padding: '0',
-                                        lineHeight: 'auto',
-                                        textAlign: 'center',
-                                    }}>
+                                    <div className="flex-1/2 p-2 flex items-center justify-center" style={{ width: 'auto', height: 'auto', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: index < 3 ? '50px' : '24px', padding: '0', lineHeight: 'auto', textAlign: 'center' }}>
                                         {index < 5 ? rankingIcons[index] : index + 1}
                                     </div>
 
-                                    {/* 제목 부분 - 클릭 가능하도록 링크 유지 */}
-                                    <div
-                                        className="p-2 cursor-pointer text-blue-600 underline"
-                                        onClick={() => handlePost(rule.id)}
-                                        style={{
-                                            flex: '1',
-                                            display: 'block',
-                                            whiteSpace: 'nowrap',
-                                            overflow: 'hidden',
-                                            textOverflow: 'ellipsis',
-                                            maxWidth: '100%',
-                                        }}
-                                    >
+                                    <div className="p-2 cursor-pointer text-blue-600 underline" onClick={() => handlePost(rule.id)} style={{ flex: '1', display: 'block', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%' }}>
                                         {rule.title}
                                     </div>
 
-                                    {/* 조회수 */}
                                     <div className="flex-1 p-2 flex items-center justify-center">
                                         {rule.voteCount}
                                     </div>
@@ -177,7 +174,7 @@ export default function ListComponent() {
                     </div>
                 </div>
 
-                {/* 두 번째 인기글 (같은 구조로 추가) */}
+                {/* 두 번째 인기글 */}
                 <div className="mx-auto w-2/4 max-w-xl">
                     <div className="flex justify-center py-1" style={{ margin: '50px', backgroundColor: 'transparent'}}>
                         <div className="w-full">
@@ -192,44 +189,16 @@ export default function ListComponent() {
 
                             {sortedByViewCount.map((rule, index) => (
                                 <div key={rule.id} className="flex border-bottom-none">
-                                    {/* 숫자 부분 - 1, 2, 3만 메달 아이콘으로 변경 */}
-                                    <div
-                                        className="flex-1/2 p-2 flex items-center justify-center"
-                                        style={{
-                                            width: 'auto',
-                                            height: 'auto',
-                                            borderRadius: '50%',
-                                            display: 'flex',
-                                            justifyContent: 'center',
-                                            alignItems: 'center',
-                                            fontSize: index < 3 ? '50px' : '24px',
-                                            padding: '0',
-                                            lineHeight: 'auto',
-                                            textAlign: 'center',
-                                        }}
-                                    >
+                                    <div className="flex-1/2 p-2 flex items-center justify-center" style={{ width: 'auto', height: 'auto', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: index < 3 ? '50px' : '24px', padding: '0', lineHeight: 'auto', textAlign: 'center' }}>
                                         {index < 5 ? rankingIcons[index] : index + 1}
                                     </div>
 
-                                    {/* 제목 부분 - 클릭 가능하도록 링크 유지 */}
-                                    <div
-                                        className="p-2 cursor-pointer text-blue-600 underline"
-                                        onClick={() => handlePost(rule.id)}
-                                        style={{
-                                            flex: '1',
-                                            display: 'block',
-                                            whiteSpace: 'nowrap',
-                                            overflow: 'hidden',
-                                            textOverflow: 'ellipsis',
-                                            maxWidth: '100%',
-                                        }}
-                                    >
+                                    <div className="p-2 cursor-pointer text-blue-600 underline" onClick={() => handlePost(rule.id)} style={{ flex: '1', display: 'block', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%' }}>
                                         {rule.title}
                                     </div>
 
-                                    {/* 조회수 */}
                                     <div className="flex-1 p-2 flex items-center justify-center">
-                                        {rule.viewCount !== undefined && rule.viewCount !== null ? rule.viewCount : 0}
+                                        {rule.viewCount}
                                     </div>
                                 </div>
                             ))}
@@ -249,9 +218,8 @@ export default function ListComponent() {
                     <div className="p-2 flex items-center justify-center" style={{ flex: 1 }}>조회수</div>
                 </div>
 
-                {rulebook.map((rule, index) => (
+                {(searchQuery.trim() === "" ? rulebook : filteredRulebook).map((rule, index) => (
                     <div key={rule.id} className="flex border-b">
-                        {/* 글 번호 추가 */}
                         <div className="p-2 flex items-center justify-center" style={{ flex: 1 }}>
                             {totalPages * pageSize - (currentPage - 1) * pageSize - index}
                         </div>
@@ -273,7 +241,6 @@ export default function ListComponent() {
                         </div>
                     </div>
                 ))}
-
             </div>
 
             {/* 페이지네이션 버튼 */}
@@ -319,11 +286,33 @@ export default function ListComponent() {
                     disabled={currentPage === totalPages}
                     style={buttonStyle}
                 >
-                    <ChevronRight/>
+                    <ChevronRight />
                 </button>
             </div>
 
-
+            {/* 검색 입력 필드 */}
+            <div className="my-4 flex justify-start">
+                <input
+                    type="text"
+                    placeholder="제목으로 검색..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="px-4 py-2 border rounded"
+                    style={{ width: '300px'}}
+                />
+                <button
+                    onClick={handleSearch}
+                    style={{
+                        border: '2px solid #D97706',
+                        padding: '5px',
+                        background: '#D97706',
+                        borderRadius: '5px',
+                        color: 'white'
+                    }}
+                >
+                    검색
+                </button>
+            </div>
             {/* 글 작성 버튼 */}
             <button
                 onClick={moveCreate}
@@ -338,7 +327,6 @@ export default function ListComponent() {
             >
                 글 작성 <Pencil size={15} />
             </button>
-
         </div>
     );
 }
