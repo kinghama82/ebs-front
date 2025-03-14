@@ -1,6 +1,7 @@
 "use client";
 
 import { deleteHistory, getHistory, modifyHistory } from "@/api/history/historyApi";
+import DeleteButton from "@/components/common/DeleteButton";
 import GameBoxComponent from "@/components/common/GameBoxComponent";
 import BasicMenu from "@/components/menus/BasicMenu";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
@@ -63,17 +64,12 @@ const HistoryReadPage = () => {
     if (loading) return <p className="text-center mt-10">로딩 중...</p>;
     if (error) return <p className="text-center mt-10 text-red-500">{error}</p>;
 
-    const handleClickDelete = (id) => {
-        setLoading(true)
-        deleteHistory(id).then(data => {
-            setLoading(false)
-            router.push('/history')
-            toast("게임기록 삭제 완료",{
-                description: "삭제 완료",
-                
-            })
-        })
+    //삭제함수
+    const handleClickDelete = async (id) => {
+        return await deleteHistory(id)
     }
+
+    //수정화면으로이동
     const moveToModify = (id) => {        
         router.push(`/history/modify/${id}`)
     } 
@@ -113,26 +109,11 @@ const HistoryReadPage = () => {
 
             {/* 버튼부분 */}
             <div className="mx-auto relative flex gap-2 max-w-6xl justify-end">
-                <Button variant="secondary" className=" shadow-md text-white"
+                <Button variant="secondary" size="sm" className=" shadow-md text-white"
                         onClick={() => moveToModify(id)}>수정</Button>
-                <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                        <Button variant="destructive">삭제</Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                        <AlertDialogHeader>
-                            <AlertDialogTitle>기록 삭제</AlertDialogTitle>
-                            <AlertDialogDescription>
-                                한번 삭제하게되면 돌이킬 수 없어요!!<br/>
-                                삭제하시나요?
-                            </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                            <AlertDialogCancel>취소</AlertDialogCancel>
-                            <AlertDialogAction className="bg-red-500 hover:bg-red-500" onClick={() => handleClickDelete(id)}>확인</AlertDialogAction>
-                        </AlertDialogFooter>
-                    </AlertDialogContent>
-                </AlertDialog>
+                <DeleteButton id={history.id} onDelete={handleClickDelete} 
+                              redirectTo="/history"
+                              triggerButton={<Button variant="destructive" size="sm">삭제</Button>}/>
             </div>
         </>
     );

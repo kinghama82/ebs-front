@@ -20,7 +20,13 @@ const ExRateComponent = () => {
         // API 호출
         const fetchExchangeRates = async () => {
             try {
-                const response = await fetch('http://localhost:3000/api/exim');  // Next.js API Route에 요청
+                const response = await fetch('http://localhost:3000/api/exim',{
+                    headers: {
+                        "Cache-Control": "no-cache, no-store, must-revalidate",
+                        "Pragma": "no-cache",
+                        "Expires": "0"
+                    }
+                });  // Next.js API Route에 요청
                 const data = await response.json();
                 if (response.ok) {
                     setExchangeRates(data); // 데이터를 상태에 저장
