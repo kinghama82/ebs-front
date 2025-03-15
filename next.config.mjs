@@ -1,6 +1,5 @@
-/*
 
-/!** @type {import('next').NextConfig} *!/
+/** @type {import('next').NextConfig} */
 
 const nextConfig = {
     images: {
@@ -9,7 +8,7 @@ const nextConfig = {
                 protocol: "http",
                 hostname: "43.202.30.85", // 실제 서버 IP
                 port: "8080",
-                pathname: "/uploads/!**",
+                pathname: "/uploads/**",
             },
         ],
         domains: ["43.202.30.85"],
@@ -17,11 +16,11 @@ const nextConfig = {
 };
 
 export default nextConfig;
-*/
 
 
+/*
 // 로컬환경에서 테스트시 아래코드를 사용
-/** @type {import('next').NextConfig} */
+/!** @type {import('next').NextConfig} *!/
 
 const nextConfig = {
     async rewrites() {
@@ -34,7 +33,7 @@ const nextConfig = {
                 protocol: "http",
                 hostname: "localhost",
                 port: "8080",
-                pathname: "/uploads/**",
+                pathname: "/uploads/!**",
             },
             {
                 protocol: "http",
@@ -48,3 +47,4 @@ const nextConfig = {
 };
 
 export default nextConfig;
+*/

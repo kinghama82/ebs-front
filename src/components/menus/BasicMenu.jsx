@@ -109,6 +109,7 @@ const BasicMenu = () => {
                   <Link href="/question">질문</Link>
                   <Link href="/rulebook">룰북</Link>
                   <Link href="/games">게임정보</Link>
+                  <Link href="/chat">게임추천받기</Link>
                   {userInfo ? (
                     <Link href={`/history?page=1&size=10&gamerid=${userInfo.id}`}>
                       게임기록
@@ -166,33 +167,7 @@ const BasicMenu = () => {
                       ))}
                     </ul>
                 )}
-
-
-
-                {/* 🔥 검색 결과 드롭다운 (제대로 유지) */}
-                {/*아래코드는 기존에 드롭다운이 검색창 가리는코드*/}
-                {/*{isSearchOpen && searchResults.length > 0 && (
-                  <ul className="absolute left-0 mt-1 w-60 bg-white border border-gray-300 shadow-lg rounded-md z-50">
-                    {searchResults.map((game) => (
-                      <li
-                        key={game.id}
-                        onClick={() => handleSelectGame(game.id)}
-                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center"
-                      >
-                        {game.img && (
-                          <img
-                            src={`http://43.202.30.85:8080${game.img}`}
-                            alt={game.gameName}
-                            className="w-10 h-10 object-cover rounded mr-3"
-                          />
-                        )}
-                        <span className="text-gray-700">{game.gameName}</span>
-                      </li>
-                    ))}
-                  </ul>
-                )}*/}
                 <LoginOutButton/>
-               
               </div>
               
 
