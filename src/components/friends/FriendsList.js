@@ -1,108 +1,179 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { API_SERVER_HOST } from "@/api/publicapi";
 
 const FriendsList = ({ userId }) => {
     const [friends, setFriends] = useState([]);
-    const [newFriendNickname, setNewFriendNickname] = useState("");
+    const [searchTerm, setSearchTerm] = useState("");
+    const [searchResults, setSearchResults] = useState([]);
+    const [selectedFriend, setSelectedFriend] = useState(null);
+    const [hasFetched, setHasFetched] = useState(false);
+    const searchRef = useRef(null);
 
-    // 친구 목록 가져오기
+    // 친구 목록 가져오기 (중복 요청 방지)
     useEffect(() => {
-        if (!userId) return;
+        if (!userId || hasFetched) return;
         fetchFriends();
+        setHasFetched(true);
     }, [userId]);
 
+    // 실제 친구 목록 데이터 요청
     const fetchFriends = () => {
         axios.get(`${API_SERVER_HOST}/api/friendship/${userId}`)
             .then(response => {
-                console.log("✅ 친구 목록 API 응답:", response.data);
                 setFriends(response.data);
             })
             .catch(err => {
-                console.error("❌ 친구 목록 불러오기 실패:", err);
+                console.error("친구 목록 불러오기 실패:", err);
                 setFriends([]);
             });
     };
 
-    // 친구 추가
+    // 닉네임 부분 검색 (디바운싱)
+    useEffect(() => {
+        if (!searchTerm.trim()) {
+            setSearchResults([]);
+            return;
+        }
+
+        const debounce = setTimeout(async () => {
+            try {
+                const response = await axios.get(`${API_SERVER_HOST}/api/gamer/search`, {
+                    params: { nickname: searchTerm }
+                });
+                setSearchResults(response.data);
+            } catch (error) {
+                console.error("닉네임 검색 중 오류:", error);
+            }
+        }, 300);
+
+        return () => clearTimeout(debounce);
+    }, [searchTerm]);
+
+    // 친구 추가: 선택된 친구의 id로 추가
     const addFriend = () => {
-        if (!newFriendNickname) return;
+        if (!selectedFriend) return;
 
-        axios.get(`${API_SERVER_HOST}/api/gamer/nickname/${encodeURIComponent(newFriendNickname)}`)
-            .then(response => {
-                const friendId = response.data.id;
+        // 중복 체크
+        if (friends.some(f => f.friendId === selectedFriend.id)) {
+            alert("이미 등록된 친구입니다.");
+            return;
+        }
 
-                axios.post(`${API_SERVER_HOST}/api/friendship`, {
-                    gamerId: userId,
-                    friendId: friendId
-                })
-                    .then(response => {
-                        console.log("✅ 친구 추가 성공:", response.data);
-                        fetchFriends();
-                    })
-                    .catch(err => console.error("❌ 친구 추가 실패:", err.response?.data || err.message));
+        axios.post(`${API_SERVER_HOST}/api/friendship`, {
+            gamerId: userId,
+            friendId: selectedFriend.id
+        })
+            .then(() => {
+                fetchFriends();
+                setSearchTerm("");
+                setSelectedFriend(null);
+                setSearchResults([]);
             })
-            .catch(err => console.error("❌ 닉네임으로 친구 찾기 실패:", err));
+            .catch(err => console.error("친구 추가 실패:", err.response?.data || err.message));
     };
 
     // 친구 삭제
-    const removeFriend = (friendId) => {
-        axios.delete(`${API_SERVER_HOST}/api/friendship/${friendId}`)
+    const removeFriend = (friendshipId) => {
+        axios.delete(`${API_SERVER_HOST}/api/friendship/${friendshipId}`)
             .then(() => fetchFriends())
-            .catch(err => console.error("❌ 친구 삭제 실패:", err));
+            .catch(err => console.error("친구 삭제 실패:", err));
     };
 
     return (
-        <div className="p-4 bg-slate-200 rounded-lg max-h-96 overflow-y-auto">
-            {/* 친구 추가 입력창 */}
-            <div className="flex mb-2 -mt-4">
-                <input
-                    type="text"
-                    placeholder="닉네임 입력"
-                    value={newFriendNickname}
-                    onChange={(e) => setNewFriendNickname(e.target.value)}
-                    className="border p-2 flex-1 rounded"
-                />
-                <button onClick={addFriend} className="ml-2 bg-blue-500 text-white px-4 py-2 rounded">
+        <div className="p-4 dark:bg-gray-800 rounded-lg overflow-y-auto max-h-96 overscroll-contain">
+
+            {/* ✅ 검색창과 추가 버튼 (GameBookmarks와 동일한 구조) */}
+            <div className="flex items-center gap-2 -mt-4">
+                <div className="relative w-full">
+                    <input
+                        type="text"
+                        placeholder="닉네임 입력"
+                        value={searchTerm}
+                        onChange={(e) => {
+                            setSearchTerm(e.target.value);
+                            setSelectedFriend(null);
+                        }}
+                        className="border p-2 w-full rounded-lg"
+                        ref={searchRef}
+                    />
+                    {/* 검색 결과 드롭다운 */}
+                    {searchResults.length > 0 && (
+                        <ul className="absolute left-0 top-full mt-1 w-full bg-white border shadow-lg rounded-md max-h-60 z-50">
+                            {searchResults.map((result) => (
+                                <li
+                                    key={result.id}
+                                    onClick={() => {
+                                        setSearchTerm(result.nickname);
+                                        setSelectedFriend(result);
+                                        setSearchResults([]);
+                                    }}
+                                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center"
+                                >
+                                    {result.profileImage && result.profileImage.trim() !== "" ? (
+                                        <img
+                                            src={`http://localhost:8080${result.profileImage}`}
+                                            alt="프로필 이미지"
+                                            className="w-8 h-8 rounded-full object-cover mr-2"
+                                        />
+                                    ) : (
+                                        <img
+                                            src="/allIcon.png"
+                                            alt="기본 프로필"
+                                            className="w-8 h-8 rounded-full object-cover mr-2"
+                                        />
+                                    )}
+                                    <span>{result.nickname}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </div>
+                <button
+                    onClick={addFriend}
+                    className="bg-blue-500 text-white px-4 py-2 rounded-lg w-20 flex-shrink-0"
+                >
                     추가
                 </button>
             </div>
 
-            {/* 친구 목록 출력 */}
-            {friends.length > 0 ? (
-                <ul>
-                    {friends.map((friend) => (
-                        <li key={friend.id} className="bg-white py-0.5 px-3 border-b flex justify-between items-center border-2 rounded shadow">
+            {/* ✅ 친구 목록 (북마크 목록과 유사한 구조) */}
+            <ul className="mt-3 space-y-2">
+                {friends.length > 0 ? (
+                    friends.map((friend) => (
+                        <li
+                            key={friend.id}
+                            className="py-0.5 px-4 bg-white rounded shadow-md flex justify-between items-center"
+                        >
                             <div className="flex items-center">
-                                {friend.friendNickname ? (
-                                    <>
-                                        <img
-                                            src={friend.friendImg && friend.friendImg.trim() !== ""
-                                                ? `http://localhost:8080${friend.friendImg}`  // 실제 프로필 이미지 경로
-                                                : "/allIcon.png"  // 기본 프로필 이미지
-                                            }
-                                            alt="친구 프로필"
-                                            className="w-8 h-8 object-cover rounded-full mr-3 border-1"
-                                        />
-                                        <span>{friend.friendNickname}</span>
-                                    </>
+                                {friend.friendImg && friend.friendImg.trim() !== "" ? (
+                                    <img
+                                        src={`http://localhost:8080${friend.friendImg}`}
+                                        alt="친구 프로필"
+                                        className="w-8 h-8 object-cover rounded-full mr-3"
+                                    />
                                 ) : (
-                                    <span>알 수 없는 친구</span>
+                                    <img
+                                        src="/allIcon.png"
+                                        alt="기본 프로필"
+                                        className="w-8 h-8 rounded-full object-cover mr-3"
+                                    />
                                 )}
+                                <span>{friend.friendNickname}</span>
                             </div>
                             <button
                                 onClick={() => removeFriend(friend.id)}
-                                className="bg-red-500 text-white px-3 py-0.5 rounded me-2"
+                                className="bg-red-500 text-white px-3 py-1 rounded-lg"
                             >
                                 X
                             </button>
                         </li>
-                    ))}
-                </ul>
-            ) : (
-                <p className="text-center text-gray-600">등록된 친구가 없습니다.</p>
-            )}
+                    ))
+                ) : (
+                    <p className="text-center text-gray-600">등록된 친구가 없습니다.</p>
+                )}
+            </ul>
         </div>
     );
 };
