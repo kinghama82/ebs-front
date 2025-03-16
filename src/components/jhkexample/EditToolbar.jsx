@@ -13,16 +13,38 @@ import {
     Minus,
     Youtube
 } from 'lucide-react';
+import { useState } from 'react';
 
-export default function EditToolbar({ editor }) {
+export default function EditToolbar({ editor, tempImages, setTempImages }) {
+
+
   if (!editor) return null;
 
   const colors = ['#FF0000', '#0000FF', '#008000', '#000000', '#FFA500'];
 
-  const addImage = () => {
-    const url = window.prompt('이미지 URL을 입력하세요.');
-    if (url) editor.chain().focus().setImage({ src: url }).run();
-  };
+  const addImage = async () => {
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*';
+  
+    fileInput.onchange = async (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+  
+      // 미리보기로 표시
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        const imagePreview = reader.result;
+        setTempImages((prev) => [...prev, { file, preview: imagePreview }]);
+  
+        // 에디터에 미리보기 이미지 삽입
+        editor.chain().focus().setImage({ src: imagePreview }).run();
+      };
+    };
+  
+    fileInput.click();
+  };  
 
   const addYoutubeVideo = () => {
     const url = window.prompt('유튜브 영상 URL을 입력하세요.');

@@ -17,7 +17,7 @@ import EditToolbar from './EditToolbar';
 import TextStyle from '@tiptap/extension-text-style';
 import HorizontalRule from '@tiptap/extension-horizontal-rule';
 
-export default function EditExample({ content, onUpdate }) {
+export default function EditExample({ content, onUpdate, tempImages, setTempImages }) {
   const editor = useEditor({
     extensions: [
         StarterKit.configure({
@@ -30,7 +30,11 @@ export default function EditExample({ content, onUpdate }) {
         OrderedList,
         ListItem,
         Color,                  //색상
-        Image,                  //이미지추가
+        Image.configure({
+          HTMLAttributes:{
+            style: 'width: 300px; height: auto;',
+          },
+        }),                  //이미지추가
         TextAlign.configure({
             types: ['heading', 'paragraph'],                      //정렬가능요소
             alignments: ['left', 'center', 'right', 'justify'],   //정렬옵션
@@ -70,7 +74,7 @@ export default function EditExample({ content, onUpdate }) {
 
   return (
     <div>
-      <EditToolbar editor={editor}/>  
+      <EditToolbar editor={editor} tempImages={tempImages} setTempImages={setTempImages}/>  
       <EditorContent editor={editor} className="tiptap border border-gray-300 rounded-md p-4" />
     </div>
   );

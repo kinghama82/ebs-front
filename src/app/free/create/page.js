@@ -1,5 +1,5 @@
 "use client"
-import EditExample from "@/components/jhkexample/EditExample";
+import BoardEditor from "@/components/common/BoardEditor";
 import BasicMenu from "@/components/menus/BasicMenu";
 import { Button } from "@/components/ui/button";
 import { Dices } from "lucide-react";
@@ -28,7 +28,7 @@ const NewFreePage = () => {
         {/* 중단 게시글 작성 부분 */}
         <div className="container max-w-6xl mx-auto p-4 border-black border bg-gray-400 mt-2 rounded">
             <div className="border-[#D97706] border-b-2">
-                {/* <EditExample content={content} onUpdate={handleUpdate}/> */}
+                <BoardEditor boardType="free" />
             </div>
             <div className="justify-between">
                 <div className="mt-2">

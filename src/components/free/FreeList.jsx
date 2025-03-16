@@ -6,6 +6,8 @@ import { Pagination, PaginationContent, PaginationItem, PaginationLink, Paginati
 import { getFreeList } from "@/api/free/freeapi";
 import { Button } from "../ui/button";
 import Link from "next/link";
+import axios from "axios";
+import { API_SERVER_HOST } from "@/api/publicapi";
 
 const initState = {
     dtoList: [],
@@ -34,6 +36,15 @@ const FreeList = () => {
         })
     }, [page, size])
 
+    const handlePlusView = async (id, router) => {
+        try {
+            await axios.get(`${API_SERVER_HOST}/api/free/${id}/view`)
+        } catch (error) {
+            console.error("조회수 증가 실패 : ",error )
+        }
+        router.push(`/free/read/${id}`)
+    }
+
     // 날짜 포맷 함수
     const formatDate = (isoString) => {
         const date = new Date(isoString);
@@ -51,12 +62,7 @@ const FreeList = () => {
             });
         } else {
             // 오늘이 아니면 날짜만 출력
-            return date.toLocaleString('ko-KR', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour12: false,
-            }).replace(/\./g, '-').replace(/ /g, '');
+            return date.toISOString().split('T')[0]; // YYYY-MM-DD 형식 유지
         }
     };
 
@@ -87,7 +93,11 @@ const FreeList = () => {
                             className="flex items-center justify-between w-full p-2 border-b border-black ">
                             <span className="w-1/12 text-center ">{startNumber - index}</span>
                             <span className="w-5/12 text-center " >
-                                <Link href={`/free/read/${free.id}`}>{free.title}
+                                <Link href={`/free/read/${free.id}`} 
+                                      onClick={(e) => {
+                                        e.preventDefault()
+                                        handlePlusView(free.id, router)
+                                      }}>{free.title}
                                     <span className="w-1/12 text-center ml-1 ">
                                         [{free.answerList ? free.answerList.length : 0}]
                                     </span>
@@ -95,8 +105,8 @@ const FreeList = () => {
                             </span>
                             <span className="w-2/12 text-center ">{free.gamer.nickname}</span>
                             <span className="w-1/12 text-center ">{formatDate(free.createdate)}</span>
-                            <span className="w-1/12 text-center ">조회수</span>
-                            <span className="w-1/12 text-center ">추천수</span>
+                            <span className="w-1/12 text-center ">{free.view}</span>
+                            <span className="w-1/12 text-center ">{free.voter.length}</span>
                         </div>
                     ))
                 ) : (
