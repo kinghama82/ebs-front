@@ -41,7 +41,7 @@ export default function MainSwiper() {
         style={{height: "500px", width: "100%"}}
       >
         
-        <SwiperSlide><img src='https://thumb.zumst.com/530x0/https://static.news.zumst.com/images/25/2022/08/12/dae3c74f8066493987ec0e23cf4f94fd.jpg'/></SwiperSlide>
+        {/* <SwiperSlide></SwiperSlide> */}
         <SwiperSlide><img src='http://www.boardgamefesta.com/data/upload/banner/17392466712.jpg'/></SwiperSlide>
         <SwiperSlide><img src='/1.png'/></SwiperSlide>
         <SwiperSlide><img src='/2.png'/></SwiperSlide>

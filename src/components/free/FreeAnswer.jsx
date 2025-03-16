@@ -7,11 +7,13 @@ import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import DeleteButton from "../common/DeleteButton";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
-export default function AnswerList({ id, boardType }) {
+export default function FanswerList({ id, boardType }) {
   const [answerList, setAnswerList] = useState([]);
   const userInfo = useCustomCookie();
   const [content, setContent] = useState("");
+  const router = useRouter()
 
   // API 엔드포인트 설정 (동적 게시판 대응)
   const API_HOST = `http://localhost:8080/api/${boardType}`;
@@ -21,8 +23,9 @@ export default function AnswerList({ id, boardType }) {
     if (!id) return;
     const fetchAnswers = async () => {
       try {
-        const res = await axios.get(`${API_HOST}/${id}`);
-        setAnswerList(res.data.answerList || []);
+        const res = await axios.get(`${API_HOST}/${id}/answers`);
+        console.log("현재 댓글 리스트 : ", res.data)
+        setAnswerList(res.data || []);
       } catch (error) {
         console.error(`${boardType} 게시판 댓글 불러오기 실패:`, error);
       }
@@ -82,17 +85,20 @@ export default function AnswerList({ id, boardType }) {
             <Card key={answer.id} className="p-2 -my-1">
               <div className="p-1">
                 <div className="flex items-center">
-                  <span className="text-md text-gray-600 underline mr-2">
+                  <span className="text-md text-black mr-2">
                     {answer.gamer?.nickname || "알수 없음"}
                   </span>
-                  <div className="flex items-center space-x-2 p-1">
-                    <Edit size={18} className="text-blue-500" />
-                    <DeleteButton
-                      id={answer.id}
-                      onDelete={() => handleAnswerDelete(answer.id)}
-                      triggerButton={<SquareX size={18} className="text-red-500 cursor-pointer" />}
-                    />
-                  </div>
+                  {userInfo?.id === answer.gamer?.id ? (
+                    <div className="flex items-center space-x-2 p-1">
+                      <Edit size={18} className="text-blue-500" />
+                      <DeleteButton
+                        id={answer.id}
+                        onDelete={() => handleAnswerDelete(answer.id)}
+                        triggerButton={<SquareX size={18} className="text-red-500 cursor-pointer" />} />
+                    </div>
+                  ) : (<></>)}
+
+                  <span className="text-sm text-gray-400">({answer.createdate})</span>
                 </div>
                 <p className="mt-1">{answer.content}</p>
               </div>
@@ -104,17 +110,29 @@ export default function AnswerList({ id, boardType }) {
       </div>
 
       {/* 댓글 입력 */}
-      <div className="mt-3 grid grid-cols-10">
-        <textarea
-          className="w-full h-16 p-2 border rounded-md col-span-9"
-          placeholder="댓글을 입력하세요..."
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-        />
-        <Button onClick={handleAnswerSubmit} variant="mocha" className="h-full">
-          댓글<br />등록
-        </Button>
-      </div>
+      {userInfo?.id ? (
+        <div className="mt-3 grid grid-cols-10 gap-2">
+          <textarea className="w-full h-16 p-2 border rounded-md col-span-9"
+                    placeholder="댓글을 입력하세요..."
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)} />
+          <Button onClick={handleAnswerSubmit} variant="mocha" className="h-full text-md">
+            댓글<br />등록
+          </Button>
+        </div>
+      ) : (
+        <div className="mt-3 grid grid-cols-10 gap-2">
+          <textarea className="w-full h-16 p-2 border rounded-md col-span-9"
+                    placeholder="댓글을 입력하세요..." disabled/>
+          <Button onClick={()=> {
+            alert("로그인이 필요합니다")
+            router.push('/gamer')
+          }} variant="mocha" className="h-full text-md">
+            댓글<br />등록
+          </Button>
+        </div>
+      )}
+
       <p className="mt-1 text-xs mb-1 text-red-500">
         명예훼손, 개인정보 유출, 분쟁 유발, 허위사실 유포 등의 글은 이용약관에 의해 제재될 수 있습니다.
       </p>

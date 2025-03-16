@@ -1,4 +1,5 @@
 "use client"
+import Top5 from "@/components/common/Top5";
 import FreeList from "@/components/free/FreeList";
 import BasicMenu from "@/components/menus/BasicMenu";
 import { Dices } from "lucide-react";
@@ -17,8 +18,10 @@ const freePage = () => {
       </div>
 
       {/* 중단 조회수 / 추천수 부분 */}
-      <div className="max-w-6xl mx-auto p-4 border-b-2 border-amber-600 mt-2">
-        <div >조회수 / 추천수 공간</div>
+      <div className="max-w-6xl mx-auto p-4 border-b-2 border-amber-600">
+        <div >
+          <Top5 boardType="free"/>
+        </div>
       </div>
 
       {/* 하단 리스트 부분 */}
