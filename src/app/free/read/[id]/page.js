@@ -12,7 +12,7 @@ import axios from "axios";
 import { Dices, ThumbsUp } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import DOMPurify from "dompurify"
 
 const initState = {
@@ -34,16 +34,16 @@ const FreeReadPage = () => {
     const [free, setFree] = useState(initState)
     const [currentUrl, setCurrentUrl] = useState("")
 
-    //정확한 파일이름
-    const extractImgName = (htmlContent) => {
-        const doc = new DOMParser().parseFromString(htmlContent, "text/html")
-        const imgTag = doc.querySelector("img")
-        if (imgTag) {
-            let src = imgTag.getAttribute("src")
-            return src.split("/").pop()
-        }
-        return null
-    }
+    // //정확한 파일이름
+    // const extractImgName = (htmlContent) => {
+    //     const doc = new DOMParser().parseFromString(htmlContent, "text/html")
+    //     const imgTag = doc.querySelector("img")
+    //     if (imgTag) {
+    //         let src = imgTag.getAttribute("src")
+    //         return src.split("/").pop()
+    //     }
+    //     return null
+    // }
 
 
 
@@ -70,7 +70,7 @@ const FreeReadPage = () => {
 
     }, [id])
 
-    const fileName = extractImgName(free.content)
+    // const fileName = extractImgName(free.content)
 
     const handleClickDelete = async (id) => {
         return await deleteFree(id)
@@ -149,16 +149,16 @@ const FreeReadPage = () => {
                             <div>
                                 {/* ✅ 텍스트 본문 출력 */}
                                 <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(free.content) }}
-                                     className="text-xl mt-4 p-2"
-                                      />
+                                    className="detail-content text-xl mt-4 p-2"
+                                />
 
                                 {/* ✅ 이미지 리스트 출력 */}
                                 {free.imageList && free.imageList.length > 0 && (
                                     <div>
                                         {free.imageList.map((fileName, index) => (
-                                            <img key={`${fileName}-${index}`} src={`${API_SERVER_HOST}/api/free/view/${fileName}`} 
-                                                 alt="게시글 이미지" 
-                                                 className="mt-4"/>
+                                            <img key={`${fileName}-${index}`} src={`${API_SERVER_HOST}/api/free/view/${fileName}`}
+                                                alt="게시글 이미지"
+                                                className="mt-4" />
                                         ))}
                                     </div>
                                 )}
@@ -178,7 +178,7 @@ const FreeReadPage = () => {
                             {userInfo?.id === free.gamer?.id ? (
                                 <div className="flex justify-end gap-2 mb-1">
                                     <Button size="sm" className="font-bold"
-                                            onClick={()=> router.push(`/free/modify/${free.id}`)}>수정</Button>
+                                        onClick={() => router.push(`/free/modify/${free.id}`)}>수정</Button>
                                     <DeleteButton id={free.id} onDelete={handleClickDelete}
                                         redirectTo="/free"
                                         triggerButton={<Button variant="destructive" size="sm">삭제</Button>} />
@@ -200,7 +200,10 @@ const FreeReadPage = () => {
                 </div>
             </div>
             <div className="max-w-6xl mx-auto mt-2">
-                <FreeList boardType="free"/>
+                <Suspense fallback={<div>로딩 중...</div>}>
+                    <FreeList boardType="free" />
+                </Suspense>
+
             </div>
 
         </>
