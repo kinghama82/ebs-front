@@ -223,7 +223,7 @@ const HistoryModifyPage = () => {
 
                 {/* 추가 버튼 */}
                 <div className="flex justify-end mr-[72px] -mt-14 p-4">
-                    <Button variant="secondary" className="text-white text-lg"
+                    <Button className="text-white text-lg font-bold"
                             onClick={() => handleclickModify()}>기록 저장</Button>
                 </div>
             </div>
