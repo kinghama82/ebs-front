@@ -1,10 +1,13 @@
+"use client"
 import BoardModifyEditor from "@/components/common/BoardModifyEditor"
 import Top5 from "@/components/common/Top5"
 import BasicMenu from "@/components/menus/BasicMenu"
 import { Dices } from "lucide-react"
+import { useParams } from "next/navigation"
 
-const FreeModifyPage = ({params}) => {
-    const {id} = params
+const FreeModifyPage = () => {
+    const params = useParams()
+    const id = params?.id
     return (
         <>
             <BasicMenu />
