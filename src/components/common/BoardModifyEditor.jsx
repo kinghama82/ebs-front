@@ -21,8 +21,6 @@ export default function BoardModifyEditor({ id, boardType }) {
         if (id) {
             axios.get(`${API_SERVER_HOST}/api/${boardType}/${id}`)
                 .then(({ data }) => {
-                    console.log("✅ 불러온 데이터:", data);
-                    console.log("📃 불러온 content:", data.content);
                     setTitle(data.title);
                     setContent(data.content || "");
                 })
@@ -54,7 +52,7 @@ export default function BoardModifyEditor({ id, boardType }) {
             // ✅ 에디터에 반영
             setContent((prevContent) => `${prevContent}<img src="${imageUrl}" style="width: 300px; height: auto;" />`);
     
-            console.log("📸 업로드된 이미지 URL:", imageUrl);
+            
     
         } catch (error) {
             console.error("🚨 이미지 업로드 실패:", error);
@@ -73,7 +71,7 @@ export default function BoardModifyEditor({ id, boardType }) {
         if (tempImage && tempImage.preview) {
             try {
                 await axios.delete(`${API_SERVER_HOST}/api/${boardType}/deleteFiles`, {
-                    fileNames: [tempImage.preview.split("/").pop()], // 기존 이미지 파일명 추출 후 삭제 요청
+                    params: { fileNames: tempImage.preview.split("/").pop() } // 기존 이미지 파일명 추출 후 삭제 요청
                 });
             } catch (error) {
                 console.error("🚨 기존 이미지 삭제 실패:", error);
@@ -84,9 +82,6 @@ export default function BoardModifyEditor({ id, boardType }) {
         if (tempImage) {
             const formData = new FormData();
             formData.append('file', tempImage.file);
-
-            console.log("📤 FormData에 추가된 파일:", formData.get('file'));
-
             try {
                 const { data: uploadFileName } = await axios.post(
                     `${API_SERVER_HOST}/api/${boardType}/upload`,
@@ -95,14 +90,12 @@ export default function BoardModifyEditor({ id, boardType }) {
                 );
 
                 uploadedImgFile = uploadFileName;
-                console.log("📸 업로드된 이미지 파일명:", uploadedImgFile);
 
                 if (uploadedImgFile) {
                     updatedContent = updatedContent.replace(
                         tempImage.preview,
                         `${API_SERVER_HOST}/api/${boardType}/view/${uploadedImgFile}`
                     );
-                    console.log("🖼️ 수정된 content:", updatedContent);
                 }
             } catch (error) {
                 console.error('이미지 업로드 실패:', error);
@@ -117,11 +110,8 @@ export default function BoardModifyEditor({ id, boardType }) {
             title,
             content: updatedContent,
             gamer: safeGamer?.id ? safeGamer : null,
-            uploadFileNames: uploadedImgFile ? [uploadedImgFile] : []
+            uploadFileNames: [uploadedImgFile].flat()
         };
-
-        console.log("📸 전송할 uploadFileNames:", payload.uploadFileNames);
-        console.log("📩 최종 전송 payload:", payload);
 
         try {
             if (id) {
