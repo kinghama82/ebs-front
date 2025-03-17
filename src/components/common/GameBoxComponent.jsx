@@ -32,7 +32,7 @@ const GameBoxComponent = ({ id }) => {
                 style={{
                     backgroundImage: `
                         linear-gradient(to right, rgba(0,0,0,0.8) 75%, rgba(0,0,0,0) 30%),
-                        url(http://43.202.30.85:8080${game.img})
+                        url(http://43.202.30.85${game.img})
                     `,
                     backgroundSize: '100% 100%, 25% 255px',
                     backgroundPosition: 'left, right center',
@@ -49,7 +49,7 @@ const GameBoxComponent = ({ id }) => {
                             // height={200}
                             // className="rounded-md"
 
-                            src={`http://43.202.30.85:8080${game.img}`}
+                            src={`http://43.202.30.85${game.img}`}
                             alt={game.gameName}
                             className="w-[150px] h-[150px] object rounded-md"
                         />
