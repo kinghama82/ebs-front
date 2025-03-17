@@ -157,7 +157,7 @@ const BasicMenu = () => {
                           >
                             {game.img && (
                                 <img
-                                    src={`http://43.202.30.85:8080${game.img}`}
+                                    src={`http://43.202.30.85${game.img}`}
                                     alt={game.gameName}
                                     className="w-10 h-10 object-cover rounded mr-3"
                                 />

@@ -102,7 +102,7 @@ const GameBookmarks = ({ userId }) => {
                                 >
                                     {game.img && (
                                         <img
-                                            src={`http://43.202.30.85:8080${game.img}`}
+                                            src={`http://43.202.30.85${game.img}`}
                                             alt={game.gameName}
                                             className="w-10 h-10 object-cover rounded mr-3"
                                         />
@@ -128,7 +128,7 @@ const GameBookmarks = ({ userId }) => {
                         <div className="flex items-center">
                             {bookmark.gameImg && (
                                 <img
-                                    src={`http://43.202.30.85:8080${bookmark.gameImg}`}
+                                    src={`http://43.202.30.85${bookmark.gameImg}`}
                                     alt={bookmark.gameName}
                                     className="w-8 h-8 object-cover rounded mr-3"
                                 />
