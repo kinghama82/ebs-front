@@ -8,6 +8,7 @@ import { Button } from "../ui/button";
 import Link from "next/link";
 import axios from "axios";
 import { API_SERVER_HOST } from "@/api/publicapi";
+import { getQuestionList } from "@/api/qustion/questionApi";
 
 const initState = {
     dtoList: [],
@@ -32,7 +33,7 @@ const QuestionList = ({ boardType }) => {
     useEffect(() => {
         let isMounted = true;
     
-        getFreeList({ page, size }).then(data => {
+        getQuestionList({ page, size }).then(data => {
             if (isMounted) {
                 console.log("📡 서버에서 받은 데이터: ", data);
                 
