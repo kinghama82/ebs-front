@@ -24,7 +24,6 @@ export default function FanswerList({ id, boardType }) {
     const fetchAnswers = async () => {
       try {
         const res = await axios.get(`${API_HOST}/${id}/answers`);
-        console.log("현재 댓글 리스트 : ", res.data)
         setAnswerList(res.data || []);
       } catch (error) {
         console.error(`${boardType} 게시판 댓글 불러오기 실패:`, error);
