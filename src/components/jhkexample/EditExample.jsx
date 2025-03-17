@@ -73,9 +73,9 @@ export default function EditExample({ content, onUpdate, tempImages, setTempImag
   if (!editor) return null;
 
   return (
-    <div>
+    <div className='-mt-2'>
       <EditToolbar editor={editor} tempImages={tempImages} setTempImages={setTempImages}/>  
-      <EditorContent editor={editor} className="tiptap border border-gray-300 rounded-md p-4" />
+      <EditorContent editor={editor} className="tiptap border-2 border-gray-400 rounded-md" />
     </div>
   );
 }

@@ -8,6 +8,7 @@ import { Button } from "../ui/button";
 import Link from "next/link";
 import axios from "axios";
 import { API_SERVER_HOST } from "@/api/publicapi";
+import { useCustomCookie } from "../common/useCustomCookie";
 
 const initState = {
     dtoList: [],
@@ -22,16 +23,17 @@ const initState = {
     current: 0
 };
 
-const FreeList = ({boardType}) => {
+const NewsList = ({boardType}) => {
     const router = useRouter()
     const searchParams = useSearchParams();
     const [serverData, setServerData] = useState(initState)
     const [page, setPage] = useState(parseInt(searchParams.get("page")) || 1)
     const size = parseInt(searchParams.get("size")) || 10
+    const userInfo = useCustomCookie()
 
     useEffect(() => {
         getFreeList({ page, size }).then(data => {
-            console.log("현재 자유게시판 데이터 : ", data)
+            console.log("현재 뉴스게시판 데이터 : ", data)
             setServerData(data)
         })
     }, [page, size])
@@ -74,10 +76,11 @@ const FreeList = ({boardType}) => {
         setPage(newPage);
         router.replace(`?page=${newPage}&size=${size}`, { scroll: false });
     };
+    
 
     return (
         <div>
-            {/* 자유 리스트 */}
+            {/* 리스트 */}
             <div className="flex flex-col space-y-2 mb-2 ">
                 <div className="flex items-center justify-between w-full p-2 bg-[#AD927A]">
                     <span className="w-1/12  text-center font-bold ">번 호</span>
@@ -88,25 +91,25 @@ const FreeList = ({boardType}) => {
                     <span className="w-1/12  text-center font-bold ">추천</span>
                 </div>
                 {serverData.dtoList.length > 0 ? (
-                    serverData.dtoList.map((free, index) => (
-                        <div key={free.id}
+                    serverData.dtoList.map((news, index) => (
+                        <div key={news.id}
                             className="flex items-center justify-between w-full p-2 border-b border-black ">
                             <span className="w-1/12 text-center ">{startNumber - index}</span>
                             <span className="w-5/12 text-center " >
-                                <Link href={`/${boardType}/read/${free.id}`} 
+                                <Link href={`/${boardType}/read/${news.id}`} 
                                       onClick={(e) => {
                                         e.preventDefault()
-                                        handlePlusView(free.id, router)
-                                      }}>{free.title}
+                                        handlePlusView(news.id, router)
+                                      }}>{news.title}
                                     <span className="w-1/12 text-center ml-1 ">
-                                        [{free.answerList ? free.answerList.length : 0}]
+                                        [{news.answerList ? news.answerList.length : 0}]
                                     </span>
                                 </Link>
                             </span>
-                            <span className="w-2/12 text-center ">{free.gamer.nickname}</span>
-                            <span className="w-1/12 text-center ">{formatDate(free.createdate)}</span>
-                            <span className="w-1/12 text-center ">{free.view}</span>
-                            <span className="w-1/12 text-center ">{free.voter.length}</span>
+                            <span className="w-2/12 text-center ">{news.gamer.nickname}</span>
+                            <span className="w-1/12 text-center ">{formatDate(news.createdate)}</span>
+                            <span className="w-1/12 text-center ">{news.view}</span>
+                            <span className="w-1/12 text-center ">{news.voter.length}</span>
                         </div>
                     ))
                 ) : (
@@ -152,9 +155,12 @@ const FreeList = ({boardType}) => {
                 </PaginationContent>
             </Pagination>
             <div>
-                <Button variant="mocha" onClick={() => router.push(`/${boardType}/create`)} >글 작성</Button>
+                {userInfo?.roleNames?.includes("ADMIN") ? 
+                    <Button variant="mocha" onClick={() => router.push(`/${boardType}/create`)} >글 작성</Button>
+                : <></>}
+                
             </div>
         </div>
     )
 }
-export default FreeList
+export default NewsList

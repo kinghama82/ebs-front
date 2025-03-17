@@ -132,7 +132,7 @@ const HistoryList = ({ userInfo, selectedYear }) => {
                         <PaginationItem key={pageNum}>
                             <PaginationLink
                                 href={`?page=${pageNum}&size=${size}${gamerid ? `&gamerid=${gamerid}` : ""}`}
-                                className={serverData.current === pageNum ? "border border-black text-black text-lg font-bold" : ""}
+                                className={serverData.current === pageNum ? "border hover:bg-[#AD927A] border-black text-black text-lg font-bold" : ""}
                                 onClick={(e) => {
                                     e.preventDefault()
                                     moveToPage(pageNum)

@@ -148,7 +148,9 @@ const FreeReadPage = () => {
                             <div className="text-3xl font-bold mt-4">{free.title}</div>
                             <div>
                                 {/* ✅ 텍스트 본문 출력 */}
-                                <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(free.content) }} />
+                                <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(free.content) }}
+                                     className="text-xl mt-4 p-2"
+                                      />
 
                                 {/* ✅ 이미지 리스트 출력 */}
                                 {free.imageList && free.imageList.length > 0 && (
@@ -163,7 +165,7 @@ const FreeReadPage = () => {
 
                         <div className="text-center">
                             <Button className="font-bold" variant="outline"
-                                onClick={handleClickVote}><ThumbsUp className="text-red-500" />{free.voter.length}</Button>
+                                onClick={handleClickVote}><ThumbsUp className="text-blue-500" />{free.voter.length}</Button>
                         </div>
                         <div className="grid grid-cols-6 border-b-2 border-amber-600">
                             <div className=" grid-cols-4 flex items-center">
@@ -183,7 +185,7 @@ const FreeReadPage = () => {
                         </div>
                     </div>
                     <div className="mt-1">
-                        <Button variant="secondary" size="xs" className="mr-2 text-white"
+                        <Button size="xs" className="mr-2 text-white"
                             onClick={() => handleCopy()}>주소복사</Button>
                         {currentUrl}
                     </div>

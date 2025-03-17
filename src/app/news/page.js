@@ -1,58 +1,38 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import { getNewsList } from "@/api/news/newsAPI";
+import Top5 from "@/components/common/Top5";
+import NewsList from "@/components/news/NewsList";
+import { Dices } from "lucide-react";
+import { Suspense } from "react";
 
-const NewsList = () => {
-    const [newsList, setNewsList] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-
-    useEffect(() => {
-        getNewsList(1, 10)
-            .then((data) => {
-                setNewsList(data?.dtoList || []);  // ✅ 데이터 방어 처리
-            })
-            .catch((error) => {
-                console.error(error);
-                setError("뉴스 목록을 불러오는 중 오류가 발생했습니다.");
-            })
-            .finally(() => {
-                setLoading(false);
-            });
-    }, []);
+const NewsPage = () => {
+    
 
     return (
-        <div className="container mx-auto p-6">
-            <h1 className="text-2xl font-bold mb-4">뉴스 목록</h1>
+        <>
+            {/* 최상단 게시판 이름 부분 */}
+            <div className="mx-auto w-full max-w-6xl dark:text-white">
+                <div className="flex justify-center text-4xl py-1"
+                    style={{ marginTop: '20px', backgroundColor: 'transparent', color: '#D97706', borderBottom: '2px solid #D97706' }}>
+                    <Dices size={30} />뉴스 게시판
+                </div>
+            </div>
 
-            <Link href="/news/create" className="bg-blue-500 text-white p-2 rounded">
-                ✏️ 새 뉴스 작성
-            </Link>
+            {/* 중단 조회수 / 추천수 부분 */}
+            <div className="max-w-6xl mx-auto p-3 border-b-2 border-amber-600">
+                <div >
+                    <Top5 boardType="news" />
+                </div>
+            </div>
 
-            {loading ? (
-                <p className="mt-4">⏳ 뉴스 목록을 불러오는 중...</p>
-            ) : error ? (
-                <p className="mt-4 text-red-500">{error}</p>
-            ) : (
-                <ul className="mt-4">
-                    {newsList.length > 0 ? (
-                        newsList.map((news) => (
-                            <li key={news.id} className="border-b p-2">
-                                <Link href={`/news/${news.id}`}>
-                                    <h2 className="text-lg font-semibold">{news.title}</h2>
-                                    <p className="text-gray-500">{news.createdate}</p>
-                                </Link>
-                            </li>
-                        ))
-                    ) : (
-                        <p className="text-gray-500 mt-4">📭 등록된 뉴스가 없습니다.</p>
-                    )}
-                </ul>
-            )}
-        </div>
+            {/* 하단 리스트 부분 */}
+            <div className="max-w-6xl mx-auto mt-2 rounded">
+                <Suspense fallback={<div>로딩 중...</div>}>
+                    <NewsList boardType="news" />
+                </Suspense>
+            </div>
+        </>
     );
 };
 
-export default NewsList;
+export default NewsPage;
