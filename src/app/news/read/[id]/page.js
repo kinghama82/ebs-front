@@ -85,6 +85,11 @@ const NewsDetail = () => {
             console.error("URL 복사 실패:", err);
         }
     };
+    //유튜브 iframe 설정 허용
+        const sanitizedContent = DOMPurify.sanitize(news.content, {
+            ADD_TAGS: ["iframe"],
+            ADD_ATTR: ["allowfullscreen", "frameborder", "src"]
+        });
 
     return (
         <>
@@ -130,7 +135,7 @@ const NewsDetail = () => {
                             <div className="text-3xl font-bold mt-4">{news.title}</div>
                             <div>
                                 {/* ✅ 텍스트 본문 출력 */}
-                                <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(news.content) }}
+                                <div dangerouslySetInnerHTML={{ __html: sanitizedContent }}
                                     className="detail-content text-xl mt-4 p-2"
                                 />
 
