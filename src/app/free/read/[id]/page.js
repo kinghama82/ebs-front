@@ -156,7 +156,9 @@ const FreeReadPage = () => {
                                 {free.imageList && free.imageList.length > 0 && (
                                     <div>
                                         {free.imageList.map((fileName, index) => (
-                                            <img key={`${fileName}-${index}`} src={`${API_SERVER_HOST}/api/free/view/${fileName}`} alt="게시글 이미지" />
+                                            <img key={`${fileName}-${index}`} src={`${API_SERVER_HOST}/api/free/view/${fileName}`} 
+                                                 alt="게시글 이미지" 
+                                                 className="mt-4"/>
                                         ))}
                                     </div>
                                 )}
@@ -175,7 +177,8 @@ const FreeReadPage = () => {
                             <div className="col-span-4"></div>
                             {userInfo?.id === free.gamer?.id ? (
                                 <div className="flex justify-end gap-2 mb-1">
-                                    <Button size="sm" className="font-bold">수정</Button>
+                                    <Button size="sm" className="font-bold"
+                                            onClick={()=> router.push(`/free/modify/${free.id}`)}>수정</Button>
                                     <DeleteButton id={free.id} onDelete={handleClickDelete}
                                         redirectTo="/free"
                                         triggerButton={<Button variant="destructive" size="sm">삭제</Button>} />
@@ -197,7 +200,7 @@ const FreeReadPage = () => {
                 </div>
             </div>
             <div className="max-w-6xl mx-auto mt-2">
-                <FreeList />
+                <FreeList boardType="free"/>
             </div>
 
         </>

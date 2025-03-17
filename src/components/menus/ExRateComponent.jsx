@@ -1,5 +1,6 @@
 "use client"
 
+import axios from "axios";
 import { useEffect, useState } from "react";
 
 const ExRateComponent = () => {
@@ -20,19 +21,16 @@ const ExRateComponent = () => {
         // API 호출
         const fetchExchangeRates = async () => {
             try {
-                const response = await fetch('http://localhost:3000/api/exim',{
+                const response = await axios.get('http://localhost:3000/api/exim',{
                     headers: {
                         "Cache-Control": "no-cache, no-store, must-revalidate",
                         "Pragma": "no-cache",
                         "Expires": "0"
                     }
                 });  // Next.js API Route에 요청
-                const data = await response.json();
-                if (response.ok) {
-                    setExchangeRates(data); // 데이터를 상태에 저장
-                } else {
-                    setError(data.error || "API 요청 실패");
-                }
+                
+                setExchangeRates(response.data); // 데이터를 상태에 저장
+                
             } catch (err) {
                 setError(err.message); // 에러 처리
             } finally {

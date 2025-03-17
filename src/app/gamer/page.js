@@ -40,7 +40,7 @@ export default function LoginPage() {
         form.append("password", password);
 
         try {
-            const res = await fetch("http://43.202.30.85:8080/api/gamer/login", {
+            const res = await fetch("http://localhost:8080/api/gamer/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
                 body: form.toString(),
