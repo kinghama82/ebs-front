@@ -113,7 +113,8 @@ const FriendsList = ({ userId }) => {
                                 >
                                     {result.profileImage && result.profileImage.trim() !== "" ? (
                                         <img
-                                            src={`http://localhost:8080${result.profileImage}`}
+                                            src={`http://43.202.30.85${result.profileImage}`}
+                                            // src={`http://localhost:8080${result.profileImage}`}
                                             alt="프로필 이미지"
                                             className="w-8 h-8 rounded-full object-cover mr-2"
                                         />
@@ -149,7 +150,8 @@ const FriendsList = ({ userId }) => {
                             <div className="flex items-center">
                                 {friend.friendImg && friend.friendImg.trim() !== "" ? (
                                     <img
-                                        src={`http://localhost:8080${friend.friendImg}`}
+                                        // src={`http://localhost:8080${friend.friendImg}`}
+                                        src={`http://43.202.30.85${result.profileImage}`}
                                         alt="친구 프로필"
                                         className="w-8 h-8 object-cover rounded-full mr-3"
                                     />
