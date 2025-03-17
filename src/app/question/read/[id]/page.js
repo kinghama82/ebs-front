@@ -34,6 +34,8 @@ const QuestionReadPage = () => {
     const [question, setQuestion] = useState(initState)
     const [currentUrl, setCurrentUrl] = useState("")
 
+
+
     // //정확한 파일이름
     // const extractImgName = (htmlContent) => {
     //     const doc = new DOMParser().parseFromString(htmlContent, "text/html")
