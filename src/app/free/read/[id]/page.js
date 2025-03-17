@@ -103,6 +103,12 @@ const FreeReadPage = () => {
             console.error("URL 복사 실패:", err);
         }
     };
+    //유튜브 iframe 설정 허용
+    const sanitizedContent = DOMPurify.sanitize(free.content, {
+        ADD_TAGS: ["iframe"],
+        ADD_ATTR: ["allowfullscreen", "frameborder", "src"]
+    });
+
     return (
         <>
             <BasicMenu />
@@ -148,7 +154,7 @@ const FreeReadPage = () => {
                             <div className="text-3xl font-bold mt-4">{free.title}</div>
                             <div>
                                 {/* ✅ 텍스트 본문 출력 */}
-                                <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(free.content) }}
+                                <div dangerouslySetInnerHTML={{ __html: sanitizedContent }}
                                     className="detail-content text-xl mt-4 p-2"
                                 />
 
