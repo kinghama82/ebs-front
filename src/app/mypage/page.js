@@ -119,7 +119,8 @@ const MyPage = () => {
                                     <img
                                         src={
                                             gamer?.profileImage && gamer.profileImage.trim() !== ""
-                                                ? `http://localhost:8080${gamer.profileImage}`
+                                                // ? `http://localhost:8080${gamer.profileImage}`
+                                                ? `http://43.202.30.85${gamer.profileImage}`
                                                 : "/allIcon.png"
                                         }
                                         alt="프로필 이미지"

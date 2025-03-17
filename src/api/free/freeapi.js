@@ -2,7 +2,8 @@ import axios from "axios";
 
 
 
-const host = `http://localhost:8080/api/free`
+// const host = `http://localhost:8080/api/free`
+const host = `http://43.202.30.85:8080/api/free`
 
 //리스트
 export const getFreeList = async (pageParam) => {

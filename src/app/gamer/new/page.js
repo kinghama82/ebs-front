@@ -6,13 +6,14 @@ import { useRouter } from "next/navigation";
 import { newGamer, checkEmailExists, checkNicknameExists } from "@/api/gamerApi";
 import { Card, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
-import { Mail, Lock, Phone, User, KeyRound, Calendar } from "lucide-react";
+import {Mail, Lock, Phone, User, KeyRound, Calendar, Dices} from "lucide-react";
 import FormField from "@/components/gamer/FormField";
 import DuplicateCheckField from "@/components/gamer/DuplicateCheckField";
 import AddressField from "@/components/gamer/AddressField";
 import ModalDialog from "@/components/gamer/ModalDialog";
 import { Button } from "@/components/ui/button";
-
+import Link from "next/link";
+import { House } from "lucide-react";
 
 const GamerForm = () => {
     const router = useRouter();
@@ -220,11 +221,17 @@ const GamerForm = () => {
     };
 
     return (
+
         <div className="flex justify-center items-center min-h-screen bg-gray-100">
+
             <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
                 <Card className="w-[400px] shadow-xl rounded-2xl">
                     <CardContent className="p-6">
-                        <h2 className="text-2xl font-bold text-center text-gray-700 mb-4">새 게이머 등록</h2>
+                        <h2 className="text-2xl font-bold text-center text-gray-700 mb-4">
+                            <Link href="/" className= "w-8 h-8 text-blue-500 hover:text-purple-500 transition duration-300" title="홈으로">
+                                <House />
+                            </Link>
+                            새 게이머 등록</h2>
                         <form className="space-y-4" onSubmit={handleSubmit} noValidate>
                             <FormField
                                 label={fieldLabels.name}

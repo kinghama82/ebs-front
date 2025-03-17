@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { Input } from "@/components/ui/input";
@@ -8,8 +8,9 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Mail, Lock } from "lucide-react";
+import {Mail, Lock, House} from "lucide-react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 export default function LoginPage() {
     const router = useRouter();
@@ -39,7 +40,7 @@ export default function LoginPage() {
         form.append("password", password);
 
         try {
-            const res = await fetch("http://localhost:8080/api/gamer/login", {
+            const res = await fetch("http://43.202.30.85:8080/api/gamer/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
                 body: form.toString(),
@@ -64,6 +65,14 @@ export default function LoginPage() {
         }
     };
 
+    const handleFindId = () => {
+        router.push("/gamer/FindIdPage");
+    };
+
+    const handleResetPassword = () => {
+        router.push("/gamer/ResetPW");
+    };
+
     return (
         <div className="flex justify-center items-center min-h-screen bg-gray-100">
             <motion.div
@@ -73,7 +82,10 @@ export default function LoginPage() {
             >
                 <Card className="w-[400px] shadow-xl rounded-2xl">
                     <CardContent className="p-6">
-                        <h2 className="text-2xl font-bold text-center text-gray-700 mb-4">로그인</h2>
+                        <h2 className="text-2xl font-bold text-center text-gray-700 mb-4">
+                            <Link href="/" className= "w-8 h-8 text-blue-500 hover:text-purple-500 transition duration-300" title="홈으로">
+                                <House />
+                            </Link>로그인</h2>
                         <form className="space-y-4" onSubmit={handleSubmit}>
                             <div>
                                 <Label htmlFor="email" className="text-sm font-semibold text-gray-600">
@@ -119,6 +131,14 @@ export default function LoginPage() {
                                 로그인
                             </Button>
                         </form>
+                        <div className="flex justify-between mt-2.5">
+                            <Button onClick={handleFindId} className="w-[48%] bg-purple-500">
+                                아이디찾기
+                            </Button>
+                            <Button onClick={handleResetPassword} className="w-[48%] bg-purple-500">
+                                비밀번호 찾기
+                            </Button>
+                        </div>
                     </CardContent>
                 </Card>
             </motion.div>

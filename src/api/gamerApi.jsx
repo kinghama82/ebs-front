@@ -84,6 +84,42 @@ export const uploadProfileImage = async (email, file) => {
     return response.data; // { msg: "...", profileImage: "..."}
 };
 
+export const changePassword = async (formData) => {
+    try {
+        const response = await axios.put(`${API_SERVER_HOST}/api/gamer/change-password`, formData);
+        return response.data;
+    } catch (error) {
+        console.error("비밀번호 변경 실패:", error);
+        throw error;
+    }
+};
+
+export const requestPasswordReset = async (name, email) => {
+    const response = await axios.post(
+        `${API_SERVER_HOST}/api/gamer/request-password-reset`,
+        { name, email },
+        { headers: { "Content-Type": "application/json" } }
+    );
+    return response.data;
+};
+
+
+export const resetPassword = async (token, newPassword, confirmPassword) => {
+    try {
+        const response = await axios.put(
+            `${API_SERVER_HOST}/api/gamer/reset-password`,
+            { token, newPassword, confirmPassword },
+            { headers: { "Content-Type": "application/json" } }
+        );
+        return response.data;
+    } catch (error) {
+        console.error("비밀번호 재설정 API 오류:", error);
+        throw error;
+    }
+};
+
+
+
 
 
 
