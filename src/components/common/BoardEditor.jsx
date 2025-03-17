@@ -12,7 +12,7 @@ export default function BoardEditor({ id, boardType }) {
     const router = useRouter()
     const [content, setContent] = useState('')
     const [title, setTitle] = useState('')
-    const [tempImage, setTempImage] = useState(null)
+    const [tempImage, setTempImage] = useState([])
     const [imageList, setImageList] = useState([])
     const userInfo = useCustomCookie()
     const [isSubmitting, setIsSubmitting] = useState(false)
