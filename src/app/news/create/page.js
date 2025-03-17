@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import BoardEditor from "@/components/common/BoardEditor";
+import Top5 from "@/components/common/Top5";
+import BasicMenu from "@/components/menus/BasicMenu";
+import { Dices } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { createNews } from "@/api/news/newsAPI";
-import TiptapEditor from "@/components/news/newEditor";
+import { useState } from "react";
 
 const extractYouTubeURL = (htmlContent) => {
     const parser = new DOMParser();
@@ -17,45 +19,36 @@ const extractYouTubeURL = (htmlContent) => {
     return iframe ? iframe.getAttribute("src") : null;
 };
 
-const CreateNews = () => {
-    const router = useRouter();
-    const [title, setTitle] = useState("");
-
-    const handleSave = async (editorContent, youtubeUrl, selectedImages = []) => {
-        const extractedYouTubeURL = extractYouTubeURL(editorContent);
-
-        const formData = new FormData();
-        formData.append("title", title);
-        formData.append("content", editorContent);
-        formData.append("writerId", 1);
-        formData.append("typeId", 3);
-        formData.append("youtubeUrl", extractedYouTubeURL || "");
-
-        selectedImages.forEach((file) => {
-            formData.append("images[]", file);
-        });
-
-        try {
-            const res = await createNews(formData);
-            router.replace(`/news/${res.id}`);  // ✅ replace()로 변경
-        } catch (error) {
-            console.error("뉴스 생성 실패", error);
-        }
-    };
-
+const NewNewsPage = () => {
+     const router = useRouter()
+        const [content, setContent] = useState("")
+    
+        const handleUpdate = (htmlContent) => {
+            setContent(htmlContent);
+            console.log('현재 내용:', htmlContent);
+        };
     return (
-        <div className="container mx-auto p-6">
-            <h1 className="text-2xl font-bold mb-4">📰 새 뉴스 작성</h1>
-            <input
-                type="text"
-                placeholder="제목을 입력하세요"
-                className="w-full p-2 border rounded mb-4"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-            />
-            <TiptapEditor onSave={handleSave} />
-        </div>
-    );
-};
+        <>
+            {/* 최상단 게시판 이름 부분 */}
+            <div className="mx-auto w-full max-w-6xl">
+                <div className="flex justify-center text-4xl py-1"
+                    style={{ marginTop: '20px', backgroundColor: 'transparent', color: '#D97706', borderBottom: '2px solid #D97706' }}>
+                    <Dices size={30} />뉴스 게시판
+                </div>
+            </div>
+            {/* 중단 조회수 추천수 부분 */}
+            <div className="max-w-6xl mx-auto p-2 mt-2 rounded">
+                <Top5 boardType="news" />
+            </div>
 
-export default CreateNews;
+            {/* 중단 게시글 작성 부분 */}
+            <div className="container max-w-6xl mx-auto bg-neutral-200 mt-2 border-b-2 border-t-2 border-amber-600">
+                {/* 에디터부분 */}
+                <div>
+                    <BoardEditor boardType="news" />
+                </div>
+            </div>
+        </>
+    )
+}
+export default NewNewsPage

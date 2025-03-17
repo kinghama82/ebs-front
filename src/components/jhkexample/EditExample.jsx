@@ -17,7 +17,7 @@ import EditToolbar from './EditToolbar';
 import TextStyle from '@tiptap/extension-text-style';
 import HorizontalRule from '@tiptap/extension-horizontal-rule';
 
-export default function EditExample({ content, onUpdate, tempImage, setTempImage }) {
+export default function EditExample({boardType, content, onUpdate, tempImage, setTempImage }) {
   const editor = useEditor({
     extensions: [
         StarterKit.configure({
@@ -81,7 +81,7 @@ export default function EditExample({ content, onUpdate, tempImage, setTempImage
 
   return (
     <div className='-mt-2'>
-      <EditToolbar boardType="free" editor={editor} setTempImage={setTempImage}/>  
+      <EditToolbar boardType={boardType} editor={editor} setTempImage={setTempImage}/>  
       <EditorContent editor={editor} className="tiptap border-2 border-gray-400 rounded-md" />
     </div>
   );
