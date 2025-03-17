@@ -1,3 +1,4 @@
+import axios from "axios";
 
 
 export async function GET(request) {
@@ -24,11 +25,11 @@ export async function GET(request) {
     searchParams.append('searchdate', formattedDate);
     searchParams.append('data', 'AP01');
     url.search = searchParams.toString();
-
+    
     // API 요청
     try {
-        const response = await fetch(url, {
-            method: "GET",
+        console.log("현재 요청 url : ", url)
+        const response = await axios.get(url, {
             headers: {
                 "Content-Type": "application/json",
                 "Cache-Control": "no-cache, no-store, must-revalidate",
@@ -39,7 +40,7 @@ export async function GET(request) {
             },
             mode: "cors",
         })
-        if (!response.ok) {
+        if (response.status !== 200) {
             throw new Error(`Failed to fetch data: ${response.status}`);
         }
         const data = await response.json();
