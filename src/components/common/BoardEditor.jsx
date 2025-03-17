@@ -38,27 +38,23 @@ export default function BoardEditor({ id, boardType }) {
 
         const formData = new FormData();
         // ✅ 이미지가 포함된 경우, 먼저 서버에 업로드 후 URL을 본문에 반영
-        if (tempImage) {
-            
+        if (tempImage) {            
             formData.append('files', tempImage.file);
+            try {
+                const { data: uploadFileName } = await axios.post(`${API_SERVER_HOST}/api/${boardType}/upload`, formData, {
+                    headers: { 'Content-Type': 'multipart/form-data' },
+                });
+
+                console.log("📸 업로드된 이미지 URL:", uploadFileName);
+                uploadedImgFile = uploadFileName;
+
+                // ✅ Base64 이미지를 업로드된 파일명으로 변경
+                updatedContent = updatedContent.replace(tempImage.preview, `${API_SERVER_HOST}/api/${boardType}/view/${uploadedImgFile}`);
+            } catch (error) {
+                console.error('이미지 업로드 실패:', error);
+                return;
+            }
         }
-
-        try {
-            const { data: uploadFileNames } = await axios.post(`${API_SERVER_HOST}/api/${boardType}/upload`, formData, {
-                headers: { 'Content-Type': 'multipart/form-data' },
-            });
-
-            console.log("📸 업로드된 이미지 URL:", uploadFileNames);
-            uploadedImgFile = uploadFileNames
-
-            // ✅ Base64 이미지를 업로드된 파일명으로 변경
-            updatedContent = updatedContent.replace(tempImage.preview,
-                `${API_SERVER_HOST}/api/${boardType}/view/${uploadedImgFile}`);
-        } catch (error) {
-            console.error('이미지 업로드 실패:', error);
-            return;
-        }
-
 
         console.log("📝 저장될 게시글 내용:", updatedContent); // ✅ content가 올바른지 확인
 
@@ -69,13 +65,23 @@ export default function BoardEditor({ id, boardType }) {
             title,
             content: updatedContent,
             gamer: safeGamer,
-            uploadFileNames: [...imageList, ...uploadedImgFile]
+            uploadFileNames: uploadedImgFile ? [uploadedImgFile] : [...imageList]
         };
 
         try {
-            await axios.post(`${API_SERVER_HOST}/api/${boardType}/`, payload, {
-                headers: { 'Content-Type': 'application/json' },
-            });
+            if(id){
+                //수정모드
+                await axios.put(`${API_SERVER_HOST}/api/${boardType}/${id}`, payload,{
+                    headers: {'Content-Type' : 'application/json'},
+                })
+                
+            }else{
+                //작성모드
+                await axios.post(`${API_SERVER_HOST}/api/${boardType}/`, payload, {
+                    headers: { 'Content-Type': 'application/json' },
+                });
+            }
+            
             router.push(`/${boardType}`);
         } catch (error) {
             console.error('게시글 저장 실패:', error);
