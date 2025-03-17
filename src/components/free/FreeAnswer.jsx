@@ -1,13 +1,13 @@
 "use client";
 
+import axios from "axios";
+import { SquareX } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Edit, SquareX } from "lucide-react";
+import DeleteButton from "../common/DeleteButton";
 import { useCustomCookie } from "../common/useCustomCookie";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
-import DeleteButton from "../common/DeleteButton";
-import axios from "axios";
-import { useRouter } from "next/navigation";
 
 export default function FanswerList({ id, boardType }) {
   const [answerList, setAnswerList] = useState([]);

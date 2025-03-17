@@ -49,11 +49,11 @@ export default function EditToolbar({boardType, editor, setTempImage }) {
 
             // ✅ 부모 상태 업데이트
             setTempImage({ file, preview: imageUrl });
-            console.log("📸 업로드된 이미지 URL:", imageUrl);
+            
             
             // ✅ 최종 content 업데이트
             const updatedContent = editor.getHTML();
-            console.log("📃 이미지 추가 후 content 업데이트:", updatedContent);
+            
             editor.commands.setContent(updatedContent);
             
         } catch (error) {

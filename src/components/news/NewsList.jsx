@@ -1,14 +1,14 @@
 "use client"
 
+import { getNewsList } from "@/api/news/newsAPI";
+import { API_SERVER_HOST } from "@/api/publicapi";
+import axios from "axios";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "../ui/pagination";
-import { getFreeList } from "@/api/free/freeapi";
-import { Button } from "../ui/button";
-import Link from "next/link";
-import axios from "axios";
-import { API_SERVER_HOST } from "@/api/publicapi";
 import { useCustomCookie } from "../common/useCustomCookie";
+import { Button } from "../ui/button";
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "../ui/pagination";
 
 const initState = {
     dtoList: [],
@@ -32,7 +32,7 @@ const NewsList = ({boardType}) => {
     const userInfo = useCustomCookie()
 
     useEffect(() => {
-        getFreeList({ page, size }).then(data => {
+        getNewsList({ page, size }).then(data => {
             console.log("현재 뉴스게시판 데이터 : ", data)
             setServerData(data)
         })

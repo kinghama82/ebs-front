@@ -76,8 +76,8 @@ const BasicMenu = () => {
   }, [searchKeyword]);
 
   // ✅ 검색 결과 클릭 시 이동
-  const handleSelectGame = (gameId) => {
-    router.push(`/games/${gameId}`);
+  const handleSelectGame = (id) => {
+    router.push(`${window.location.origin}/games?game=item-${id}`);
     setIsSearchOpen(false);
     setSearchKeyword("");
   };
@@ -115,7 +115,7 @@ const BasicMenu = () => {
                       게임기록
                     </Link>
                   ) : null}
-                  <ExRateComponent/>
+                  {/* <ExRateComponent/> */}
                 </div>
               </div>
 

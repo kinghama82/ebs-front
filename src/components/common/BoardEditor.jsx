@@ -44,7 +44,6 @@ export default function BoardEditor({ id, boardType }) {
             const formData = new FormData();
             formData.append('file', tempImage.file);
     
-            console.log("📤 FormData에 추가된 파일:", formData.get('file'));
     
             try {
                 const { data: uploadFileName } = await axios.post(
@@ -54,14 +53,12 @@ export default function BoardEditor({ id, boardType }) {
                 );
     
                 uploadedImgFile = uploadFileName;
-                console.log("📸 업로드된 이미지 파일명:", uploadedImgFile);
     
                 if (uploadedImgFile) {
                     updatedContent = updatedContent.replace(
                         tempImage.preview, 
                         `${API_SERVER_HOST}/api/${boardType}/view/${uploadedImgFile}`
                     );
-                    console.log("🖼️ 수정된 content:", updatedContent);
                 }
             } catch (error) {
                 console.error('이미지 업로드 실패:', error);
@@ -78,10 +75,6 @@ export default function BoardEditor({ id, boardType }) {
             gamer: safeGamer?.id ? safeGamer : null,
             uploadFileNames: [uploadedImgFile].flat()
         };
-
-        console.log("📸 전송할 uploadFileNames:", payload.uploadFileNames);
-        console.log("📩 최종 전송 payload:", payload);
-
         try {
             await axios.post(`${API_SERVER_HOST}/api/${boardType}/`, payload, {
                 headers: { 'Content-Type': 'application/json' },
@@ -104,6 +97,7 @@ export default function BoardEditor({ id, boardType }) {
                 onChange={(e) => setTitle(e.target.value)}
             />
             <EditExample 
+                boardType={boardType}
                 content={content} 
                 onUpdate={setContent} 
                 tempImage={tempImage} 

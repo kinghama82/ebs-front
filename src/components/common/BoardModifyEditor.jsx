@@ -142,6 +142,7 @@ export default function BoardModifyEditor({ id, boardType }) {
                 onChange={(e) => setTitle(e.target.value)}
             />
             <EditExample
+                boardType={boardType}
                 content={content}
                 onUpdate={setContent}
                 tempImage={tempImage}

@@ -2,7 +2,6 @@
 import BoardEditor from "@/components/common/BoardEditor";
 import Top5 from "@/components/common/Top5";
 import BasicMenu from "@/components/menus/BasicMenu";
-import { Button } from "@/components/ui/button";
 import { Dices } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
