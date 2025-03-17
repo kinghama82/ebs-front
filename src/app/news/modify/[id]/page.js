@@ -1,13 +1,14 @@
+"use client"
 import BoardModifyEditor from "@/components/common/BoardModifyEditor"
 import Top5 from "@/components/common/Top5"
-import BasicMenu from "@/components/menus/BasicMenu"
 import { Dices } from "lucide-react"
+import { useParams } from "next/navigation"
 
-const NewsModifyPage = ({ params }) => {
-    const { id } = params
+const NewsModifyPage = () => {
+    const params = useParams()
+    const id = params?.id
     return (
         <>
-            <BasicMenu />
             <div className="p-1">
                 {/* 최상단 게시판 이름 부분 */}
                 <div className="mx-auto w-full max-w-6xl dark:text-white">
