@@ -112,8 +112,14 @@
   }
 }
 
-
-
+/* 상세보기페이지이미지크기조정 */
+.detail-content img {
+  max-width: 500px; /* 최대 너비 설정 */
+  height: auto; /* 원본 비율 유지 */
+  display: block;
+  margin: 0 auto; /* 중앙 정렬 */
+  border-radius: 8px; /* 둥근 모서리 추가 */
+}
 
 
 

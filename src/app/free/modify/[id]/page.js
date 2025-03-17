@@ -1,8 +1,10 @@
+import BoardModifyEditor from "@/components/common/BoardModifyEditor"
 import Top5 from "@/components/common/Top5"
 import BasicMenu from "@/components/menus/BasicMenu"
 import { Dices } from "lucide-react"
 
-const FreeModifyPage = () => {
+const FreeModifyPage = ({params}) => {
+    const {id} = params
     return (
         <>
             <BasicMenu />
@@ -18,6 +20,10 @@ const FreeModifyPage = () => {
                 <div className="max-w-6xl mx-auto p-2 mt-2 rounded">
                     <Top5 boardType="free" />
                 </div>
+            </div>
+            {/* 에디터 부분 */}
+            <div className="max-w-6xl mx-auto p-2 bg-white rounded">
+                <BoardModifyEditor id={id} boardType="free" />
             </div>
             
         </>

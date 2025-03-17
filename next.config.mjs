@@ -27,7 +27,6 @@ const nextConfig = {
     async rewrites() {
         return [];
     },
-
     images: {
         remotePatterns: [
             {

@@ -17,7 +17,7 @@ import EditToolbar from './EditToolbar';
 import TextStyle from '@tiptap/extension-text-style';
 import HorizontalRule from '@tiptap/extension-horizontal-rule';
 
-export default function EditExample({ content, onUpdate, tempImages, setTempImages }) {
+export default function EditExample({ content, onUpdate, tempImage, setTempImage }) {
   const editor = useEditor({
     extensions: [
         StarterKit.configure({
@@ -67,6 +67,13 @@ export default function EditExample({ content, onUpdate, tempImages, setTempImag
   });
 
   useEffect(() => {
+    if (editor && content) {
+      editor.commands.setContent(content, true);
+  }
+}, [content]);
+  
+
+  useEffect(() => {
     return () => editor && editor.destroy();
   }, [editor]);
 
@@ -74,7 +81,7 @@ export default function EditExample({ content, onUpdate, tempImages, setTempImag
 
   return (
     <div className='-mt-2'>
-      <EditToolbar editor={editor} tempImages={tempImages} setTempImages={setTempImages}/>  
+      <EditToolbar boardType="free" editor={editor} setTempImage={setTempImage}/>  
       <EditorContent editor={editor} className="tiptap border-2 border-gray-400 rounded-md" />
     </div>
   );
