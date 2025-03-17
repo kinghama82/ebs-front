@@ -1,14 +1,12 @@
 "use client";
 
-import { deleteHistory, getHistory, modifyHistory } from "@/api/history/historyApi";
+import { deleteHistory, getHistory } from "@/api/history/historyApi";
 import DeleteButton from "@/components/common/DeleteButton";
 import GameBoxComponent from "@/components/common/GameBoxComponent";
 import BasicMenu from "@/components/menus/BasicMenu";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
 
 const initState = {
     title: '',
@@ -82,11 +80,14 @@ const HistoryReadPage = () => {
                 {/* 게임정보부분 */}
                 <div>
                     <h2 className="text-lg font-semibold mb-3">플레이한 게임</h2>
-                    <GameBoxComponent id={gameId} />
+                    <GameBoxComponent id={history.game.id} />
                 </div>
                 {/* 제목 과 내용 */}
-                <h1 className="text-xl font-bold">{history.title}</h1>
-                <p className=" text-gray-700">{history.content}</p>
+                <h1 className="text-2xl font-bold border-b-2 border-gray-200">{history.title} [ 플레이 날짜 : {history.date} ]</h1>
+                <p className="text-xl font-bold">메모</p>
+                <p name="content" className=" text-gray-700">{history.content}</p>
+                
+                
 
                 {/* 전적 */}
                 <div className="border-t pt-4 mt-4">
@@ -96,7 +97,7 @@ const HistoryReadPage = () => {
 
                 {/* 파티원부분 */}
                 <div className="border-t">
-                    <h2 className="text-lg font-semibold">같이 플레이한 파티원</h2>
+                    <h2 className="text-lg font-semibold mt-3">같이 플레이한 파티원</h2>
                     {history.mate.length > 0 ? (
                         <ul className="list-disc pl-5">
                             {history.mate.map((player, index) => (
@@ -109,11 +110,11 @@ const HistoryReadPage = () => {
 
             {/* 버튼부분 */}
             <div className="mx-auto relative flex gap-2 max-w-6xl justify-end">
-                <Button variant="secondary" size="sm" className=" shadow-md text-white"
+                <Button variant="secondary" size="lg" className=" shadow-md text-white"
                         onClick={() => moveToModify(id)}>수정</Button>
                 <DeleteButton id={history.id} onDelete={handleClickDelete} 
                               redirectTo="/history"
-                              triggerButton={<Button variant="destructive" size="sm">삭제</Button>}/>
+                              triggerButton={<Button variant="destructive" size="lg">삭제</Button>}/>
             </div>
         </>
     );

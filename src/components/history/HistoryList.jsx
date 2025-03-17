@@ -79,12 +79,10 @@ const HistoryList = ({ userInfo, selectedYear }) => {
     };
 
     return (
-        <div className="mt-10 mr-2 ml-2">
-            
-
+        <div className="mt-2">
             {/* 히스토리 리스트 */}
-            <div className="flex flex-col mx-auto p-6 space-y-2">
-                <div className="flex items-center justify-between w-full p-2 border-b border-black">
+            <div className="flex flex-col mx-auto space-y-2">
+                <div className="flex items-center justify-between w-full p-2 border-b bg-[#AD927A] border-black">
                     <span className="w-1/12  text-center font-bold ">글번호</span>
                     <span className="w-5/12  text-center font-bold ">제 목</span>
                     <span className="w-1/12  text-center font-bold ">전 적</span>
@@ -117,7 +115,7 @@ const HistoryList = ({ userInfo, selectedYear }) => {
 
             {/* 페이지네이션 */}
 
-            <Pagination>
+            <Pagination className="mt-2">
                 <PaginationContent>
                     {serverData.prev && (
                         <PaginationItem>
@@ -134,7 +132,7 @@ const HistoryList = ({ userInfo, selectedYear }) => {
                         <PaginationItem key={pageNum}>
                             <PaginationLink
                                 href={`?page=${pageNum}&size=${size}${gamerid ? `&gamerid=${gamerid}` : ""}`}
-                                className={serverData.current === pageNum ? "bg-gray-500 text-black text-lg font-bold" : ""}
+                                className={serverData.current === pageNum ? "border border-black text-black text-lg font-bold" : ""}
                                 onClick={(e) => {
                                     e.preventDefault()
                                     moveToPage(pageNum)

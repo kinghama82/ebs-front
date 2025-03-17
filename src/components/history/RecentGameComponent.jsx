@@ -24,7 +24,7 @@ const RecentGameComponent = ({ gamerid }) => {
                         {/* 게임 이미지 */}
                         {game.img ? (
                             <span className=" ms-2 border-2">
-                                <img src={`http://43.202.30.85:8080${game.img}`}
+                                <img src={`http://43.202.30.85${game.img}`}
                                      alt={game.gameName}
                                      className="w-[25px] h-[25px] object-cover rounded-md"/>
                             </span>

@@ -17,11 +17,11 @@ const HistoryContent = ({ userInfo }) => {
     const totalRecord = userRecord ? (userRecord.win || 0) + (userRecord.draw || 0) + (userRecord.lose || 0) : 0;
     return (
         <div>
-            <div className="flex flex-row gap-12 rounded-md mt-2 max-w-6xl mx-auto border-1 bg-gray-300 min-h-96">
+            <div className="flex flex-row gap-12 rounded-md mt-2 max-w-6xl mx-auto border-1 bg-neutral-200 min-h-96">
                 {/* 왼쪽공간 */}
-                <div className="m-1 basis-6/12 card border-black dark:border-white dark:bg-[#0a0b0c]">
+                <div className=" basis-6/12 card border-black dark:border-white dark:bg-[#0a0b0c]">
                     <div className="m-1">
-                        <Button variant="secondary" className="text-white text-md">{userInfo.nickname}</Button>
+                        <Button variant="mocha" className="text-white text-md">{userInfo.nickname}</Button>
                     </div>
                     <div className="font-bold text-2xl text-center dark:text-white">전 적 통 계</div>
                     <div className="flex justify-center dark:text-white">
@@ -73,7 +73,7 @@ const HistoryContent = ({ userInfo }) => {
                 </div>
 
                 {/* 오른쪽공간 */}
-                <div className="m-1 p-1 basis-6/12 card border-black dark:border-white dark:bg-[#0a0b0c]" >
+                <div className=" p-1 basis-6/12 card border-black dark:border-white dark:bg-[#0a0b0c]" >
                     <Tabs defaultValue="game" className="w-full dark:bg-[#0a0b0c]">
                         <TabsList className="grid w-full grid-cols-2">
                             <TabsTrigger value="mate">게임 메이트</TabsTrigger>
@@ -106,7 +106,7 @@ const HistoryContent = ({ userInfo }) => {
                     : <></>}
             </div >
             {/* 아래공간 리스트 */}
-            <div className=" max-w-6xl mx-auto bg-gray-300 dark:bg-[#0a0b0c] rounded -mt-7 dark:text-white" >
+            <div className=" max-w-6xl mx-auto border-t-2 bg-neutral-200 border-amber-600" >
                 <HistoryList userInfo={userInfo} selectedYear={selectedYear} />
             </div>
             

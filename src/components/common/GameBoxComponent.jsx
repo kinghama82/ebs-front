@@ -3,6 +3,8 @@
 import { getGameById } from "@/api/game/gameapi";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import CopyUrlButton from "./CopyUrlButton";
+import BookMarkButton from "../bookmarks/BookMarkButton";
 
 const GameBoxComponent = ({ id }) => {
     const [game, setGame] = useState(null)
@@ -23,6 +25,7 @@ const GameBoxComponent = ({ id }) => {
 
         fetchGame();
     }, [id]);
+    // const gameValue = `item-${game.id}`
 
     if (!game) return <p>게임 정보를 불러오는중...</p>
     return (
@@ -32,7 +35,7 @@ const GameBoxComponent = ({ id }) => {
                 style={{
                     backgroundImage: `
                         linear-gradient(to right, rgba(0,0,0,0.8) 75%, rgba(0,0,0,0) 30%),
-                        url(http://43.202.30.85:8080${game.img})
+                        url(http://43.202.30.85${game.img})
                     `,
                     backgroundSize: '100% 100%, 25% 255px',
                     backgroundPosition: 'left, right center',
@@ -49,7 +52,7 @@ const GameBoxComponent = ({ id }) => {
                             // height={200}
                             // className="rounded-md"
 
-                            src={`http://43.202.30.85:8080${game.img}`}
+                            src={`http://43.202.30.85${game.img}`}
                             alt={game.gameName}
                             className="w-[150px] h-[150px] object rounded-md"
                         />
@@ -62,13 +65,18 @@ const GameBoxComponent = ({ id }) => {
 
                 <div className="basis-2/5 mr-4 w-full p-2  ms-3">
                     <div className="flex flex-col h-16">
-                        <h3 className="text-xl font-bold  border-b-2">
+                        <h3 className="text-xl font-bold  border-b-2 flex justify-between items-center">
                             {game.gameName}
-                            <div className="shrink w-56 text-sm text-gray-500 flex justify-between">
-                                {game.enGameName}
-                                <span className="text-base font-bold"> {game.year}</span>
+                            {/* url복사 + 게임 북마크 */}
+                            <div className="flex justify-between gap-3" >
+                                <CopyUrlButton url={`${window.location.origin}/games?game=item-${game.id}`} />
+                                <BookMarkButton gameId={game.id} />
                             </div>
                         </h3>
+                        <div className="shrink w-56 text-sm text-gray-500 flex justify-between">
+                            {game.enGameName}
+                            <span className="text-base font-bold"> {game.year}</span>
+                        </div>
                     </div>
 
                     <div className="flex flex-row">
