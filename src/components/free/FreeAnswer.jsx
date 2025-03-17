@@ -15,7 +15,7 @@ export default function FanswerList({ id, boardType }) {
   const [content, setContent] = useState("");
   const router = useRouter()
 
-  // API 엔드포인트 설정 (동적 게시판 대응)
+  // 게시판 이름별 주소설정
   const API_HOST = `http://localhost:8080/api/${boardType}`;
 
   // 댓글 불러오기
@@ -88,17 +88,15 @@ export default function FanswerList({ id, boardType }) {
                   <span className="text-md text-black mr-2">
                     {answer.gamer?.nickname || "알수 없음"}
                   </span>
+                  <span className="text-sm text-gray-400">({answer.createdate})</span>
                   {userInfo?.id === answer.gamer?.id ? (
                     <div className="flex items-center space-x-2 p-1">
-                      <Edit size={18} className="text-blue-500" />
                       <DeleteButton
                         id={answer.id}
                         onDelete={() => handleAnswerDelete(answer.id)}
                         triggerButton={<SquareX size={18} className="text-red-500 cursor-pointer" />} />
                     </div>
                   ) : (<></>)}
-
-                  <span className="text-sm text-gray-400">({answer.createdate})</span>
                 </div>
                 <p className="mt-1">{answer.content}</p>
               </div>

@@ -71,6 +71,8 @@
 
 /*팁탭기본넓이설정*/
 .ProseMirror {
+  max-width: 100%;
+  height: auto;
   min-height: 200px;
   padding: 12px;
   border: 1px solid #ddd;

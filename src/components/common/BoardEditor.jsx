@@ -6,6 +6,7 @@ import EditExample from '../jhkexample/EditExample';
 import axios from 'axios';
 import { API_SERVER_HOST } from '@/api/publicapi';
 import { useCustomCookie } from './useCustomCookie';
+import { Button } from '../ui/button';
 
 export default function BoardEditor({ id, boardType }) {
     const router = useRouter()
@@ -88,22 +89,28 @@ export default function BoardEditor({ id, boardType }) {
     };
 
     return (
-        <div className="p-4">
+        <div className="p-2 mb-2">
             <input
                 type="text"
-                className="w-full border p-2 mb-4"
+                className="w-full border-2 border-gray-400 rounded p-2 mb-4 mt-4"
                 placeholder="제목을 입력하세요"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
             />
             <EditExample content={content} onUpdate={setContent} tempImages={tempImages} setTempImages={setTempImages} />
-            <button
-                onClick={handleSave}
-                disabled={isSubmitting}
-                className={`mt-4 px-4 py-2 rounded ${isSubmitting ? "bg-gray-400" : "bg-blue-500 text-white"}`}
-            >
-                {isSubmitting ? "저장 중..." : "저장하기"}
-            </button>
+            <div className='mt-2 grid grid-cols-12'>
+                <Button variant="mocha" className="mt-2">목 록</Button>
+                <div className='grid col-span-10'/>
+                <Button
+                    className="mt-2"
+                    variant="mocha"
+                    onClick={handleSave}
+                    disabled={isSubmitting}
+                >
+                    {isSubmitting ? "저장 중..." : "등 록"}
+                </Button>
+            </div>
+
         </div>
     );
 }

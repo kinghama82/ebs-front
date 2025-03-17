@@ -39,19 +39,19 @@ export default function Top5({ boardType }) {
     };
 
     return (
-        <div className="grid grid-cols-2 gap-8 w-full max-w-6xl mx-auto">
+        <div className="grid grid-cols-2 gap-6 w-full max-w-6xl mx-auto">
             {/* 추천수 TOP5 */}
-            <div className="p-4 border-2 border-gray-300 rounded-lg shadow-md bg-white">
+            <div className="p-3 border-2 border-gray-300 rounded-lg shadow-md bg-white">
                 <h2 className="text-xl font-bold flex justify-center items-center">
-                    추천수 TOP5 <Flame size={24} color="red" className="ml-2" />
+                    베스트 게시글 <Flame size={24} color="red" className="ml-2" />
                 </h2>
                 <TopList list={topVote} handleClick={handlePostClick} type="vote" />
             </div>
 
             {/* 조회수 TOP5 */}
-            <div className="p-4 border-2 border-gray-300 rounded-lg shadow-md bg-white">
+            <div className="p-3 border-2 border-gray-300 rounded-lg shadow-md bg-white">
                 <h2 className="text-xl font-bold flex justify-center items-center">
-                    조회수 TOP5 <Flame size={24} color="red" className="ml-2" />
+                    핫 이슈 <Flame size={24} color="red" className="ml-2" />
                 </h2>
                 <TopList list={topView} handleClick={handlePostClick} type="view" />
             </div>
@@ -80,13 +80,13 @@ const TopList = ({ list, handleClick, type }) => {
                     {/* 추천수 TOP5 → 추천수만 표시 */}
                     {type === "vote" && (
                         <span className="text-sm text-black grid-cols-2 grid">
-                            <ThumbsUp className="text-blue-500" size={18}/>&nbsp;{post.voter?.length || 0}
+                            <ThumbsUp className="text-blue-500" size={18}/>&nbsp;&nbsp;{post.voter?.length || 0}
                         </span>
                     )}
                     {/* 조회수 TOP5 → 조회수만 표시 */}
                     {type === "view" && (
                         <span className="text-sm text-black grid grid-cols-2">
-                            <Eye className="text-red-500" size={18}/>&nbsp;{post.view || 0}
+                            <Eye className="text-red-500" size={18}/>&nbsp;&nbsp;{post.view || 0}
                         </span>
                     )}
                 </li>

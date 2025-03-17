@@ -18,7 +18,7 @@ const freePage = () => {
       </div>
 
       {/* 중단 조회수 / 추천수 부분 */}
-      <div className="max-w-6xl mx-auto p-4 border-b-2 border-amber-600">
+      <div className="max-w-6xl mx-auto p-3 border-b-2 border-amber-600">
         <div >
           <Top5 boardType="free"/>
         </div>
@@ -27,7 +27,7 @@ const freePage = () => {
       {/* 하단 리스트 부분 */}
       <div className="max-w-6xl mx-auto mt-2 rounded">
         <Suspense fallback={<div>로딩 중...</div>}>
-          <FreeList />
+          <FreeList boardType="free" />
         </Suspense>
 
       </div>
