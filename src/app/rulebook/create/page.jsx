@@ -1,13 +1,15 @@
 import EditorComponent from "@/components/common/EditorComponent";
-import CKEditorComponent from "@/components/common/CKEditorComponent";
+import BasicMenu from "@/components/menus/BasicMenu";
+import React from "react";
 
 const Newpage = () => {
+
     return (
         <div>
+            <BasicMenu></BasicMenu>
             <div>
-                에디터
+                <EditorComponent></EditorComponent>
             </div>
-            <CKEditorComponent />
         </div>
     );
 }

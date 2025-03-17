@@ -1,6 +1,8 @@
+import BootstrapProvider from "@/components/BootstrapProvider";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import BootstrapProvider from "@/components/BootstrapProvider"; // 추가
+import { SonnerToaster } from "@/components/ui/sonner"; // ✅ SonnerToaster import
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -19,10 +21,20 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
     return (
-        <html lang="en">
-        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <BootstrapProvider> {/* BootstrapProvider로 감싸기 */}
+        <html lang="ko" suppressHydrationWarning> 
+        <head>
+            <meta charSet="utf-8"/>
+            <title>Board ParaDice</title>
+            <link rel="stylesheet"
+                  href="https://cdn.jsdelivr.net/npm/pretendard@latest/dist/web/static/pretendard.css"/>
+        </head>
+        <body>
+
+        <SonnerToaster /> {/* ✅ Toast 메시지 활성화 */}
+        <BootstrapProvider> {/* ✅ BootstrapProvider 적용 */}
+            <ThemeProvider >
             {children}
+            </ThemeProvider>
         </BootstrapProvider>
         </body>
         </html>

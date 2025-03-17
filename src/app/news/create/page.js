@@ -1,0 +1,61 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { createNews } from "@/api/news/newsAPI";
+import TiptapEditor from "@/components/news/newEditor";
+
+const extractYouTubeURL = (htmlContent) => {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlContent, "text/html");
+    const iframe = doc.querySelector("iframe");
+
+    console.log("Extracting YouTube URL from:", htmlContent); // ✅ 디버깅
+    console.log("Found iframe:", iframe); // ✅ 디버깅
+    console.log("Extracted URL:", iframe ? iframe.getAttribute("src") : "None"); // ✅ 디버깅
+
+    return iframe ? iframe.getAttribute("src") : null;
+};
+
+const CreateNews = () => {
+    const router = useRouter();
+    const [title, setTitle] = useState("");
+
+    const handleSave = async (editorContent, youtubeUrl, selectedImages = []) => {
+        const extractedYouTubeURL = extractYouTubeURL(editorContent);
+
+        const formData = new FormData();
+        formData.append("title", title);
+        formData.append("content", editorContent);
+        formData.append("writerId", 1);
+        formData.append("typeId", 3);
+        formData.append("youtubeUrl", extractedYouTubeURL || "");
+
+        selectedImages.forEach((file) => {
+            formData.append("images[]", file);
+        });
+
+        try {
+            const res = await createNews(formData);
+            router.replace(`/news/${res.id}`);  // ✅ replace()로 변경
+        } catch (error) {
+            console.error("뉴스 생성 실패", error);
+        }
+    };
+
+    return (
+        <div className="container mx-auto p-6">
+            <h1 className="text-2xl font-bold mb-4">📰 새 뉴스 작성</h1>
+            <input
+                type="text"
+                placeholder="제목을 입력하세요"
+                className="w-full p-2 border rounded mb-4"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+            />
+            <TiptapEditor onSave={handleSave} />
+        </div>
+    );
+};
+
+export default CreateNews;
