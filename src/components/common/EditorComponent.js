@@ -143,7 +143,7 @@ const EditorComponent = () => {
       const fullImageUrl = response.data;
       console.log("업로드 성공:", fullImageUrl);
       setImageUrl(fullImageUrl);
-      editor.commands.insertContent(`<img src="${fullImageUrl}" alt="uploaded image" />`);
+      editor.commands.insertContent(`<img src="${fullImageUrl}" alt="uploaded image" onerror="console.log('이미지 로딩 실패:', this.src)" />`);
 
 
 
@@ -416,7 +416,7 @@ const EditorComponent = () => {
 
         {/* 게시글 작성 버튼 */}
         <button onClick={submitPost} style={{ ...buttonStyle, marginTop: '20px', backgroundColor: '#D97706' }}>
-          게시글 수정
+          게시글 작성
         </button>
 
       </div>

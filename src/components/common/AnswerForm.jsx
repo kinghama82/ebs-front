@@ -8,19 +8,24 @@ const AnswerForm = ({ rulebookId, onAnswerAdded }) => {
     const userInfo = useCustomCookie();
 
     const handleSubmit = async (e) => {
-
         e.preventDefault();
 
-        const response = await axios.post(`http://localhost:8080/rulebook/${rulebookId}/answers/create`, {
-            writerId: userInfo.id, // 로그인 ID를 자동으로 사용
-            content,
-        });
+        try {
+            const response = await axios.post(`http://localhost:8080/rulebook/${rulebookId}/answers/create`, {
+                gamerId: userInfo.id,
+                content,
+            });
 
-        if (response.status === 200) {
-            onAnswerAdded(response.data);
-            setContent(''); // 답글 내용 초기화
+            if (response.status === 200) {
+                onAnswerAdded(response.data);
+                setContent('');
+            }
+        } catch (error) {
+            console.error("Error occurred while submitting the answer:", error);
+            alert("답글 작성 중 오류가 발생했습니다. 다시 시도해 주세요.");
         }
     };
+
 
     return (
         <form onSubmit={handleSubmit} className="mt-4">
