@@ -282,7 +282,6 @@ const MyPage = () => {
                     </aside>
                 </div>
 
-                {/* 내 글 / 전적통계 */}
                 <div className="flex justify-start space-x-4 my-2">
                     <button
                         className={`bg-orange-100 text-black font-bold px-4 py-2 rounded-md mt-2 border ${
