@@ -24,7 +24,12 @@ export default function FanswerList({ id, boardType }) {
     const fetchAnswers = async () => {
       try {
         const res = await axios.get(`${API_HOST}/${id}/answers`);
-        setAnswerList(res.data || []);
+        console.log("api응답 데이터 : ", res.data)
+        const processedData = res.data.map(answer => ({
+          ...answer,
+          gamer: answer.gamer || { nickname: "알수 없음", id: null }
+        }));
+        setAnswerList(processedData);
       } catch (error) {
         console.error(`${boardType} 게시판 댓글 불러오기 실패:`, error);
       }
@@ -80,14 +85,14 @@ export default function FanswerList({ id, boardType }) {
       {/* 댓글 리스트 */}
       <div className="mt-2 space-y-4">
         {answerList.length > 0 ? (
-          answerList.map((answer) => (
-            <Card key={answer.id} className="p-2 -my-1">
+          answerList.map((answer,index) => (
+            <Card key={index} className="p-2 -my-1">
               <div className="p-1">
                 <div className="flex items-center">
                   <span className="text-md text-black mr-2">
                     {answer.gamer?.nickname || "알수 없음"}
                   </span>
-                  <span className="text-sm text-gray-400">({answer.createdate})</span>
+                  <span className="text-sm text-gray-400">({answer?.createdate})</span>
                   {userInfo?.id === answer.gamer?.id ? (
                     <div className="flex items-center space-x-2 p-1">
                       <DeleteButton
