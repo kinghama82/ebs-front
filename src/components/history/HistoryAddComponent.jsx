@@ -10,6 +10,7 @@ import FetchingModal from "../common/FetchingModal";
 import GameBoxComponent from "../common/GameBoxComponent";
 import { useCustomCookie } from "../common/useCustomCookie";
 import PartyFriendsList from "./PartyFriendsList";
+import { Button } from "../ui/button";
 
 const initState = {
     title: '',
@@ -178,13 +179,11 @@ const HistoryAddComponent = () => {
 
     return (
         <>
-
-            <div className="bg-gray-400 border-2 max-w-6xl mx-auto rounded mt-10 m-2 p-4 flex flex-col gap-6">
+            <div className="bg-neutral-200 border-t-2 border-b-2 border-amber-600 max-w-6xl mx-auto mt-2">
                 {fetching ? <FetchingModal /> : <></>}
                 {/* 제목 입력 */}
-                <div className="relative flex w-full flex-wrap items-stretch border-b p-4 -mt-5">
-                    <div className="w-2/12 p-4 text-center font-bold">제 목</div>
-                    <input className="w-[850px] relative p-4 rounded border border-solid border-neutral-300 shadow-md"
+                <div className=" w-full p-4">
+                    <input className="w-full relative p-3 rounded border-2 border-gray-400 shadow-md"
                         name="title"
                         type="text"
                         placeholder="제목을 입력하세요"
@@ -194,65 +193,69 @@ const HistoryAddComponent = () => {
 
 
                 {/* 게임 ID 입력 및 검색 */}
-                <div className="relative flex w-full flex-wrap items-stretch p-4 -mt-5 -mb-6">
-                    <div className="w-2/12 p-4 text-center font-bold">게임검색</div>
+                <div className="relative flex w-full p-3 -mt-4">
+                    <div className="w-1/12 items-center flex p-2 text-lg font-bold">게임검색</div>
                     <input
-                        className="w-[400px] p-4 rounded border border-solid border-neutral-300 shadow-md"
+                        className="w-[300px] p-2 rounded border-2 border-gray-400 shadow-md ml-2"
                         type="text"
                         name="game"
                         placeholder="검색어 입력"
                         value={keyword}
                         onChange={(e) => setKeyword(e.target.value)}
                     />
-                    <button className="ml-4 p-4 bg-blue-500 text-white rounded shadow-md "
+                    <Button size="lg" variant="mocha" className="ml-2 p-4 text-lg text-white rounded shadow-md "
                         onClick={handleSearchGame}>
                         검색
-                    </button>
+                    </Button>
                 </div>
 
                 {/* 검색된 게임 목록 표시 */}
                 {games.length > 0 ? (
 
-                    <div className="w-[984px] ml-12 space-y-2">
-                        <div className="card">
-                            <div className="font-bold p-2" >게임검색 결과</div>                    
-                                {games.map((game) => (                                    
-                                    <div key={game.id}
-                                         className="cursor-pointer p-2 border border-neutral-300 rounded hover:bg-blue-300"
-                                         onClick={() => handleSelectGame(game)}                                    >
-                                         {game.gameName}
-                                    </div>
-                                ))}
+                    <div className="w-full p-4 -mt-8">
+                        <div className="card border-2 border-amber-600 ">
+                            <div className="font-bold p-2" >게임검색 결과</div>
+                            {games.map((game) => (
+                                <div key={game.id}
+                                    className="cursor-pointer p-2 border border-neutral-300 hover:bg-blue-300"
+                                    onClick={() => handleSelectGame(game)}                                    >
+                                    {game.gameName}
+                                </div>
+                            ))}
                         </div>
                     </div>
                 ) : (<></>)}
 
                 {/* 검색된 게임 정보 표시 */}
-                {selectedGame && <GameBoxComponent id={selectedGame.id} />}
+                <div className="p-4 -mt-4">
+                    {selectedGame && <GameBoxComponent id={selectedGame.id} />}
+                </div>
+                
 
                 {/* 전적 및 날짜 입력 */}
-                <div className="p-4 border-b border-t grid grid-cols-2 gap-6 -mt-5">
+                <div className=" border-black grid grid-cols-2 gap-6 -mt-1">
                     <div className="flex flex-col gap-4" >
-                        <div className="ms-4 flex gap-4 font-bold">전적
-                            <label className="ml-6 flex items-center gap-2">
+                        <div className="ms-4 flex gap-4 font-bold text-xl">전적
+                            <label className="ml-9 flex items-center gap-2 text-green-500">
                                 <input type="radio" id="radio1" name="result" checked={history.win === 1}
-                                    onChange={handleChangeResult} />
+                                       onChange={handleChangeResult}/>
                                 {" "}승(Win)
                             </label>
-                            <label className="flex items-center gap-2">
+                            <label className="flex items-center gap-2 text-yellow-600">
                                 <input type="radio" id="radio2" name="result" checked={history.draw === 1}
                                     onChange={handleChangeResult} />
                                 {" "}무(Draw)
                             </label>
-                            <label className="flex items-center gap-2">
+                            <label className="flex items-center gap-2 text-red-500">
                                 <input type="radio" id="radio3" name="result" checked={history.lose === 1}
                                     onChange={handleChangeResult} />
                                 {" "}패(Lose)
                             </label>
                         </div>
-                        <div className="ms-4 font-bold"
-                            onClick={() => document.getElementById("game-date-input").showPicker()}>게임 날짜
-                            <input className="ml-4 p-3 w-[295px] border border-solid border-neutral-300 shadow-md rounded"
+                        {/* 날짜달력부분 */}
+                        <div className="ms-4 font-bold text-xl"
+                            onClick={() => document.getElementById("game-date-input").showPicker()}>게임날짜
+                            <input className="ml-5 p-2 w-[300px] border-2 text-lg border-gray-400 shadow-md rounded"
                                 type="date" name="date"
                                 value={history.date}
                                 id="game-date-input"
@@ -262,23 +265,27 @@ const HistoryAddComponent = () => {
 
                     {/* 파티원 추가 입력 + 추가된 파티원 목록 */}
                     <div className="flex flex-col gap-4">
-                        <div className="font-bold">파티원 추가</div>
+                        <div className="font-bold text-xl border border-black">파티원 추가</div>
 
-                        <PartyFriendsList userId={userInfo?.id} onAddMember={handleSelectFriend}/>
+                        
 
                         {/* 파티원직접입력 */}
-                        <div className="flex items-center gap-2">
-                            <input className="w-[324px] p-3 border border-solid border-neutral-300 shadow-md rounded"
+                        <div className="grid grid-cols-4 items-center gap-2 border-black border" >
+                            <input className="w-[300px] col-span-3 p-3 border-2 border-gray-400 shadow-md rounded"
                                 type="text" placeholder="파티원 이름 입력" value={partyMember}
                                 onChange={(e) => setPartyMember(e.target.value)} />
-                            {/* 파티원추가버튼 */}
-                            <Plus className="rounded h-[56px] text-white w-16 bg-primary shadow-md"
-                                onClick={handleAddPartyMember}>
-                            </Plus>
+                            <div className="border border-black">
+                                <span><PartyFriendsList userId={userInfo?.id} onAddMember={handleSelectFriend} /></span>
+                                {/* 파티원추가버튼 */}    
+                                <span><Plus className="rounded h-10 text-white w-10 bg-primary shadow-md"
+                                            onClick={handleAddPartyMember}/></span>
+                                
+                            
                             {/* 파티원초기화버튼 */}
                             <RotateCcw className="rounded h-[56px] text-white w-16 bg-primary shadow-md"
                                 onClick={handleResetPartyMembers}>
                             </RotateCcw>
+                            </div>
                         </div>
 
                         {/* 추가된 파티원 목록 */}
@@ -296,9 +303,9 @@ const HistoryAddComponent = () => {
 
                 {/* 메모 입력 */}
                 <div className="p-4 -mt-10">
-                    <div className=" font-bold p-4">메모</div>
+                    <div className=" font-bold p-4 text-2xl">메모</div>
                     <textarea
-                        className="w-[982px] p-4 ml-6 rounded border border-solid border-neutral-300 shadow-md"
+                        className="w-[982px] p-4 ml-6 rounded border border-solid border-gray-300 shadow-md"
                         name="content"
                         rows="4"
                         placeholder="내용을 입력하세요"
@@ -307,16 +314,17 @@ const HistoryAddComponent = () => {
                     />
                 </div>
 
-                {/* 추가 버튼 */}
-                {userInfo ?
-                    <div className="flex justify-end mr-10 -mt-14 p-4">
-                        <button type="button" className="rounded p-4 w-36 bg-blue-500 text-xl text-white"
-                            onClick={handleClickAdd}>기록 저장
-                        </button>
-                    </div>
-                    : <></>}
+
 
             </div>
+            {/* 추가 버튼 */}
+            {userInfo ?
+                <div className="flex justify-end mr-10 p-4">
+                    <Button variant="mocha" className="p-4 text-xl text-white"
+                        onClick={handleClickAdd}>기록 저장
+                    </Button>
+                </div>
+                : <></>}
         </>
     );
 };
