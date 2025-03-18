@@ -2,6 +2,7 @@
 import { getGames } from "@/api/game/gameapi";
 import BookMarkButton from "@/components/bookmarks/BookMarkButton";
 import CopyUrlButton from "@/components/common/CopyUrlButton";
+import CategoryIcons  from "@/components/menus/CategoryIcons";
 
 import {
     Accordion,
@@ -68,7 +69,8 @@ export default function GamesPage() {
 
     return (
         <div className="container mx-auto p-4 max-w-6xl">
-            <h1 className="text-2xl font-bold mb-4">보드게임 목록</h1>
+            <div className={"mb-2"}>
+            < CategoryIcons/></div>
 
             <Accordion type="single" collapsible value={activeGame}
                        onValueChange={(value) => {

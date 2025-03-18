@@ -1,6 +1,6 @@
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
-import { Book, Brain, Club, Dice5, Gamepad2, Search, Sword, Users, Zap } from "lucide-react";
+import { Book, Brain, Club, Dice5, Gamepad2, Search, Sword, Users } from "lucide-react";
 
 const categories = [
     { name: "전체", icon: <img src="allIcon.png" className="w-[50px]" /> },

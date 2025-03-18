@@ -151,7 +151,7 @@ const FriendsList = ({ userId }) => {
                                 {friend.friendImg && friend.friendImg.trim() !== "" ? (
                                     <img
                                         // src={`http://localhost:8080${friend.friendImg}`}
-                                        src={`http://43.202.30.85${result.profileImage}`}
+                                        src={`http://43.202.30.85${friend.friendImg}`}
                                         alt="친구 프로필"
                                         className="w-8 h-8 object-cover rounded-full mr-3"
                                     />
