@@ -75,7 +75,7 @@ export default function EditToolbar({boardType, editor, setTempImage }) {
   };
 
   return (
-    <div className="flex gap-2 mb-2">
+    <div className="flex gap-2 mb-2 p-2 border-2 rounded border-gray-400">
       <button onClick={() => editor.chain().focus().toggleBold().run()} title="굵게">
         <Bold size={18} />
       </button>
@@ -110,11 +110,7 @@ export default function EditToolbar({boardType, editor, setTempImage }) {
       </button>
 
       <button onClick={addYoutubeVideo} title="유튜브 영상 추가">
-        <Youtube size={18}/>
-      </button>
-
-      <button onClick={setLink} title="링크 추가">
-        <LinkIcon size={18} />
+        <Youtube size={22}/>
       </button>
 
       <button onClick={() => editor.chain().focus().unsetColor().run()} title="색상 초기화">
@@ -126,7 +122,7 @@ export default function EditToolbar({boardType, editor, setTempImage }) {
           key={color}
           onClick={() => editor.chain().focus().setColor(color).run()}
           style={{ backgroundColor: color }}
-          className="w-5 h-5 rounded-full border"
+          className="w-5 h-5 rounded-full border "
           title={`${color}색상 적용`}
         />
       ))}
