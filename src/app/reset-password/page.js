@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { resetPassword } from "@/api/gamerApi";
 
-export default function ResetPasswordPage() {
+function ResetPasswordComponent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const token = searchParams.get("token") || "";
@@ -32,6 +32,7 @@ export default function ResetPasswordPage() {
         if (newPassword !== confirmPassword) {
             setMessage("비밀번호가 일치하지 않습니다.");
             setIsModalOpen(true);
+
             return;
         }
         try {
@@ -119,5 +120,13 @@ export default function ResetPasswordPage() {
                 </DialogContent>
             </Dialog>
         </div>
+    );
+}
+
+export default function ResetPasswordPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <ResetPasswordComponent />
+        </Suspense>
     );
 }
