@@ -28,7 +28,7 @@ export async function GET(request) {
     
     // API 요청
     try {
-        console.log("현재 요청 url : ", url)
+        
         const response = await axios.get(url, {
             headers: {
                 "Content-Type": "application/json",

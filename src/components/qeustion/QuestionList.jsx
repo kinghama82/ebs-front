@@ -1,14 +1,14 @@
 "use client"
 
-import { getNewsList } from "@/api/news/newsAPI";
-import { API_SERVER_HOST } from "@/api/publicapi";
-import axios from "axios";
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useCustomCookie } from "../common/useCustomCookie";
-import { Button } from "../ui/button";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "../ui/pagination";
+import { getFreeList } from "@/api/free/freeapi";
+import { Button } from "../ui/button";
+import Link from "next/link";
+import axios from "axios";
+import { API_SERVER_HOST } from "@/api/publicapi";
+import { getQuestionList } from "@/api/qustion/questionApi";
 
 const initState = {
     dtoList: [],
@@ -23,26 +23,42 @@ const initState = {
     current: 0
 };
 
-const NewsList = ({boardType}) => {
+const QuestionList = ({ boardType }) => {
     const router = useRouter()
     const searchParams = useSearchParams();
     const [serverData, setServerData] = useState(initState)
     const [page, setPage] = useState(parseInt(searchParams.get("page")) || 1)
     const size = parseInt(searchParams.get("size")) || 10
-    const userInfo = useCustomCookie()
 
     useEffect(() => {
-        getNewsList({ page, size }).then(data => {
-            console.log("현재 뉴스게시판 데이터 : ", data)
-            setServerData(data)
-        })
-    }, [page, size])
+        let isMounted = true;
+    
+        getQuestionList({ page, size }).then(data => {
+            if (isMounted) {
+                console.log("📡 서버에서 받은 데이터: ", data);
+                
+                setServerData(prevData => {
+                    // ✅ 데이터가 변경되지 않았다면 setState 실행 안 함
+                    if (JSON.stringify(prevData) === JSON.stringify(data)) {
+                        return prevData;
+                    }
+                    return data;
+                });
+            }
+        });
+    
+        return () => {
+            isMounted = false; // ✅ 언마운트 시 요청 방지
+        };
+    }, [page, size]);
+    
+
 
     const handlePlusView = async (id, router) => {
         try {
             await axios.get(`${API_SERVER_HOST}/api/${boardType}/${id}/view`)
         } catch (error) {
-            console.error("조회수 증가 실패 : ",error )
+            console.error("조회수 증가 실패 : ", error)
         }
         router.push(`/${boardType}/read/${id}`)
     }
@@ -69,18 +85,17 @@ const NewsList = ({boardType}) => {
     };
 
     //글번호 변경(id값 말고)
-    const startNumber = serverData.totalCount - (page - 1) * size;
+    const startNumber = serverData.totalCount - ((page - 1) * size);
 
     //페이지 이동 함수 (상태도 업데이트)
     const moveToPage = (newPage) => {
         setPage(newPage);
         router.replace(`?page=${newPage}&size=${size}`, { scroll: false });
     };
-    
 
     return (
         <div>
-            {/* 리스트 */}
+            {/* 질문 리스트 */}
             <div className="flex flex-col space-y-2 mb-2 ">
                 <div className="flex items-center justify-between w-full p-2 bg-[#AD927A]">
                     <span className="w-1/12  text-center font-bold ">번 호</span>
@@ -91,25 +106,25 @@ const NewsList = ({boardType}) => {
                     <span className="w-1/12  text-center font-bold ">추천</span>
                 </div>
                 {serverData.dtoList.length > 0 ? (
-                    serverData.dtoList.map((news, index) => (
-                        <div key={news.id}
+                    serverData.dtoList.map((question, index) => (
+                        <div key={question.id}
                             className="flex items-center justify-between w-full p-2 border-b border-black ">
                             <span className="w-1/12 text-center ">{startNumber - index}</span>
                             <span className="w-5/12 text-center " >
-                                <Link href={`/${boardType}/read/${news.id}`} 
-                                      onClick={(e) => {
+                                <Link href={`/${boardType}/read/${question.id}`}
+                                    onClick={(e) => {
                                         e.preventDefault()
-                                        handlePlusView(news.id, router)
-                                      }}>{news.title}
+                                        handlePlusView(question.id, router)
+                                    }}>{question.title}
                                     <span className="w-1/12 text-center ml-1 ">
-                                        [{news.answerList ? news.answerList.length : 0}]
+                                        [{question.answerList ? question.answerList.length : 0}]
                                     </span>
                                 </Link>
                             </span>
-                            <span className="w-2/12 text-center ">{news.gamer.nickname}</span>
-                            <span className="w-1/12 text-center ">{formatDate(news.createdate)}</span>
-                            <span className="w-1/12 text-center ">{news.view}</span>
-                            <span className="w-1/12 text-center ">{news.voter.length}</span>
+                            <span className="w-2/12 text-center ">{question.gamer.nickname}</span>
+                            <span className="w-1/12 text-center ">{formatDate(question.createdate)}</span>
+                            <span className="w-1/12 text-center ">{question.view}</span>
+                            <span className="w-1/12 text-center ">{question.voter.length}</span>
                         </div>
                     ))
                 ) : (
@@ -155,12 +170,9 @@ const NewsList = ({boardType}) => {
                 </PaginationContent>
             </Pagination>
             <div>
-                {userInfo?.roleNames?.includes("ADMIN") ? 
-                    <Button variant="mocha" onClick={() => router.push(`/${boardType}/create`)} >글 작성</Button>
-                : <></>}
-                
+                <Button variant="mocha" onClick={() => router.push(`/${boardType}/create`)} >글 작성</Button>
             </div>
         </div>
     )
 }
-export default NewsList
+export default QuestionList

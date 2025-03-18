@@ -22,7 +22,7 @@ const initState = {
     current: 0
 };
 
-const FreeList = ({boardType}) => {
+const FreeList = ({ boardType }) => {
     const router = useRouter()
     const searchParams = useSearchParams();
     const [serverData, setServerData] = useState(initState)
@@ -30,17 +30,34 @@ const FreeList = ({boardType}) => {
     const size = parseInt(searchParams.get("size")) || 10
 
     useEffect(() => {
+        let isMounted = true;
+    
         getFreeList({ page, size }).then(data => {
-            console.log("현재 자유게시판 데이터 : ", data)
-            setServerData(data)
-        })
-    }, [page, size])
+            if (isMounted) {
+                console.log("📡 서버에서 받은 데이터: ", data);
+                
+                setServerData(prevData => {
+                    // ✅ 데이터가 변경되지 않았다면 setState 실행 안 함
+                    if (JSON.stringify(prevData) === JSON.stringify(data)) {
+                        return prevData;
+                    }
+                    return data;
+                });
+            }
+        });
+    
+        return () => {
+            isMounted = false; // ✅ 언마운트 시 요청 방지
+        };
+    }, [page, size]);
+    
+
 
     const handlePlusView = async (id, router) => {
         try {
             await axios.get(`${API_SERVER_HOST}/api/${boardType}/${id}/view`)
         } catch (error) {
-            console.error("조회수 증가 실패 : ",error )
+            console.error("조회수 증가 실패 : ", error)
         }
         router.push(`/${boardType}/read/${id}`)
     }
@@ -67,7 +84,7 @@ const FreeList = ({boardType}) => {
     };
 
     //글번호 변경(id값 말고)
-    const startNumber = serverData.totalCount - (page - 1) * size;
+    const startNumber = serverData.totalCount - ((page - 1) * size);
 
     //페이지 이동 함수 (상태도 업데이트)
     const moveToPage = (newPage) => {
@@ -93,11 +110,11 @@ const FreeList = ({boardType}) => {
                             className="flex items-center justify-between w-full p-2 border-b border-black ">
                             <span className="w-1/12 text-center ">{startNumber - index}</span>
                             <span className="w-5/12 text-center " >
-                                <Link href={`/${boardType}/read/${free.id}`} 
-                                      onClick={(e) => {
+                                <Link href={`/${boardType}/read/${free.id}`}
+                                    onClick={(e) => {
                                         e.preventDefault()
                                         handlePlusView(free.id, router)
-                                      }}>{free.title}
+                                    }}>{free.title}
                                     <span className="w-1/12 text-center ml-1 ">
                                         [{free.answerList ? free.answerList.length : 0}]
                                     </span>

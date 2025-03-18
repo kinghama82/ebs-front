@@ -1,50 +1,199 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { useParams } from "next/navigation";
-import { getNewsById, deleteNews } from "@/api/news/newsAPI";
+import { getNews } from "@/api/news/newsAPI";
+import { API_SERVER_HOST } from "@/api/publicapi";
+import DeleteButton from "@/components/common/DeleteButton";
+import Top5 from "@/components/common/Top5";
+import { useCustomCookie } from "@/components/common/useCustomCookie";
+import FanswerList from "@/components/free/FreeAnswer";
+import NewsList from "@/components/news/NewsList";
+import { Button } from "@/components/ui/button";
+import axios from "axios";
+import DOMPurify from "dompurify";
+import { Dices, ThumbsUp } from "lucide-react";
+import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
+
+const initState = {
+    title: '',
+    content: '',
+    gamer: '',
+    date: '',
+    voter: [],
+    view: 0,
+    answerList: []
+}
 
 const NewsDetail = () => {
-    const { id } = useParams();
-    const router = useRouter();
-    const [news, setNews] = useState(null);
+    const router = useRouter()
+    const params = useParams();
+    const id = params.id;
+    const [copied, setCopied] = useState(false);
+    const userInfo = useCustomCookie()
+    const [news, setNews] = useState(initState)
+    const [currentUrl, setCurrentUrl] = useState("")
 
+    //주소복사
     useEffect(() => {
-        getNewsById(id)
-            .then((data) => setNews(data))
-            .catch((error) => console.error(error));
-    }, [id]);
+        setCurrentUrl(window.location.href);
+    }, []);
 
-    const handleDelete = async () => {
+    //뉴스글 불러오기
+    useEffect(() => {
+        if (!id) return
+        const fetchNews = async () => {
+            try {
+                const res = await getNews(id)
+                setNews(res || initState)
+            }
+            catch (error) {
+                console.error("News 게시글 로드 실패 : ", error)
+                setNews(initState)
+            }
+        }
+        fetchNews()
+    }, [id])
+
+    const handleClickDelete = async (id) => {
+        return await axios.delete(`${API_SERVER_HOST}/api/news/${id}`)
+    }
+    const handleClickVote = async () => {
+        if (!id || !userInfo?.id) {
+            alert("로그인이 필요합니다.")
+            return
+        }
         try {
-            await deleteNews(id);
-            router.push("/news");
+            const res = await axios.post(`${API_SERVER_HOST}/api/news/${id}/vote?gamerId=${userInfo.id}`);
+            if (res.status === 200) {
+                alert("추천 완료")
+                const updateNews = await getNews(id)
+                setNews(updateNews)
+            }
         } catch (error) {
-            console.error("삭제 실패", error);
+            alert(error.response?.data || "추천 실패")
+        }
+    }
+    //주소복사버튼
+    const handleCopy = async () => {
+        try {
+            await navigator.clipboard.writeText(window.location.href);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+            alert("클립보드에 주소 복사 완료") // 2초 후 "복사됨" 문구 숨기기
+        } catch (err) {
+            console.error("URL 복사 실패:", err);
         }
     };
-
-    if (!news) return <p>로딩 중...</p>;
+    //유튜브 iframe 설정 허용
+        const sanitizedContent = DOMPurify.sanitize(news.content, {
+            ADD_TAGS: ["iframe"],
+            ADD_ATTR: ["allowfullscreen", "frameborder", "src"]
+        });
 
     return (
-        <div className="container mx-auto p-6">
-            <h1 className="text-2xl font-bold">{news.title}</h1>
-            <div dangerouslySetInnerHTML={{ __html: news.content }} className="border p-2 rounded" />
+        <>
+            <div className="p-1">
+                {/* 최상단 게시판 이름 부분 */}
+                <div className="mx-auto w-full max-w-6xl dark:text-white">
+                    <div className="flex justify-center text-4xl py-1"
+                        style={{ marginTop: '20px', backgroundColor: 'transparent', color: '#D97706', borderBottom: '2px solid #D97706' }}>
+                        <Dices size={30} />뉴스 게시판
+                    </div>
+                </div>
 
-            {news.imageUrls && news.imageUrls.map((img, idx) => (
-                <img key={idx} src={`http://localhost:8080${img}`} alt="news image" className="my-4" />
+                {/* 중단 조회수 추천수 부분 */}
+                <div className="max-w-6xl mx-auto p-2 mt-2 rounded">
+                    <Top5 boardType="news" />
+                </div>
 
-            ))}
+                {/* 하단 상세페이지 부분 */}
+                <div className="max-w-6xl mx-auto p-2 mt-2 border-b-2 border-t-2 border-amber-600">
+                    {/* 헤드부분 */}
+                    <div className="border-b-2 border-amber-600 justify-between p-1 flex" >
+                        <span className="w-2/12 text-lg font-bold">{news.gamer.nickname}</span>
+                        <span className="w-2/12 text-start text-lg">{news.createdate}</span>
+                        <div>
+                            <span className="w-2/12 text-end mr-8">조회 : {news.view}</span>
+                            <span className="w-2/12 text-end mr-4">추천 : {news.voter.length}</span>
+                        </div>
+                    </div>
+                    {/* 헤드 및 카테고리 목록 / 댓글 링크 */}
+                    <div >
+                        <div className="grid grid-cols-4 p-1">
+                            <span className="col-span-3">카테고리</span>
+                            <div className="grid grid-cols-2">
+                                <span />
+                                <div className="grid grid-cols-3">
+                                    <span className="col-span-2 text-end mr-1"><Link href={'/news'}>목록 </Link> | </span>
+                                    <span className="text-center"><Link href="#answerList">댓글</Link></span>
+                                </div>
+                            </div>
+                        </div>
+                        {/* 제목 내용 */}
+                        <div>
+                            <div className="text-3xl font-bold mt-4">{news.title}</div>
+                            <div>
+                                {/* ✅ 텍스트 본문 출력 */}
+                                <div dangerouslySetInnerHTML={{ __html: sanitizedContent }}
+                                    className="detail-content text-xl mt-4 p-2"
+                                />
 
-            {news.youtubeUrl && (
-                <iframe width="560" height="315" src={news.youtubeUrl} frameBorder="0" allowFullScreen></iframe>
-            )}
+                                {/* ✅ 이미지 리스트 출력 */}
+                                {news.imageList && news.imageList.length > 0 && (
+                                    <div>
+                                        {news.imageList.map((fileName, index) => (
+                                            <img key={`${fileName}-${index}`} src={`${API_SERVER_HOST}/api/news/view/${fileName}`}
+                                                alt="게시글 이미지"
+                                                className="mt-4" />
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
 
-            <button onClick={handleDelete} className="bg-red-500 text-white p-2 rounded">
-                ❌ 삭제
-            </button>
-        </div>
+                        <div className="text-center">
+                            <Button className="font-bold" variant="outline"
+                                onClick={handleClickVote}><ThumbsUp className="text-blue-500" />{news.voter.length}</Button>
+                        </div>
+                        <div className="grid grid-cols-6 border-b-2 border-amber-600">
+                            <div className=" grid-cols-4 flex items-center">
+                                <div className="mr-2"><Link href={'/news'}>목록 </Link> | </div>
+                                <div><Link href="#answerList">댓글</Link></div>
+                            </div>
+                            <div className="col-span-4"></div>
+                            {userInfo?.id === news.gamer?.id ? (
+                                <div className="flex justify-end gap-2 mb-1">
+                                    <Button size="sm" className="font-bold"
+                                        onClick={() => router.push(`/news/modify/${news.id}`)}>수정</Button>
+                                    <DeleteButton id={news.id} onDelete={handleClickDelete}
+                                        redirectTo="/news"
+                                        triggerButton={<Button variant="destructive" size="sm">삭제</Button>} />
+                                </div>
+                            ) : <></>}
+
+                        </div>
+                    </div>
+                    <div className="mt-1">
+                        <Button size="xs" className="mr-2 text-white"
+                            onClick={() => handleCopy()}>주소복사</Button>
+                        {currentUrl}
+                    </div>
+                </div>
+
+                {/* 댓글리스트부분 */}
+                <div id="answerList" className="max-w-6xl mx-auto bg-neutral-200 rounded p-2 bg mt-1">
+                    <FanswerList boardType="news" id={news.id} />
+                </div>
+            </div>
+            <div className="max-w-6xl mx-auto mt-2">
+                <Suspense fallback={<div>로딩 중...</div>}>
+                    <NewsList boardType="news" />
+                </Suspense>
+
+            </div>
+
+        </>
     );
 };
 

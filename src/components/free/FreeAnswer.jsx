@@ -1,13 +1,13 @@
 "use client";
 
+import axios from "axios";
+import { SquareX } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Edit, SquareX } from "lucide-react";
+import DeleteButton from "../common/DeleteButton";
 import { useCustomCookie } from "../common/useCustomCookie";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
-import DeleteButton from "../common/DeleteButton";
-import axios from "axios";
-import { useRouter } from "next/navigation";
 
 export default function FanswerList({ id, boardType }) {
   const [answerList, setAnswerList] = useState([]);
@@ -24,7 +24,6 @@ export default function FanswerList({ id, boardType }) {
     const fetchAnswers = async () => {
       try {
         const res = await axios.get(`${API_HOST}/${id}/answers`);
-        console.log("현재 댓글 리스트 : ", res.data)
         setAnswerList(res.data || []);
       } catch (error) {
         console.error(`${boardType} 게시판 댓글 불러오기 실패:`, error);
