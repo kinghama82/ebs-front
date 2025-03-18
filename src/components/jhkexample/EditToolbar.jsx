@@ -1,21 +1,22 @@
 'use client';
 
+import { API_SERVER_HOST } from '@/api/publicapi';
+import axios from 'axios';
 import {
-    AlignCenter,
-    AlignJustify,
-    AlignLeft,
-    AlignRight,
-    Bold,
-    Eraser,
-    Image as ImageIcon,
-    Link as LinkIcon,
-    List,
-    Minus,
-    Youtube
+  AlignCenter,
+  AlignJustify,
+  AlignLeft,
+  AlignRight,
+  Bold,
+  Eraser,
+  Image as ImageIcon,
+  Link as LinkIcon,
+  List,
+  Minus,
+  Youtube
 } from 'lucide-react';
-import { useState } from 'react';
 
-export default function EditToolbar({ editor, tempImages, setTempImages }) {
+export default function EditToolbar({boardType, editor, setTempImage }) {
 
 
   if (!editor) return null;
@@ -31,16 +32,33 @@ export default function EditToolbar({ editor, tempImages, setTempImages }) {
       const file = event.target.files[0];
       if (!file) return;
   
-      // 미리보기로 표시
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => {
-        const imagePreview = reader.result;
-        setTempImages((prev) => [...prev, { file, preview: imagePreview }]);
-  
-        // 에디터에 미리보기 이미지 삽입
-        editor.chain().focus().setImage({ src: imagePreview }).run();
-      };
+      const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+            // ✅ 이미지 업로드 API 요청
+            const { data: uploadedFileName } = await axios.post(
+                `${API_SERVER_HOST}/api/${boardType}/upload`, 
+                formData, 
+                { headers: { "Content-Type": "multipart/form-data" } }
+            );
+
+            // ✅ 서버에서 받은 파일명을 URL로 변환하여 에디터에 삽입
+            const imageUrl = `${API_SERVER_HOST}/api/${boardType}/view/${uploadedFileName}`;
+            editor.chain().focus().setImage({ src: imageUrl }).run();
+
+            // ✅ 부모 상태 업데이트
+            setTempImage({ file, preview: imageUrl });
+            
+            
+            // ✅ 최종 content 업데이트
+            const updatedContent = editor.getHTML();
+            
+            editor.commands.setContent(updatedContent);
+            
+        } catch (error) {
+            console.error("🚨 이미지 업로드 실패:", error);
+        }
     };
   
     fileInput.click();
