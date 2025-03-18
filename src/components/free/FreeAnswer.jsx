@@ -8,6 +8,7 @@ import DeleteButton from "../common/DeleteButton";
 import { useCustomCookie } from "../common/useCustomCookie";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
+import {API_SERVER_HOST} from "@/api/publicapi";
 
 export default function FanswerList({ id, boardType }) {
   const [answerList, setAnswerList] = useState([]);
@@ -16,7 +17,7 @@ export default function FanswerList({ id, boardType }) {
   const router = useRouter()
 
   // 게시판 이름별 주소설정
-  const API_HOST = `http://43.202.30.85:8080/api/${boardType}`;
+  const API_HOST = `${API_SERVER_HOST}/api/${boardType}`;
 
   // 댓글 불러오기
   useEffect(() => {
