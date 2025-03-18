@@ -23,7 +23,7 @@ const DuplicateCheckField = ({
             <Label htmlFor={name} className="text-sm font-semibold text-gray-600">
                 {label}
             </Label>
-            <div className="flex gap-2">
+            <div className="flex gap-2 items-center">
                 <div className="relative flex-grow">
                     {!value && icon && (
                         <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
@@ -40,12 +40,17 @@ const DuplicateCheckField = ({
                         className="pl-12 h-10 border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none rounded-md w-full"
                     />
                 </div>
-                <Button type="button" onClick={onCheck}>
+                <Button
+                    type="button"
+                    onClick={onCheck}
+                    className="flex-shrink-0 px-3 py-2"  // 버튼의 크기를 고정하여 인풋과 한 줄에 배치
+                >
                     {checkButtonLabel}
                 </Button>
             </div>
             {message && <p className="text-sm">{message}</p>}
         </div>
+
     );
 };
 

@@ -14,6 +14,7 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import DOMPurify from "dompurify"
+import createDOMPurify from "dompurify";
 
 const initState = {
     title: '',
@@ -33,6 +34,7 @@ const FreeReadPage = () => {
     const userInfo = useCustomCookie()
     const [free, setFree] = useState(initState)
     const [currentUrl, setCurrentUrl] = useState("")
+    const [sanitizedContent, setSanitizedContent] = useState("");
 
     // //정확한 파일이름
     // const extractImgName = (htmlContent) => {
@@ -45,7 +47,15 @@ const FreeReadPage = () => {
     //     return null
     // }
 
-
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            const DOMPurify = createDOMPurify(window);
+            setSanitizedContent(DOMPurify.sanitize(free.content, {
+                ADD_TAGS: ["iframe"],
+                ADD_ATTR: ["allowfullscreen", "frameborder", "src"]
+            }));
+        }
+    }, [free.content]);
 
     //주소복사
     useEffect(() => {
@@ -103,11 +113,12 @@ const FreeReadPage = () => {
             console.error("URL 복사 실패:", err);
         }
     };
-    //유튜브 iframe 설정 허용
+
+/*    //유튜브 iframe 설정 허용
     const sanitizedContent = DOMPurify.sanitize(free.content, {
         ADD_TAGS: ["iframe"],
         ADD_ATTR: ["allowfullscreen", "frameborder", "src"]
-    });
+    });*/
 
     return (
         <>

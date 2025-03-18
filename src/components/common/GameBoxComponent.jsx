@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import CopyUrlButton from "./CopyUrlButton";
 import BookMarkButton from "../bookmarks/BookMarkButton";
+import { API_SERVER_HOST } from "@/api/publicapi";
+
 
 const GameBoxComponent = ({ id }) => {
     const [game, setGame] = useState(null)
@@ -35,7 +37,7 @@ const GameBoxComponent = ({ id }) => {
                 style={{
                     backgroundImage: `
                         linear-gradient(to right, rgba(0,0,0,0.8) 75%, rgba(0,0,0,0) 30%),
-                        url(http://43.202.30.85${game.img})
+                        url(${API_SERVER_HOST}${game.img})
                     `,
                     backgroundSize: '100% 100%, 25% 255px',
                     backgroundPosition: 'left, right center',
@@ -52,8 +54,8 @@ const GameBoxComponent = ({ id }) => {
                             // height={200}
                             // className="rounded-md"
 
-                            src={`http://43.202.30.85${game.img}`}
-                            alt={game.gameName}
+                            src={`${API_SERVER_HOST}${game.img}`}
+                        alt={game.gameName}
                             className="w-[150px] h-[150px] object rounded-md"
                         />
                     ) : (

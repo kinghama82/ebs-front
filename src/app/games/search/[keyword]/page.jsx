@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Search, X } from "lucide-react";
 import { searchGames } from "@/api/game/gameapi"; // ✅ 검색 API 호출
 import Link from "next/link";
+import {API_SERVER_HOST} from "@/api/publicapi";
 
 const SearchBar = () => {
     const [searchKeyword, setSearchKeyword] = useState("");
@@ -70,7 +71,7 @@ const SearchBar = () => {
                         >
                             {game.img && (
                                 <img
-                                    src={`http://43.202.30.85:8080${game.img}`}
+                                    src={`${API_SERVER_HOST}${game.img}`}
                                     alt={game.gameName}
                                     className="w-10 h-10 object-cover rounded mr-3"
                                 />

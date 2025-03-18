@@ -11,6 +11,7 @@ import ExRateComponent from "./ExRateComponent";
 import LoginOutButton from "./LoginOutButton";
 import './styles.css';
 import ToolButton from "./ToolButton";
+import {API_SERVER_HOST} from "@/api/publicapi";
 
 const BasicMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -157,7 +158,7 @@ const BasicMenu = () => {
                           >
                             {game.img && (
                                 <img
-                                    src={`http://43.202.30.85${game.img}`}
+                                    src={`${API_SERVER_HOST}${game.img}`}
                                     alt={game.gameName}
                                     className="w-10 h-10 object-cover rounded mr-3"
                                 />

@@ -3,10 +3,10 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { newGamer, checkEmailExists, checkNicknameExists } from "@/api/gamerApi";
+import {newGamer, checkEmailExists, checkNicknameExists, checkPhoneExists} from "@/api/gamerApi";
 import { Card, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
-import {Mail, Lock, Phone, User, KeyRound, Calendar, Dices} from "lucide-react";
+import {Mail, Lock, Phone, User, KeyRound, Calendar} from "lucide-react";
 import FormField from "@/components/gamer/FormField";
 import DuplicateCheckField from "@/components/gamer/DuplicateCheckField";
 import AddressField from "@/components/gamer/AddressField";
@@ -14,6 +14,9 @@ import ModalDialog from "@/components/gamer/ModalDialog";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { House } from "lucide-react";
+
+import PhoneDuplicateCheckField from "@/components/gamer/PhoneDuplicateCheckField";
+
 
 const GamerForm = () => {
     const router = useRouter();
@@ -26,7 +29,7 @@ const GamerForm = () => {
         password1: "",
         password2: "",
         nickname: "",
-        phone: "",
+        phone: "010-",
         address: "",
     });
 
@@ -35,6 +38,8 @@ const GamerForm = () => {
     const [nicknameChecked, setNicknameChecked] = useState(false);
     const [emailMessage, setEmailMessage] = useState("");
     const [nicknameMessage, setNicknameMessage] = useState("");
+    const [phoneMessage, setPhoneMessage] = useState("");
+    const [phoneChecked, setPhoneChecked] = useState(false);
 
     // 모달 관련 상태
     const [errorMessage, setErrorMessage] = useState("");
@@ -44,6 +49,7 @@ const GamerForm = () => {
     // 주소 관련 상태
     const [address, setAddress] = useState("");
     const [detailAddress, setDetailAddress] = useState("");
+
 
     // 라벨/아이콘 설정
     const fieldLabels = {
@@ -82,48 +88,33 @@ const GamerForm = () => {
             setNicknameMessage("");
         }
 
-        // 비밀번호1 유효성 검사
-        if (name === "password1") {
-            // 비어있거나 정규식 불일치인 경우 동일 메시지
-            if (
-                !value || // <-- 비어있는 경우
-                !/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/.test(value) // 패턴 불일치
-            ) {
-                setPassword1Error("비밀번호는 6자 이상이며, 알파벳과 숫자를 포함해야 합니다.");
-            } else {
-                setPassword1Error("");
-            }
-
-            // password2가 이미 입력되어 있으면, 비밀번호가 달라졌을 수 있으므로 재검사
-            if (formData.password2 && value !== formData.password2) {
-                setPassword2Error("비밀번호가 일치하지 않습니다.");
-            } else {
-                setPassword2Error("");
-            }
+        // 비밀번호1 또는 비밀번호2가 변경되면 즉시 유효성 검사
+        if (name === "password1" || name === "password2") {
+            validatePasswords(name, value);
         }
-
     };
 
-    const handlePhoneChange = (e) => {
-        // 숫자 이외 문자 제거
-        let value = e.target.value.replace(/\D/g, "");
-        // 최대 11자리로 제한
-        if (value.length > 11) {
-            value = value.slice(0, 11);
+    // 비밀번호 유효성 검사 함수
+    const validatePasswords = (changedField, value) => {
+        const { password1, password2 } = formData;
+        const newPassword1 = changedField === "password1" ? value : password1;
+        const newPassword2 = changedField === "password2" ? value : password2;
+
+        // 비밀번호 1 유효성 검사
+        if (!newPassword1 || !/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/.test(newPassword1)) {
+            setPassword1Error("비밀번호는 6자 이상이며, 알파벳과 숫자를 포함해야 합니다.");
+        } else {
+            setPassword1Error("");
         }
 
-        // 하이픈(-) 삽입 로직
-        // 010-1234-5678 형태
-        if (value.length > 3 && value.length <= 7) {
-            // 010-1234
-            value = value.slice(0, 3) + "-" + value.slice(3);
-        } else if (value.length > 7) {
-            // 010-1234-5678
-            value = value.slice(0, 3) + "-" + value.slice(3, 7) + "-" + value.slice(7);
+        // 비밀번호 2가 입력된 경우 일치 여부 확인
+        if (newPassword2 && newPassword1 !== newPassword2) {
+            setPassword2Error("비밀번호가 일치하지 않습니다.");
+        } else {
+            setPassword2Error("");
         }
-
-        setFormData((prev) => ({ ...prev, phone: value }));
     };
+
 
 
     const handleCheckEmail = async () => {
@@ -161,6 +152,26 @@ const GamerForm = () => {
             }
         } catch (error) {
             setNicknameMessage("오류 발생");
+        }
+    };
+
+    // phone 중복 체크 함수
+    const handleCheckPhone = async () => {
+        if (!formData.phone || formData.phone === "010-") {
+            setPhoneMessage("핸드폰 번호를 입력해주세요.");
+            return;
+        }
+        try {
+            const exists = await checkPhoneExists(formData.phone);
+            if (exists) {
+                setPhoneMessage("❌ 이미 사용 중인 핸드폰 번호입니다.");
+                setPhoneChecked(false);
+            } else {
+                setPhoneMessage("✅ 사용 가능한 핸드폰 번호입니다.");
+                setPhoneChecked(true);
+            }
+        } catch (error) {
+            setPhoneMessage("오류 발생");
         }
     };
 
@@ -231,7 +242,7 @@ const GamerForm = () => {
                             <Link href="/" className= "w-8 h-8 text-blue-500 hover:text-purple-500 transition duration-300" title="홈으로">
                                 <House />
                             </Link>
-                            새 게이머 등록</h2>
+                            게이머 등록</h2>
                         <form className="space-y-4" onSubmit={handleSubmit} noValidate>
                             <FormField
                                 label={fieldLabels.name}
@@ -288,13 +299,15 @@ const GamerForm = () => {
                                 error={password2Error} // <-- 추가
                             />
 
-                            <FormField
-                                label={fieldLabels.phone}
+                            <PhoneDuplicateCheckField
+                                label="핸드폰번호"
                                 name="phone"
                                 value={formData.phone}
-                                onChange={handlePhoneChange} // 자동 하이픈 적용
-                                icon={fieldIcons.phone}
+                                onChange={handleChange}
+                                onCheck={handleCheckPhone}
+                                message={phoneMessage}
                             />
+
                             <AddressField
                                 address={address}
                                 detailAddress={detailAddress}

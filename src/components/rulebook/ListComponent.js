@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Pencil, Dices, Flame, Dice1, Dice2, Dice3, Dice4, Dice5, ChevronRight, ChevronLeft } from 'lucide-react';
 import React from 'react';
 import { useRouter } from "next/navigation";
+import {API_SERVER_HOST} from "@/api/publicapi";
 
 export default function ListComponent() {
     const [rulebook, setRulebook] = useState([]);
@@ -24,7 +25,7 @@ export default function ListComponent() {
 
     useEffect(() => {
         // 전체 룰북 데이터를 한번만 가져옵니다 (인기글용)
-        fetch('http://localhost:8080/rulebook/list')
+        fetch(`${API_SERVER_HOST}/rulebook/list`)
             .then((res) => res.json())
             .then((data) => {
                 if (Array.isArray(data.dtoList)) {
@@ -37,7 +38,7 @@ export default function ListComponent() {
             .catch((error) => console.error("Error fetching all rules:", error));
 
         // 현재 페이지에 맞는 룰북 데이터를 가져옵니다.
-        fetch(`http://localhost:8080/rulebook/list?page=${currentPage}&size=${pageSize}`)
+        fetch(`${API_SERVER_HOST}/rulebook/list?page=${currentPage}&size=${pageSize}`)
             .then((res) => res.json())
             .then((data) => {
                 if (Array.isArray(data.dtoList)) {

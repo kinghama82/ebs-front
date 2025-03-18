@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import {Mail, Lock, House} from "lucide-react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { loginUser } from "@/api/gamerApi";
 
 export default function LoginPage() {
     const router = useRouter();
@@ -34,33 +35,12 @@ export default function LoginPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        const form = new URLSearchParams();
-        form.append("username", email);
-        form.append("password", password);
-
         try {
-            const res = await fetch("http://localhost:8080/api/gamer/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: form.toString(),
-                credentials: "include",
-            });
-
-            const data = await res.json();
-            console.log("Login response:", data);
-
-            if (data.accessToken && data.refreshToken) {
-                Cookies.set("gamerCooki", data.accessToken, { expires: 1, path: "/" });
-                Cookies.set("refreshToken", data.refreshToken, { expires: 7, path: "/" });
-                router.push("/");
-            } else {
-                setErrorMessage("로그인 실패. 이메일 또는 비밀번호를 확인해주세요.");
-                setIsModalOpen(true);
-            }
+            const data = await loginUser(email, password);
+            console.log("로그인 성공:", data);
+            router.push("/");
         } catch (error) {
-            console.error("로그인 오류:", error);
-            setErrorMessage("서버와 연결할 수 없습니다.");
+            setErrorMessage(error.response?.data?.msg || "로그인 실패. 이메일 또는 비밀번호를 확인하세요.");
             setIsModalOpen(true);
         }
     };

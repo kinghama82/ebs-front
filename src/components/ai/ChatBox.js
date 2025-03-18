@@ -1,36 +1,20 @@
-//src/components/ai/ChatBox.js
 "use client";
-
 import { useState, useRef, useEffect } from "react";
 import { API_SERVER_HOST } from "@/api/publicapi";
 
 const ChatBox = () => {
-    const [messages, setMessages] = useState([]); // { sender: "user" | "bot", text: string }
+    const [messages, setMessages] = useState([]);
     const [inputValue, setInputValue] = useState("");
     const [loading, setLoading] = useState(false);
-    const messagesEndRef = useRef(null);
 
-    // 스크롤을 맨 아래로 내리는 함수
-    const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    };
-
-    useEffect(() => {
-        scrollToBottom();
-    }, [messages]);
-
-    // 메시지 전송 핸들러 (API 호출 포함 예정)
     const sendMessage = async () => {
         if (!inputValue.trim()) return;
-
-        // 사용자 메시지 추가
         const userMessage = { sender: "user", text: inputValue };
         setMessages((prev) => [...prev, userMessage]);
         setInputValue("");
         setLoading(true);
 
         try {
-            // 백엔드 API 호출 (예시: /api/chat 엔드포인트)
             const response = await fetch(`${API_SERVER_HOST}/api/chat`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -38,12 +22,22 @@ const ChatBox = () => {
             });
             const data = await response.json();
 
-            const botMessage = { sender: "bot", text: data.reply };
-            setMessages((prev) => [...prev, botMessage]);
+            if (data.reply.startsWith("🎲 추천 게임:")) {
+                const lines = data.reply.split("\n");
+                const gameData = {
+                    name: lines[0].replace("🎲 추천 게임: **", "").replace("**", ""),
+                    players: lines[1].replace("👥 인원: ", ""),
+                    time: lines[2].replace("⏳ 플레이 시간: ", ""),
+                    company: lines[3].replace("📝 제작사: ", ""),
+                    img: lines[4].replace("🖼️ ![게임 이미지](", "").replace(")", ""),
+                };
+
+                setMessages((prev) => [...prev, { sender: "bot", game: gameData }]);
+            } else {
+                setMessages((prev) => [...prev, { sender: "bot", text: data.reply }]);
+            }
         } catch (error) {
-            console.error("채팅 API 호출 실패:", error);
-            const errorMessage = { sender: "bot", text: "오류가 발생했습니다. 다시 시도해주세요." };
-            setMessages((prev) => [...prev, errorMessage]);
+            setMessages((prev) => [...prev, { sender: "bot", text: "오류가 발생했습니다. 다시 시도해주세요." }]);
         } finally {
             setLoading(false);
         }
@@ -57,20 +51,25 @@ const ChatBox = () => {
 
     return (
         <div className="flex flex-col h-full">
-            {/* 대화 영역 */}
             <div className="flex-1 overflow-y-auto p-4 border rounded-lg">
                 {messages.map((msg, index) => (
-                    <div
-                        key={index}
-                        className={`mb-2 p-2 rounded ${msg.sender === "user" ? "bg-blue-100 self-end" : "bg-gray-200 self-start"}`}
-                    >
-                        {msg.text}
+                    <div key={index} className={`mb-2 p-2 rounded ${msg.sender === "user" ? "bg-blue-100 self-end" : "bg-gray-200 self-start"}`}>
+                        {msg.game ? (
+                            <div className="p-2 border rounded-lg bg-white shadow">
+                                <strong className="text-lg">{msg.game.name}</strong>
+                                <p>👥 {msg.game.players} | ⏳ {msg.game.time}</p>
+                                <p>📝 {msg.game.company}</p>
+                                <img
+                                    src={msg.game.img || "/default-game.jpg"}
+                                    alt={msg.game.name}
+                                    className="w-32 h-32 rounded mt-2"
+                                />
+                            </div>
+                        ) : msg.text}
                     </div>
                 ))}
-                <div ref={messagesEndRef} />
             </div>
 
-            {/* 입력 영역 */}
             <div className="mt-4 flex">
                 <input
                     type="text"

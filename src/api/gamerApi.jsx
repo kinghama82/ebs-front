@@ -2,6 +2,7 @@
 import { API_SERVER_HOST } from "@/api/publicapi";
 import axios from "axios";
 import { useCustomCookie } from "@/components/common/useCustomCookie"; // 커스텀 훅 가져오기
+import Cookies from "js-cookie";
 
 // 게이머 정보 조회 API
 export const getGamer = async (email) => {
@@ -118,29 +119,52 @@ export const resetPassword = async (token, newPassword, confirmPassword) => {
     }
 };
 
-
-
-
-
-
-
-
-/*export const loginUser = async (email, password) => {
+// 핸드폰 중복 체크 API 함수 추가
+export const checkPhoneExists = async (phone) => {
     try {
-        const response = await axios.post(`${API_SERVER_HOST}/api/gamer/login`, {
-            email,
-            password,
-        }, {
-            headers: {
-                "Content-Type": "application/json"
-            }
+        const response = await axios.get(`${API_SERVER_HOST}/api/gamer/check-phone`, { params: { phone } });
+        return response.data.exists; // true: 이미 존재, false: 사용 가능
+    } catch (error) {
+        console.error("핸드폰 중복 체크 실패:", error);
+        throw error;
+    }
+};
+
+
+
+// ✅ 로그인 API (POST)
+export const loginUser = async (email, password) => {
+    try {
+        const form = new URLSearchParams();
+        form.append("username", email);
+        form.append("password", password);
+
+        const response = await axios.post(`${API_SERVER_HOST}/api/gamer/login`, form, {
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            withCredentials: true, // 쿠키 포함
         });
-        return response.data; // { token: "JWT_TOKEN" }
+
+        // 응답 데이터 확인
+        const data = response.data;
+
+        // 로그인 성공 시, 쿠키 저장
+        if (data.accessToken && data.refreshToken) {
+            Cookies.set("gamerCooki", data.accessToken, { expires: 1, path: "/" });
+            Cookies.set("refreshToken", data.refreshToken, { expires: 7, path: "/" });
+        }
+
+        return data; // 로그인 성공 시 응답 데이터 반환
     } catch (error) {
         console.error("로그인 실패:", error.response?.data?.msg || error.message);
         throw error;
     }
-};*/
+
+};
+
+
+
+
+
 
 
 

@@ -1,6 +1,7 @@
 // src/api/game/gameapi.jsx
 import axios from "axios";
 import {API_SERVER_HOST} from "@/api/publicapi";
+import Cookies from "js-cookie";
 
 export const getGames = async () => {
     const response = await axios.get(`${API_SERVER_HOST}/api/games`);
@@ -8,10 +9,19 @@ export const getGames = async () => {
 };
 
 export const newgame = async (formData) => {
-    const response = await axios.post(`${API_SERVER_HOST}/api/games/create`, formData, {
-        // "Content-Type"은 생략하거나 자동 설정에 맡기면 좋습니다.
-    });
-    return response.data;
+    try {
+        const token = Cookies.get("gamerCooki"); // ✅ 쿠키에서 JWT 가져오기
+        const headers = {
+            "Content-Type": "multipart/form-data",
+            ...(token && { Authorization: `Bearer ${token}` }) // ✅ JWT 토큰 추가
+        };
+
+        const response = await axios.post(`${API_SERVER_HOST}/api/games/create`, formData, { headers });
+        return response.data;
+    } catch (error) {
+        console.error("게임 등록 요청 실패:", error);
+        throw error;
+    }
 };
 
 export const getGameById = async (id) => {
@@ -35,4 +45,5 @@ export const searchGames = async (keyword) => {
         throw error;
     }
 };
+
 
