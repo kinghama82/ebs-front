@@ -1,7 +1,7 @@
 "use client";
 import BasicMenu from "@/components/menus/BasicMenu";
 import { useCustomCookie } from "@/components/common/useCustomCookie";
-import { useRef, useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getTotalRecord } from "@/api/history/historyApi";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import FriendsList from "@/components/friends/FriendsList";
@@ -13,7 +13,6 @@ import { API_SERVER_HOST } from "@/api/publicapi"; // API 서버 주소
 const MyPage = () => {
     const user = useCustomCookie();
     const [selectedStatsTab, setSelectedStatsTab] = useState("myletter");
-    const [record, setRecord] = useState({ win: 0, draw: 0, lose: 0 });
     const [selectedFile, setSelectedFile] = useState(null);
     const [gamer, setUser] = useState(null);
     const [newNickname, setNewNickname] = useState("");
@@ -21,7 +20,7 @@ const MyPage = () => {
     const [isEditingNickname, setIsEditingNickname] = useState(false);
     const [posts, setPosts] = useState([]);  // ✅ posts 상태 추가
     const [comments, setComments] = useState([]); // ✅ 댓글 상태 추가
-    const fileInputRef = useRef(null);
+
 
     useEffect(() => {
         if (!user || !user.email) return;
@@ -78,13 +77,23 @@ const MyPage = () => {
         fetchUserComments();
     }, [user]);
 
-
-    const handleFileChange = (e) => {
+    const handleFileChange = async (e) => {
         const file = e.target.files[0];
         if (!file || !gamer?.email) return;
-        setSelectedFile(file); // 파일 선택 후 상태 저장만
-    };
 
+        setSelectedFile(file); // 선택된 파일을 상태로 저장 (선택적)
+
+        try {
+            const res = await uploadProfileImage(gamer.email, file);
+            console.log("업로드 결과:", res);
+
+            // 서버에서 삭제 후 새 이미지 업로드 완료 -> 새 데이터 가져오기
+            const updatedUser = await getGamer(gamer.email);
+            setUser(updatedUser);
+        } catch (error) {
+            console.error("프로필 업로드 실패:", error);
+        }
+    };
 
 
     // 프로필 변경 (이미지) 업로드
@@ -176,17 +185,17 @@ const MyPage = () => {
                                                             type="file"
                                                             accept="image/*"
                                                             onChange={handleFileChange}
-                                                            ref={fileInputRef}
                                                             className="hidden"
+                                                            id="profileUpload"
                                                         />
-                                                        <button onClick={() => fileInputRef.current.click()} className="...">
-                                                            파일 선택
+                                                        <button
+                                                            onClick={() =>
+                                                                document.getElementById("profileUpload").click()
+                                                            }
+                                                            className="px-2.5 py-1.5 bg-blue-500 text-white rounded-md"
+                                                        >
+                                                            프로필 변경
                                                         </button>
-                                                        {selectedFile && (
-                                                            <button onClick={handleProfileUpload} className="...">
-                                                                프로필 변경
-                                                            </button>
-                                                        )}
                                                     </div>
                                                 </div>
                                             </>

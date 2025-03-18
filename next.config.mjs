@@ -17,9 +17,9 @@ const nextConfig = {
 
 export default nextConfig;
 
+
+
 /*
-
-
 // 로컬환경에서 테스트시 아래코드를 사용
 /!** @type {import('next').NextConfig} *!/
 

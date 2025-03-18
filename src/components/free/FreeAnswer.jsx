@@ -16,7 +16,7 @@ export default function FanswerList({ id, boardType }) {
   const router = useRouter()
 
   // 게시판 이름별 주소설정
-  const API_HOST = `http://localhost:8080/api/${boardType}`;
+  const API_HOST = `http://43.202.30.85:8080/api/${boardType}`;
 
   // 댓글 불러오기
   useEffect(() => {
