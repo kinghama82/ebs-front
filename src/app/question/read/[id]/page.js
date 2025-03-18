@@ -117,7 +117,7 @@ const QuestionReadPage = () => {
             <div className="p-1">
                 {/* 최상단 게시판 이름 부분 */}
                 <div className="mx-auto w-full max-w-6xl dark:text-white">
-                    <div className="flex justify-center text-4xl py-1"
+                    <div className="flex justify-center text-4xl py-1 font-semibold"
                         style={{ marginTop: '20px', backgroundColor: 'transparent', color: '#D97706', borderBottom: '2px solid #D97706' }}>
                         <Dices size={30} />질문 게시판
                     </div>
