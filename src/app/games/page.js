@@ -128,7 +128,7 @@ export default function GamesPage() {
                                                 // height={200}
                                                 // className="rounded-md"
 
-                                                src={`http://43.202.30.85${game.img}`}
+                                                src={`${API_SERVER_HOST}${game.img}`}
                                                 alt={game.gameName}
                                                 className="w-[150px] h-[150px] object rounded-md"
                                             />
