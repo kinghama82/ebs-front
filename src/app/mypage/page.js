@@ -35,12 +35,6 @@ const MyPage = () => {
         fetchUser();
     }, [user]);
 
-    useEffect(() => {
-        if (!user || !user.id) return;
-        getTotalRecord(user.id)
-            .then(recordResponse => setRecord(recordResponse))
-            .catch(error => console.error("전적 데이터 불러오기 실패:", error));
-    }, [user]);
 
     useEffect(() => {
         if (!user || !user.id) return;

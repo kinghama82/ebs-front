@@ -86,7 +86,7 @@ export default function GamesPage() {
                                     {game.img ? (
                                         <div className="m-1 ms-2 border-2">
                                             <img
-                                                src={`http://43.202.30.85${game.img}`}
+                                                src={`https://43.202.30.85${game.img}`}
                                                 alt={game.gameName}
                                                 className="w-[50px] h-[50px] object-cover rounded-md"
                                             />
@@ -110,7 +110,7 @@ export default function GamesPage() {
                                     style={{
                                         backgroundImage: `
                         linear-gradient(to right, rgba(0,0,0,0.8) 75%, rgba(0,0,0,0) 30%),
-                        url(http://43.202.30.85${game.img})
+                        url(https://43.202.30.85${game.img})
                     `,
                                         backgroundSize: '100% 100%, 25% 250px',
                                         backgroundPosition: 'left, right center',
