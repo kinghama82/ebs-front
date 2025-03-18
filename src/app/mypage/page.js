@@ -8,16 +8,20 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import FriendsList from "@/components/friends/FriendsList";
 import GameBookmarks from "@/components/bookmarks/GameBookmarks";
 import { uploadProfileImage, getGamer, updateGamerProfile } from "@/api/gamerApi";
+import axios from "axios"; // ✅ axios 추가
+import { API_SERVER_HOST } from "@/api/publicapi"; // API 서버 주소
 
 const MyPage = () => {
     const user = useCustomCookie();
-    const [selectedStatsTab, setSelectedStatsTab] = useState("stats");
+    const [selectedStatsTab, setSelectedStatsTab] = useState("myletter");
     const [record, setRecord] = useState({ win: 0, draw: 0, lose: 0 });
     const [selectedFile, setSelectedFile] = useState(null);
     const [gamer, setUser] = useState(null);
     const [newNickname, setNewNickname] = useState("");
     // 추가: 닉네임 수정 모드를 위한 상태 변수
     const [isEditingNickname, setIsEditingNickname] = useState(false);
+    const [posts, setPosts] = useState([]);  // ✅ posts 상태 추가
+    const [comments, setComments] = useState([]); // ✅ 댓글 상태 추가
 
 
     useEffect(() => {
@@ -38,6 +42,41 @@ const MyPage = () => {
         getTotalRecord(user.id)
             .then(recordResponse => setRecord(recordResponse))
             .catch(error => console.error("전적 데이터 불러오기 실패:", error));
+    }, [user]);
+
+    useEffect(() => {
+        if (!user || !user.id) return;
+
+        const fetchUserPosts = async () => {
+            try {
+                const response = await axios.get(`${API_SERVER_HOST}/api/boards/user/${user.id}`);
+                console.log("✅ 내가 쓴 글 목록:", response.data);
+                setPosts(response.data);
+            } catch (error) {
+                console.error("❌ 게시글 불러오기 실패:", error);
+                setPosts({});
+            }
+        };
+
+        fetchUserPosts(); // ✅ 여기에서 실행
+    }, [user]); // ✅ user가 바뀌면 실행되도록 의존성 추가
+
+    useEffect(() => {
+        if (!user || !user.id) return;
+
+        // 댓글 데이터 가져오기
+        const fetchUserComments = async () => {
+            try {
+                const response = await axios.get(`${API_SERVER_HOST}/api/boards/user/${user.id}/comments`);
+                console.log("✅ 내가 작성한 댓글:", response.data);
+                setComments(response.data);
+            } catch (error) {
+                console.error("❌ 댓글 불러오기 실패:", error);
+                setComments({});
+            }
+        };
+
+        fetchUserComments();
     }, [user]);
 
     const handleFileChange = async (e) => {
@@ -94,7 +133,6 @@ const MyPage = () => {
             console.error("닉네임 업데이트 실패:", error);
         }
     };
-
 
     return (
         <div>
@@ -260,46 +298,56 @@ const MyPage = () => {
                         }`}
                         onClick={() => setSelectedStatsTab("stats")}
                     >
-                        전적 통계
+                        댓글보기
                     </button>
                 </div>
 
-                {selectedStatsTab === "stats" ? (
-                    <div className="bg-slate-200 w-full h-[160px] md:h-[400px]">
-                        <div className="flex flex-row gap-12 rounded-md mt-6 max-w-6xl mx-auto border-1 bg-gray-300 min-h-96">
-                            <div className="m-1 basis-6/12 card border-black dark:border-white dark:bg-[#0a0b0c]">
-                                <div className="font-bold text-2xl text-center dark:text-white">전 적 통 계</div>
-                                <div className="flex p-2 space-x-4">
-                                    <div className="w-1/2 flex justify-center items-center ml-10">
-                                        <HistoryChart win={record.win} draw={record.draw} lose={record.lose} />
-                                    </div>
-                                    <div className="w-1/2 flex flex-col justify-center items-center text-xl">
-                                        <h2 className="text-xl font-bold dark:text-white">게임 전적</h2>
-                                        <p className="text-gray-700 mt-2 font-bold dark:text-white">
-                                            Win : <span className="text-green-500 font-semibold"> {record.win}</span> 회
-                                        </p>
-                                        <p className="text-gray-700 font-bold dark:text-white">
-                                            Draw : <span className="text-yellow-500 font-semibold"> {record.draw}</span> 회
-                                        </p>
-                                        <p className="text-gray-700 font-bold dark:text-white">
-                                            Lose : <span className="text-red-500 font-semibold"> {record.lose}</span> 회
-                                        </p>
-                                        <p className="text-gray-700 mt-3 font-bold dark:text-white">
-                                            승률 :{" "}
-                                            <span className="text-green-500 font-semibold">
-                                                {record.win + record.draw + record.lose > 0
-                                                    ? ((record.win / (record.win + record.draw + record.lose)) * 100).toFixed(1)
-                                                    : 0}
-                                            </span>{" "}
-                                            %
-                                        </p>
-                                    </div>
+                {selectedStatsTab === "myletter" ? (
+                    <div className="p-4 bg-slate-200 rounded-lg">
+                        <h2 className="text-xl font-bold mb-4">내가 쓴 글</h2>
+                        {Object.keys(posts).length > 0 ? (
+                            Object.entries(posts).map(([boardType, items]) => (
+                                <div key={boardType} className="mb-6">
+                                    <h3 className="text-lg font-semibold mb-2">
+                                        {boardType.toUpperCase()} 게시판
+                                    </h3>
+                                    <ul>
+                                        {items.map((post) => (
+                                            <li key={post.id} className="py-2 border-b">
+                                                <h3 className="font-semibold">{post.title}</h3>
+                                                <p className="text-sm text-gray-500">{post.createdate}</p>
+                                            </li>
+                                        ))}
+                                    </ul>
                                 </div>
-                            </div>
-                        </div>
+                            ))
+                        ) : (
+                            <p className="text-center text-gray-600">게시글이 없습니다.</p>
+                        )}
                     </div>
                 ) : (
-                    <div>내가 쓴 글 목록</div>
+                    <div className="p-4 bg-slate-200 rounded-lg">
+                        <h2 className="text-xl font-bold mb-4">내가 작성한 댓글</h2>
+                        {Object.keys(comments).length > 0 ? (
+                            Object.entries(comments).map(([boardType, items]) => (
+                                <div key={boardType} className="mb-6">
+                                    <h3 className="text-lg font-semibold mb-2">
+                                        {boardType.toUpperCase()} 게시판 댓글
+                                    </h3>
+                                    <ul>
+                                        {items.map((comment) => (
+                                            <li key={comment.id} className="py-2 border-b">
+                                                <p className="font-semibold">{comment.content}</p>
+                                                <p className="text-sm text-gray-500">{comment.createdate}</p>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            ))
+                        ) : (
+                            <p className="text-center text-gray-600">작성한 댓글이 없습니다.</p>
+                        )}
+                    </div>
                 )}
             </div>
         </div>
