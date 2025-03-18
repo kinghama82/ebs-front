@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { API_SERVER_HOST } from "@/api/publicapi";
+import { Button } from "../ui/button";
+import { Search } from "lucide-react";
 
 const PartyFriendsList = ({ userId, onAddMember }) => {
     const [friends, setFriends] = useState([]);
@@ -19,13 +21,9 @@ const PartyFriendsList = ({ userId, onAddMember }) => {
     return (
         <div className="relative w-full">
             {/* 파티원 추가 입력창 */}
-            <input
-                type="text"
-                placeholder="파티원 선택 (클릭)"
-                className="w-full p-3 border border-solid border-neutral-300 shadow-md rounded cursor-pointer"
-                onFocus={() => setShowDropdown(true)}
-                readOnly
-            />
+            <Button size="icon" variant="mocha" onFocus={() => setShowDropdown(true)}>
+                <Search />
+            </Button>
             
             {/* 친구 목록 드롭다운 */}
             {showDropdown && (
