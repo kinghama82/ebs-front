@@ -98,7 +98,8 @@ const FreeList = ({ boardType }) => {
             <div className="flex flex-col space-y-2 mb-2 ">
                 <div className="flex items-center justify-between w-full p-2 bg-[#AD927A]">
                     <span className="w-1/12  text-center font-bold ">번 호</span>
-                    <span className="w-5/12  text-center font-bold ">제 목</span>
+                    <span className="w-1/12  text-center font-bold ">분 류</span>
+                    <span className="w-4/12  text-center font-bold ">제 목</span>
                     <span className="w-2/12  text-center font-bold ">작성자</span>
                     <span className="w-1/12  text-center font-bold ">등록일</span>
                     <span className="w-1/12  text-center font-bold ">조회</span>
@@ -109,7 +110,8 @@ const FreeList = ({ boardType }) => {
                         <div key={free.id}
                             className="flex items-center justify-between w-full p-2 border-b border-black ">
                             <span className="w-1/12 text-center ">{startNumber - index}</span>
-                            <span className="w-5/12 text-center " >
+                            <span className="w-1/12 text-center ">{free.category || []}</span>
+                            <span className="w-4/12 text-center " >
                                 <Link href={`/${boardType}/read/${free.id}`}
                                     onClick={(e) => {
                                         e.preventDefault()

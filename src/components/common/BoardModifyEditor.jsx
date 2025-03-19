@@ -7,6 +7,7 @@ import axios from 'axios';
 import { API_SERVER_HOST } from '@/api/publicapi';
 import { useCustomCookie } from './useCustomCookie';
 import { Button } from '../ui/button';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 export default function BoardModifyEditor({ id, boardType }) {
     const router = useRouter();
@@ -15,6 +16,7 @@ export default function BoardModifyEditor({ id, boardType }) {
     const [tempImage, setTempImage] = useState(null); // ✅ 단일 이미지만 허용
     const userInfo = useCustomCookie();
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [category, setCategory] = useState(null)
 
     // ✅ 기존 게시글 불러오기
     useEffect(() => {
@@ -28,37 +30,42 @@ export default function BoardModifyEditor({ id, boardType }) {
         }
     }, [id]);
 
+    const handleChangeCategory = (category) => {
+        console.log("현재 선택한 카테고리 : ", category)
+        setCategory(category)
+    }
+
     const handleImageUpload = async (newImage) => {
         if (!newImage) return;
-    
+
         const formData = new FormData();
         formData.append("file", newImage.file);
-    
+
         try {
             // ✅ 서버에 이미지 업로드
             const { data: uploadedFileName } = await axios.post(
-                `${API_SERVER_HOST}/api/${boardType}/upload`, 
-                formData, 
+                `${API_SERVER_HOST}/api/${boardType}/upload`,
+                formData,
                 { headers: { "Content-Type": "multipart/form-data" } }
             );
-    
+
             // ✅ 업로드된 이미지 URL 생성
             const imageUrl = `${API_SERVER_HOST}/api/${boardType}/view/${uploadedFileName}`;
-    
+
             // ✅ 기존 이미지 제거 후 새 이미지 삽입
             setContent((prevContent) => prevContent.replace(tempImage?.preview || "", ""));
             setTempImage({ file: newImage.file, preview: imageUrl });
-    
+
             // ✅ 에디터에 반영
             setContent((prevContent) => `${prevContent}<img src="${imageUrl}" style="width: 300px; height: auto;" />`);
-    
-            
-    
+
+
+
         } catch (error) {
             console.error("🚨 이미지 업로드 실패:", error);
         }
     };
-    
+
 
     const handleSave = async () => {
         if (isSubmitting) return;
@@ -110,7 +117,8 @@ export default function BoardModifyEditor({ id, boardType }) {
             title,
             content: updatedContent,
             gamer: safeGamer?.id ? safeGamer : null,
-            uploadFileNames: [uploadedImgFile].flat()
+            uploadFileNames: [uploadedImgFile].flat(),
+            category
         };
 
         try {
@@ -134,13 +142,40 @@ export default function BoardModifyEditor({ id, boardType }) {
 
     return (
         <div className="p-2 mb-2">
-            <input
-                type="text"
-                className="w-full border-2 border-gray-400 rounded p-2 mb-4 mt-4"
-                placeholder="제목을 입력하세요"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-            />
+            <div className='flex justify-between w-full'>
+                {/* 카테고리 */}
+                <div className='w-1/6 mr-2 flex items-center'>
+                    <Select onValueChange={handleChangeCategory}>
+                        <SelectTrigger className="border-2 border-gray-400">
+                            <SelectValue placeholder="카테고리" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectGroup>
+                                <SelectItem value="잡담" required>잡담</SelectItem>
+                                <SelectItem value="유머">유머</SelectItem>
+                                <SelectItem value="정보">정보</SelectItem>
+                                <SelectItem value="질문">질문</SelectItem>
+                                {userInfo?.roleNames?.includes("ADMIN") ? (
+                                    <div>
+                                        <SelectItem value="뉴스">뉴스</SelectItem>
+                                        <SelectItem value="공지">공지</SelectItem>
+                                    </div>
+                                ) : (
+                                    <></>
+                                )}
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
+                </div>
+                {/* 제목입력칸 */}
+                <input
+                    type="text"
+                    className="w-full border-2 border-gray-400 rounded p-2 mb-4 mt-4"
+                    placeholder="제목을 입력하세요"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                />
+            </div>
             <EditExample
                 boardType={boardType}
                 content={content}
