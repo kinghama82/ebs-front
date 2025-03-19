@@ -280,13 +280,13 @@ const HistoryAddComponent = () => {
                                     <PartyFriendsList userId={userInfo?.id} onAddMember={handleSelectFriend} />
                                 </span>
                                 {/* 파티원추가버튼 */}    
-                                <span className="p-1">
-                                    <Plus className="rounded h-10 text-white w-10 bg-[#AD927A] shadow-md"
+                                <span className="p-1" title="파티추가">
+                                    <Plus className="cursor-pointer rounded h-10 text-white w-10 bg-[#AD927A] shadow-md"
                                           onClick={handleAddPartyMember}/>
                                 </span>                           
                                 {/* 파티원초기화버튼 */}
-                                <span className="p-1">
-                                    <RotateCcw className="rounded h-10 text-white w-10 p-1 bg-[#AD927A] shadow-md"
+                                <span className="p-1" title="초기화">
+                                    <RotateCcw className="cursor-pointer rounded h-10 text-white w-10 p-1 bg-[#AD927A] shadow-md"
                                                onClick={handleResetPartyMembers}/>
                                 </span>
                             </div>
