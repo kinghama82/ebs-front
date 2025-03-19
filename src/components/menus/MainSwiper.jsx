@@ -12,6 +12,7 @@ import './styles.css';
 
 // import required modules
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
+import Link from 'next/link';
 
 export default function MainSwiper() {
   const progressCircle = useRef(null);
@@ -27,7 +28,7 @@ export default function MainSwiper() {
         centeredSlides={true}
         loop={true}
         autoplay={{
-            //오토플레이 시간 설정 1000 = 1초
+          //오토플레이 시간 설정 1000 = 1초
           delay: 5000,
           disableOnInteraction: false,
         }}
@@ -38,14 +39,22 @@ export default function MainSwiper() {
         modules={[Autoplay, Pagination, Navigation]}
         onAutoplayTimeLeft={onAutoplayTimeLeft}
         className="mySwiper"
-        style={{height: "500px", width: "100%"}}
+        style={{ height: "500px", width: "100%" }}
       >
-        
+
         {/* <SwiperSlide></SwiperSlide> */}
-        <SwiperSlide><img src='http://www.boardgamefesta.com/data/upload/banner/17392466712.jpg'/></SwiperSlide>
-        <SwiperSlide><img src='/1.png'/></SwiperSlide>
-        <SwiperSlide><img src='/2.png'/></SwiperSlide>
-        <SwiperSlide><img src='/3.png'/></SwiperSlide>
+        <SwiperSlide><Link href="https://tumblbug.com/gojapan"><img src='/4.png' /></Link></SwiperSlide>
+        <SwiperSlide>
+          <Link href="https://boardm.co.kr/front/product/product_detail.php?seq=83813&pinid=24176">
+            <img src='/1.png' />
+          </Link>
+        </SwiperSlide>
+        <SwiperSlide>
+          <Link href="https://boardm.co.kr/front/product/product_detail.php?seq=83814&pinid=24176">
+            <img src='/2.png' />
+          </Link>
+        </SwiperSlide>
+        <SwiperSlide><img src='/3.png' /></SwiperSlide>
         {/* <SwiperSlide>Slide 6</SwiperSlide>
         <SwiperSlide>Slide 7</SwiperSlide>
         <SwiperSlide>Slide 8</SwiperSlide>

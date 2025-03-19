@@ -151,10 +151,10 @@ const FreeReadPage = () => {
                     {/* 헤드 및 카테고리 목록 / 댓글 링크 */}
                     <div >
                         <div className="grid grid-cols-4 p-1">
-                            <span className="col-span-3">카테고리</span>
+                            <span className="col-span-3 font-bold">[ {free.category} ]</span>
                             <div className="grid grid-cols-2">
                                 <span />
-                                <div className="grid grid-cols-3">
+                                <div className="grid grid-cols-3 font-bold">
                                     <span className="col-span-2 text-end mr-1"><Link href={'/free'}>목록 </Link> | </span>
                                     <span className="text-center"><Link href="#answerList">댓글</Link></span>
                                 </div>
@@ -187,7 +187,7 @@ const FreeReadPage = () => {
                                 onClick={handleClickVote}><ThumbsUp className="text-blue-500" />{free.voter.length}</Button>
                         </div>
                         <div className="grid grid-cols-6 border-b-2 border-amber-600">
-                            <div className=" grid-cols-4 flex items-center">
+                            <div className=" grid-cols-4 flex items-center font-bold">
                                 <div className="mr-2"><Link href={'/free'}>목록 </Link> | </div>
                                 <div><Link href="#answerList">댓글</Link></div>
                             </div>
