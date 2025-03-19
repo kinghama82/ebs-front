@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,10 @@ import {Mail, Lock, House} from "lucide-react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { loginUser } from "@/api/gamerApi";
+import { useSession } from "next-auth/react";
+import GoogleLogin from "@/components/jhkexample/GoogleLoginButton";
+import axios from "axios";
+import NaverLoginButton from "@/components/jhkexample/NaverLoginButton";
 
 export default function LoginPage() {
     const router = useRouter();
@@ -118,6 +122,10 @@ export default function LoginPage() {
                             <Button onClick={handleResetPassword} className="w-[48%] bg-purple-500">
                                 비밀번호 찾기
                             </Button>
+                        </div>
+                        <div className="mt-3 gap-4">
+                            <GoogleLogin/>
+                            <NaverLoginButton/>
                         </div>
                     </CardContent>
                 </Card>
