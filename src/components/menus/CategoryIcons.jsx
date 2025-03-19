@@ -35,7 +35,7 @@ const CategoryIcons = () => {
                 >
                     <CardContent className="flex flex-col items-center p-2">
                         {category.icon}
-                        <span className="mt-2 text-xs font-semibold">{category.name}</span>
+                        <span className="mt-2 text-base font-bold">{category.name}</span>
                     </CardContent>
                 </Card>
             ))}

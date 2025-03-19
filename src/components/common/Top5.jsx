@@ -22,6 +22,7 @@ export default function Top5({ boardType }) {
     }, [boardType]);
 
     const fetchTopPosts = async () => {
+        if(!topView || !topVote) return
         try {
             const [viewRes, voteRes] = await Promise.all([
                 axios.get(`${API_SERVER_HOST}/api/${boardType}/view5`),

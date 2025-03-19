@@ -121,7 +121,7 @@ const NewsDetail = () => {
                     {/* 헤드 및 카테고리 목록 / 댓글 링크 */}
                     <div >
                         <div className="grid grid-cols-4 p-1">
-                            <span className="col-span-3">카테고리</span>
+                            <span className="col-span-3">[ {news.category} ]</span>
                             <div className="grid grid-cols-2">
                                 <span />
                                 <div className="grid grid-cols-3">
