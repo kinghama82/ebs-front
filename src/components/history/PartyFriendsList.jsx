@@ -19,7 +19,7 @@ const PartyFriendsList = ({ userId, onAddMember }) => {
     }, [userId]);
 
     return (
-        <div className="relative w-full">
+        <div className="w-10">
             {/* 파티원 추가 입력창 */}
             <Button size="icon" variant="mocha" onFocus={() => setShowDropdown(true)}>
                 <Search />

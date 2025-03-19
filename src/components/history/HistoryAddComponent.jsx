@@ -265,32 +265,36 @@ const HistoryAddComponent = () => {
 
                     {/* 파티원 추가 입력 + 추가된 파티원 목록 */}
                     <div className="flex flex-col gap-4">
-                        <div className="font-bold text-xl border border-black">파티원 추가</div>
+                        <div className="font-bold text-xl">파티원 추가</div>
 
                         
 
                         {/* 파티원직접입력 */}
-                        <div className="grid grid-cols-4 items-center gap-2 border-black border" >
-                            <input className="w-[300px] col-span-3 p-3 border-2 border-gray-400 shadow-md rounded"
+                        <div className="grid grid-cols-4 items-center gap-2" >
+                            <input className="w-[380px] col-span-2 -mt-1 p-2.5 border-2 border-gray-400 shadow-md rounded"
                                 type="text" placeholder="파티원 이름 입력" value={partyMember}
                                 onChange={(e) => setPartyMember(e.target.value)} />
-                            <div className="border border-black">
-                                <span><PartyFriendsList userId={userInfo?.id} onAddMember={handleSelectFriend} /></span>
+                            <div></div>    
+                            <div className="grid grid-cols-3 -ml-10 mr-4">
+                                <span className="p-1 border-[#AD927A]">
+                                    <PartyFriendsList userId={userInfo?.id} onAddMember={handleSelectFriend} />
+                                </span>
                                 {/* 파티원추가버튼 */}    
-                                <span><Plus className="rounded h-10 text-white w-10 bg-primary shadow-md"
-                                            onClick={handleAddPartyMember}/></span>
-                                
-                            
-                            {/* 파티원초기화버튼 */}
-                            <RotateCcw className="rounded h-[56px] text-white w-16 bg-primary shadow-md"
-                                onClick={handleResetPartyMembers}>
-                            </RotateCcw>
+                                <span className="p-1">
+                                    <Plus className="rounded h-10 text-white w-10 bg-[#AD927A] shadow-md"
+                                          onClick={handleAddPartyMember}/>
+                                </span>                           
+                                {/* 파티원초기화버튼 */}
+                                <span className="p-1">
+                                    <RotateCcw className="rounded h-10 text-white w-10 p-1 bg-[#AD927A] shadow-md"
+                                               onClick={handleResetPartyMembers}/>
+                                </span>
                             </div>
                         </div>
 
                         {/* 추가된 파티원 목록 */}
-                        <div className="w-[469px] p-3 border border-solid border-neutral-300 shadow-md rounded bg-gray-100">
-                            <span className="font-bold">현재 추가된 파티원:</span>
+                        <div className="w-[540px] -mt-4  p-3 border-2 border-gray-400 shadow-md rounded bg-gray-100">
+                            <span className="font-bold text-xl border-b-2">현재 추가된 파티원 :</span>
                             <ul>
                                 {history.mate.length > 0
                                     ? history.mate.map((m, index) => <li key={index}>{m}</li>)
@@ -302,10 +306,10 @@ const HistoryAddComponent = () => {
                 </div>
 
                 {/* 메모 입력 */}
-                <div className="p-4 -mt-10">
-                    <div className=" font-bold p-4 text-2xl">메모</div>
+                <div className=" p-4">
+                    <div className=" font-bold -mt-2 text-2xl">메모</div>
                     <textarea
-                        className="w-[982px] p-4 ml-6 rounded border border-solid border-gray-300 shadow-md"
+                        className="w-full p-4 text-xl mt-2  rounded border-2 border-gray-400 shadow-md"
                         name="content"
                         rows="4"
                         placeholder="내용을 입력하세요"
@@ -313,18 +317,16 @@ const HistoryAddComponent = () => {
                         onChange={handleChangeHistory}
                     />
                 </div>
-
-
-
-            </div>
-            {/* 추가 버튼 */}
+                {/* 추가 버튼 */}
             {userInfo ?
-                <div className="flex justify-end mr-10 p-4">
+                <div className="flex justify-end p-4 -mt-10">
                     <Button variant="mocha" className="p-4 text-xl text-white"
                         onClick={handleClickAdd}>기록 저장
                     </Button>
                 </div>
                 : <></>}
+            </div>
+            
         </>
     );
 };
