@@ -5,7 +5,7 @@ import { ChevronDown, ChevronUp, Pencil, Plus } from "lucide-react";
 import { motion } from "framer-motion";
 import { usePathname, useRouter } from "next/navigation";
 
-//특정주소에서 안보이게 하는 컴포넌트
+//특정주소에서 안보이게
 const HIDDEN_PATHS = ["/games", "/news", "/mypage"]
 
 //현재 주소 읽어오기(localhost:8080/free <-- 여까지 읽어옴)

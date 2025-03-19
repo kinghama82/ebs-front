@@ -104,17 +104,17 @@ const BasicMenu = () => {
                 
 
                 {/* 네비게이션 메뉴 */}
-                <div className="hidden no-underline md:flex space-x-6 text-amber-800 font-semibold">
-                  <Link href="/news">뉴스</Link>
-                  <Link href="/free">자유</Link>
-                  <Link href="/question">질문</Link>
-                  <Link href="/rulebook">룰북</Link>
-                  <Link href="/games">게임정보</Link>
-                  <Link href="/chat">게임추천받기</Link>
+                <div className="hidden no-underline md:flex space-x-6 text-amber-800">
+                  <NavLink href="/news">뉴스</NavLink>
+                  <NavLink href="/free">자유</NavLink>
+                  <NavLink href="/question">질문</NavLink>
+                  <NavLink href="/rulebook">룰북</NavLink>
+                  <NavLink href="/games">게임정보</NavLink>
+                  <NavLink href="/chat">게임추천받기</NavLink>
                   {userInfo ? (
-                    <Link href={`/history?page=1&size=10&gamerid=${userInfo.id}`}>
+                    <NavLink href={`/history?page=1&size=10&gamerid=${userInfo.id}`}>
                       게임기록
-                    </Link>
+                    </NavLink>
                   ) : null}
                   {/* <ExRateComponent/> */}
                 </div>
@@ -211,7 +211,7 @@ export default BasicMenu;
 // ✅ 네비게이션 링크 컴포넌트 추가
 function NavLink({ href, children, onClick }) {
   return (
-    <Link href={href} className="text-amber-800 transition font-medium" onClick={onClick}>
+    <Link href={href} className="text-amber-800 transition text-base font-bold" onClick={onClick}>
       {children}
     </Link>
   );
