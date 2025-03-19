@@ -1,19 +1,22 @@
+
 /** @type {import('next').NextConfig} */
 
 const nextConfig = {
     images: {
         remotePatterns: [
             {
-                protocol: "https", // HTTPS 사용
-                hostname: "boardparadice.com", // 도메인 사용
-                pathname: "/uploads/**", // 업로드 경로
+                protocol: "http",
+                hostname: "43.202.30.85", // 실제 서버 IP
+                port: "8080",
+                pathname: "/uploads/**",
             },
         ],
-        domains: ["boardparadice.com"],
+        domains: ["43.202.30.85"],
     },
 };
 
 export default nextConfig;
+
 
 
 /*
