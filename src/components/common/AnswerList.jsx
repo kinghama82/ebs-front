@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { X, Edit } from "lucide-react";
+import { X } from "lucide-react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useCustomCookie } from "@/components/common/useCustomCookie";
+import {API_SERVER_HOST} from "@/api/publicapi";
 
 const AnswerList = ({ answers, rulebookId }) => {
-    const [editMode, setEditMode] = useState(null);
-    const [editContent, setEditContent] = useState("");
     const router = useRouter();
     const userInfo = useCustomCookie(); // 로그인한 사용자 정보 가져오기
 
@@ -17,21 +16,16 @@ const AnswerList = ({ answers, rulebookId }) => {
     };
 
     const handleDelete = async (answerId) => {
+
+        if (!rulebookId) {
+            console.error("❌ rulebookId가 없습니다!");
+            return;
+        }
+
         if (window.confirm("정말 삭제하시겠습니까?")) {
-            await axios.delete(`http://localhost:8080/rulebook/${rulebookId}/answers/${answerId}`);
+            await axios.delete(`${API_SERVER_HOST}/rulebook/${rulebookId}/answers/${answerId}`);
             window.location.reload();
         }
-    };
-
-    const handleEdit = (answer) => {
-        setEditMode(answer.id);
-        setEditContent(answer.content);
-    };
-
-    const handleEditSubmit = async (answerId) => {
-        await axios.put(`http://localhost:8080/rulebook/${rulebookId}/answers/${answerId}`, { content: editContent });
-        setEditMode(null);
-        window.location.reload();
     };
 
     return (
@@ -43,29 +37,18 @@ const AnswerList = ({ answers, rulebookId }) => {
                         <div className="border border-gray-500 rounded-lg p-3">
                             <div className="mb-2 text-xl font-bold">{answer.writerNickname}</div>
 
-                            {editMode === answer.id ? (
-                                <div>
-                                    <textarea
-                                        value={editContent}
-                                        onChange={(e) => setEditContent(e.target.value)}
-                                        className="w-full p-2 border rounded"
-                                    />
-                                    <button onClick={() => handleEditSubmit(answer.id)} className="text-blue-500">수정 완료</button>
-                                </div>
-                            ) : (
                                 <div>{answer.content}</div>
-                            )}
 
                             <div className="mt-1 text-sm text-gray-500 flex justify-between items-center">
                                 <span>{answer.createdDate}</span>
 
                                 {/* 로그인한 사용자의 ID와 작성자의 ID가 같을 때만 버튼 표시 */}
-                                {userInfo?.id === answer.writer?.id && (
-                                    <div className="flex gap-2">
-                                        <button onClick={() => handleEdit(answer)} className="text-yellow-500"><Edit size={18} /></button>
-                                        <button onClick={() => handleDelete(answer.id)} className="text-red-500"><X size={18} /></button>
-                                    </div>
+                                {userInfo?.id === answer.gamer && (
+                                    <button onClick={() => handleDelete(answer.id)} className="text-red-500">
+                                        <X size={18} />
+                                    </button>
                                 )}
+
                             </div>
                         </div>
                     </div>

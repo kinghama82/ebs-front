@@ -14,14 +14,16 @@ export default function ListComponent() {
     const [totalPages, setTotalPages] = useState(1);    // 총 페이지 수 상태
     const [allRules, setAllRules] = useState([]);  // 전체 룰북 데이터
     const [searchQuery, setSearchQuery] = useState("");  // 검색어 상태
+    const [isSearching, setIsSearching] = useState(false); // 검색 중인지 여부
     const router = useRouter();
 
-    const pageSize = 3;  // 한 페이지에 표시할 아이템 수
+    const pageSize = 5;  // 한 페이지에 표시할 아이템 수
 
 
     useEffect(() => {
         setIsClient(true);  // 클라이언트에서만 렌더링되도록 설정
     }, []);
+
 
     useEffect(() => {
         const fetchAllRules = async () => {
@@ -64,21 +66,6 @@ export default function ListComponent() {
         fetchRulebookByPage();
     }, [currentPage]); // currentPage가 변경될 때마다 실행
 
-
-    // 검색 버튼 클릭 시 룰북을 필터링
-    const handleSearch = () => {
-        if (searchQuery.trim() === "") {
-            setFilteredRulebook(allRules); // 검색어가 없으면 전체 룰북 표시
-            setTotalPages(Math.ceil(allRules.length / pageSize)); // 전체 룰북 기준으로 페이지 수 설정
-        } else {
-            const filtered = allRules.filter(rule =>
-                rule.title.toLowerCase().includes(searchQuery.toLowerCase()) // 제목에 검색어가 포함된 경우
-            );
-            setFilteredRulebook(filtered); // 필터링된 룰북 설정
-            setTotalPages(Math.ceil(filtered.length / pageSize)); // 총 페이지 수 업데이트
-            setCurrentPage(1); // 검색 후 첫 페이지로 이동
-        }
-    };
 
     const handlePost = (id) => {
         if (isClient) {
@@ -305,29 +292,6 @@ export default function ListComponent() {
                 </button>
             </div>
 
-            {/* 검색 입력 필드 */}
-            <div className="my-4 flex justify-start">
-                <input
-                    type="text"
-                    placeholder="제목으로 검색..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="px-4 py-2 border rounded"
-                    style={{ width: '300px'}}
-                />
-                <button
-                    onClick={handleSearch}
-                    style={{
-                        border: '2px solid #D97706',
-                        padding: '5px',
-                        background: '#D97706',
-                        borderRadius: '5px',
-                        color: 'white'
-                    }}
-                >
-                    검색
-                </button>
-            </div>
             {/* 글 작성 버튼 */}
             <button
                 onClick={moveCreate}

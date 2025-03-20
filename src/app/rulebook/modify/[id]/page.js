@@ -6,7 +6,7 @@ import axios from 'axios';
 // Server Component: 서버에서 게시글 데이터를 가져옵니다.
 async function fetchPostData(postId) {
   try {
-    const response = await axios.get(`http://localhost:8080/rulebook/${postId}`);
+    const response = await axios.get(`${API_SERVER_HOST}/rulebook/${postId}`);
     return response.data;
   } catch (error) {
     console.error('Error fetching post data:', error);

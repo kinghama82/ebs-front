@@ -16,6 +16,7 @@ import YouTube from '@/components/common/Youtube'
 import { SketchPicker } from "react-color";
 import styles from '@/styles/Editor.module.css'
 import { Mark, mergeAttributes } from '@tiptap/core';
+import {API_SERVER_HOST} from "@/api/publicapi";
 
 
 // 글자 크기 확장 정의
@@ -136,7 +137,7 @@ const EditorComponent = () => {
     console.log("FormData 확인:", formData.get('file'));
 
     try {
-      const response = await axios.post('http://localhost:8080/rulebook/upload', formData, {
+      const response = await axios.post(`${API_SERVER_HOST}/rulebook/upload`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
@@ -187,7 +188,7 @@ const EditorComponent = () => {
     };
 
     try {
-      const response = await axios.post('http://localhost:8080/rulebook/create', rulebookData, {
+      const response = await axios.post(`${API_SERVER_HOST}/rulebook/create`, rulebookData, {
         headers: {
           'Content-Type': 'application/json',
         },

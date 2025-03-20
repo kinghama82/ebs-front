@@ -14,7 +14,7 @@ import {API_SERVER_HOST} from "@/api/publicapi";
 const PostDetailPage = () => {
   const [ruleDetail, setRuleDetail] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [id, setId] = useState(null);
+  const [id, setId] = useState("");
   const [answers, setAnswers] = useState([]); // 답글 목록 상태 추가
      const [isVoted, setIsVoted] = useState(false); // 추천 여부 상태 추가
     const userInfo = useCustomCookie();
@@ -57,10 +57,11 @@ const PostDetailPage = () => {
     window.location.href = `/rulebook/modify/${id}`;
   };
 
+
   const handleDeleteClick = (id) => {
     if (window.confirm("정말로 삭제하시겠습니까?")) {
       axios
-          .delete(`http://localhost:8080/rulebook/delete/${id}`)
+          .delete(`${API_SERVER_HOST}/rulebook/delete/${id}`)
           .then((response) => {
             console.log("게시글 삭제 성공", response);
             alert("삭제되었습니다.");
@@ -94,7 +95,7 @@ const PostDetailPage = () => {
 
     const handleVoteClick = async () => {
         try {
-            const response = await axios.post(`http://localhost:8080/rulebook/${id}/vote`, null, {
+            const response = await axios.post(`${API_SERVER_HOST}/rulebook/${id}/vote`, null, {
                 params: { gamerId: userInfo.id } // 쿠키에서 가져온 사용자 ID
             });
 
@@ -140,22 +141,22 @@ const PostDetailPage = () => {
               )}
 
               {/* 추천 버튼 추가 */}
-              <div className="flex justify-center mt-4">
+              <div className="flex justify-end mt-4">
                   <button
                       onClick={handleVoteClick}
                       disabled={isVoted}  // 이미 추천한 경우 버튼 비활성화
-                      style={{ background: '#D97706', color: 'white', padding: '10px 20px', borderRadius: '10px', cursor: 'pointer' }}>
-                      {isVoted ? "이미 추천하셨습니다" : "추천하기"}
+                      style={{ background: '#D97706', color: 'white', padding: '5px 10px', borderRadius: '10px', cursor: 'pointer' }}>
+                      {isVoted ? "이미 추천하셨습니다" : "추천"}
                   </button>
               </div>
           </div>
 
             {/* 답글 목록 */}
 
-            <AnswerList answers={answers} />
+            <AnswerList answers={answers} rulebookId={id || "default"} />
 
           {/* 답글 추가 폼 */}
-          <AnswerForm rulebookId={id} onAnswerAdded={handleAnswerAdded} />
+          <AnswerForm rulebookId={id || "default"} onAnswerAdded={handleAnswerAdded} />
 
 
         </div>
