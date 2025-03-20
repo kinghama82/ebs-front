@@ -1,7 +1,7 @@
-// components/AnswerForm.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useCustomCookie } from "@/components/common/useCustomCookie";
+import {API_SERVER_HOST} from "@/api/publicapi";
 
 const AnswerForm = ({ rulebookId, onAnswerAdded }) => {
     const [content, setContent] = useState('');
@@ -9,16 +9,24 @@ const AnswerForm = ({ rulebookId, onAnswerAdded }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         try {
-            const response = await axios.post(`http://localhost:8080/rulebook/${rulebookId}/answers/create`, {
-                gamerId: userInfo.id,
-                content,
-            });
+            const response = await axios.post(
+                `${API_SERVER_HOST}/rulebook/${rulebookId}/answers/create`,
+                {
+                    writerId: userInfo.id,  // 'gamer' 대신 'writerId' 사용
+                    content: content,
+                },
+                {
+                    headers: { "Content-Type": "application/json" },
+                }
+            );
+
+            window.location.reload();
 
             if (response.status === 200) {
                 onAnswerAdded(response.data);
                 setContent('');
+
             }
         } catch (error) {
             console.error("Error occurred while submitting the answer:", error);

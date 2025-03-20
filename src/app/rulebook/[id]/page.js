@@ -9,6 +9,7 @@ import AnswerForm from "@/components/common/AnswerForm";
 import {useCustomCookie} from "@/components/common/useCustomCookie";
 import {router} from "next/client";
 import { useRouter } from "next/navigation";
+import {API_SERVER_HOST} from "@/api/publicapi";
 
 const PostDetailPage = () => {
   const [ruleDetail, setRuleDetail] = useState(null);
@@ -30,7 +31,7 @@ const PostDetailPage = () => {
   useEffect(() => {
     if (id) {
       axios
-          .get(`http://localhost:8080/rulebook/${id}`)
+          .get(`${API_SERVER_HOST}/rulebook/${id}`)
           .then((response) => {
             setRuleDetail(response.data);
             setLoading(false);
@@ -42,7 +43,7 @@ const PostDetailPage = () => {
 
       // 답글 목록 가져오기
       axios
-          .get(`http://localhost:8080/rulebook/${id}/answers`)
+          .get(`${API_SERVER_HOST}/rulebook/${id}/answers`)
           .then((response) => {
             setAnswers(response.data); // 답글 목록 상태 업데이트
           })
