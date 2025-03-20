@@ -32,7 +32,7 @@ const NewFreePage = () => {
             {/* 중단 게시글 작성 부분 */}
             <div className="container max-w-6xl mx-auto bg-neutral-200 mt-2 border-b-2 border-t-2 border-amber-600">
                 {/* 에디터부분 */}
-                <div>
+                <div className="max-w-6xl mx-auto">
                     <BoardEditor boardType="free" />
                 </div>
             </div>

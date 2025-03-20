@@ -170,7 +170,7 @@ export default function BoardModifyEditor({ id, boardType }) {
                 {/* 제목입력칸 */}
                 <input
                     type="text"
-                    className="w-full border-2 border-gray-400 rounded p-2 mb-4 mt-4"
+                    className="relative w-5/6 border-2 border-gray-400 rounded p-2 mb-4 mt-4"
                     placeholder="제목을 입력하세요"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}

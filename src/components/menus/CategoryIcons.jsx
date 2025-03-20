@@ -19,9 +19,9 @@ const CategoryIcons = () => {
 
     const handleCategoryClick = (categoryName) => {
         if (categoryName === "전체") {
-            router.push("/games"); // ✅ "전체" 클릭 시 "/games"로 이동
+            router.push("/games"); 
         } else {
-            router.push(`/category/${encodeURIComponent(categoryName)}`); // ✅ 나머지는 기존 방식 유지
+            router.push(`/category/${encodeURIComponent(categoryName)}`); 
         }
     };
 

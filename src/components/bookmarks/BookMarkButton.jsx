@@ -45,7 +45,7 @@ const BookMarkButton = ({ gameId }) => {
         }
     };
 
-    // ✅ 북마크 추가
+    // 북마크 추가
     const addBookmark = async () => {
         if(!user || !user.id) return;
         try {
@@ -55,13 +55,13 @@ const BookMarkButton = ({ gameId }) => {
             });
 
             setIsBookmarked(true);
-            setBookmarkId(response.data.id); // 추가된 북마크의 ID 저장
+            setBookmarkId(response.data.id); 
         } catch (err) {
             console.error("❌ 게임 북마크 추가 실패:", err);
         }
     };
 
-    // ✅ 북마크 삭제
+    //북마크 삭제
     const removeBookmark = async () => {
         if(!user || !user.id) return;
         if (!bookmarkId) return;
