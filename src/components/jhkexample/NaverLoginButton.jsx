@@ -13,7 +13,7 @@ const NaverLoginButton = () => {
   return (
     <button 
       onClick={handleNaverLogin} 
-      className="w-[48%] rounded-lg "
+      className="w-[48%] rounded-lg"
     >
       <img src='./naverlogin.png'/>
     </button>
