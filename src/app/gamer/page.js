@@ -1,21 +1,18 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import Cookies from "js-cookie";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { loginUser } from "@/api/gamerApi";
+import GoogleLogin from "@/components/jhkexample/GoogleLoginButton";
+import NaverLoginButton from "@/components/jhkexample/NaverLoginButton";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import {Mail, Lock, House} from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { motion } from "framer-motion";
+import { House, Lock, Mail } from "lucide-react";
 import Link from "next/link";
-import { loginUser } from "@/api/gamerApi";
-import { useSession } from "next-auth/react";
-import GoogleLogin from "@/components/jhkexample/GoogleLoginButton";
-import axios from "axios";
-import NaverLoginButton from "@/components/jhkexample/NaverLoginButton";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function LoginPage() {
     const router = useRouter();
@@ -123,7 +120,8 @@ export default function LoginPage() {
                                 비밀번호 찾기
                             </Button>
                         </div>
-                        <div className="mt-3 gap-4">
+                        {/* 소셜로그인버튼 */}
+                        <div className="mt-2.5 gap-4">
                             <GoogleLogin/>
                             <NaverLoginButton/>
                         </div>
