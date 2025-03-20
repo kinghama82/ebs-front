@@ -31,11 +31,11 @@ const FreeList = ({ boardType }) => {
 
     useEffect(() => {
         let isMounted = true;
-    
+
         getFreeList({ page, size }).then(data => {
             if (isMounted) {
                 console.log("📡 서버에서 받은 데이터: ", data);
-                
+
                 setServerData(prevData => {
                     // ✅ 데이터가 변경되지 않았다면 setState 실행 안 함
                     if (JSON.stringify(prevData) === JSON.stringify(data)) {
@@ -45,12 +45,12 @@ const FreeList = ({ boardType }) => {
                 });
             }
         });
-    
+
         return () => {
             isMounted = false; // ✅ 언마운트 시 요청 방지
         };
     }, [page, size]);
-    
+
 
 
     const handlePlusView = async (id, router) => {
@@ -108,15 +108,15 @@ const FreeList = ({ boardType }) => {
                 {serverData.dtoList.length > 0 ? (
                     serverData.dtoList.map((free, index) => (
                         <div key={free.id}
-                            className="flex items-center justify-between w-full p-2 border-b border-black ">
+                             className="flex items-center justify-between w-full p-2 border-b border-black ">
                             <span className="w-1/12 text-center ">{startNumber - index}</span>
                             <span className="w-1/12 text-center ">{free.category || []}</span>
                             <span className="w-4/12 text-center " >
                                 <Link href={`/${boardType}/read/${free.id}`}
-                                    onClick={(e) => {
-                                        e.preventDefault()
-                                        handlePlusView(free.id, router)
-                                    }}>{free.title}
+                                      onClick={(e) => {
+                                          e.preventDefault()
+                                          handlePlusView(free.id, router)
+                                      }}>{free.title}
                                     <span className="w-1/12 text-center ml-1 ">
                                         [{free.answerList ? free.answerList.length : 0}]
                                     </span>
@@ -139,21 +139,21 @@ const FreeList = ({ boardType }) => {
                     {serverData.prev && (
                         <PaginationItem>
                             <PaginationPrevious href={`?page=${serverData.prevPage}&size=${size}`}
-                                onClick={(e) => {
-                                    e.preventDefault()
-                                    moveToPage(serverData.prevPage)
-                                }} />
+                                                onClick={(e) => {
+                                                    e.preventDefault()
+                                                    moveToPage(serverData.prevPage)
+                                                }} />
                         </PaginationItem>
                     )}
 
                     {serverData.pageNumList.map(pageNum => (
                         <PaginationItem key={pageNum}>
                             <PaginationLink href={`?page=${pageNum}&size=${size}`}
-                                className={serverData.current === pageNum ? " hover:bg-[#8C7A65] border border-black text-black text-lg font-bold" : ""}
-                                onClick={(e) => {
-                                    e.preventDefault()
-                                    moveToPage(pageNum)
-                                }}>
+                                            className={serverData.current === pageNum ? " hover:bg-[#8C7A65] border border-black text-black text-lg font-bold" : ""}
+                                            onClick={(e) => {
+                                                e.preventDefault()
+                                                moveToPage(pageNum)
+                                            }}>
                                 {pageNum}
                             </PaginationLink>
                         </PaginationItem>
@@ -162,14 +162,17 @@ const FreeList = ({ boardType }) => {
                     {serverData.next && (
                         <PaginationItem>
                             <PaginationNext href={`?page=${serverData.nextPage}&size=${size}`}
-                                onClick={(e) => {
-                                    e.preventDefault()
-                                    moveToPage(serverData.nextPage)
-                                }} />
+                                            onClick={(e) => {
+                                                e.preventDefault()
+                                                moveToPage(serverData.nextPage)
+                                            }} />
                         </PaginationItem>
                     )}
                 </PaginationContent>
             </Pagination>
+            <div className="-mt-10">
+                <Button variant="mocha"
+                        onClick={() => router.push(`/${boardType}/create`)} >글 작성</Button>
             </div>
         </div>
     )

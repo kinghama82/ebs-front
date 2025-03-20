@@ -24,32 +24,46 @@ export default function ListComponent() {
     }, []);
 
     useEffect(() => {
-        // 전체 룰북 데이터를 한번만 가져옵니다 (인기글용)
-        fetch(`${API_SERVER_HOST}/rulebook/list`)
-            .then((res) => res.json())
-            .then((data) => {
+        const fetchAllRules = async () => {
+            try {
+                const response = await fetch(`${API_SERVER_HOST}/rulebook/list`);
+                const text = await response.text(); // JSON인지 확인하기 위해 원본 응답 받기
+
+                const data = JSON.parse(text); // JSON 파싱 시도
+
                 if (Array.isArray(data.dtoList)) {
                     setAllRules(data.dtoList);
-                    setFilteredRulebook(data.dtoList); // 필터링된 룰북 초기화
+                    setFilteredRulebook(data.dtoList);
                 } else {
-                    console.error("Fetched data is not an array:", data);
+                    console.error("🚨 Fetched all rules is not an array:", data);
                 }
-            })
-            .catch((error) => console.error("Error fetching all rules:", error));
+            } catch (error) {
+                console.error("🚨 Error fetching all rules:", error);
+            }
+        };
 
-        // 현재 페이지에 맞는 룰북 데이터를 가져옵니다.
-        fetch(`${API_SERVER_HOST}/rulebook/list?page=${currentPage}&size=${pageSize}`)
-            .then((res) => res.json())
-            .then((data) => {
+        const fetchRulebookByPage = async () => {
+            try {
+                const response = await fetch(`${API_SERVER_HOST}/rulebook/list?page=${currentPage}&size=${pageSize}`);
+                const text = await response.text(); // JSON 원본 데이터 확인
+
+                const data = JSON.parse(text); // JSON 파싱 시도
+
                 if (Array.isArray(data.dtoList)) {
                     setRulebook(data.dtoList);
-                    setTotalPages(Math.ceil(data.totalCount / pageSize));  // 총 페이지 수 설정
+                    setTotalPages(Math.ceil(data.totalCount / pageSize));
                 } else {
-                    console.error("Fetched data is not an array:", data);
+                    console.error("🚨 Fetched paged rules is not an array:", data);
                 }
-            })
-            .catch((error) => console.error("Error fetching rulebook:", error));
-    }, [currentPage]);  // currentPage가 변경될 때마다 데이터를 다시 가져옴
+            } catch (error) {
+                console.error("🚨 Error fetching rulebook:", error);
+            }
+        };
+
+        fetchAllRules();
+        fetchRulebookByPage();
+    }, [currentPage]); // currentPage가 변경될 때마다 실행
+
 
     // 검색 버튼 클릭 시 룰북을 필터링
     const handleSearch = () => {
