@@ -170,8 +170,6 @@ const FreeList = ({ boardType }) => {
                     )}
                 </PaginationContent>
             </Pagination>
-            <div>
-                <Button variant="mocha" onClick={() => router.push(`/${boardType}/create`)} >글 작성</Button>
             </div>
         </div>
     )

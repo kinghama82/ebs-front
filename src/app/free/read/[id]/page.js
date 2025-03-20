@@ -212,11 +212,12 @@ const FreeReadPage = () => {
                 </div>
 
                 {/* 댓글리스트부분 */}
-                <div id="answerList" className="max-w-6xl mx-auto bg-neutral-200 rounded p-2 bg mt-1">
+                <div id="answerList" className="max-w-6xl mx-auto bg-neutral-200  rounded p-2 bg mt-1">
                     <FanswerList boardType="free" id={free.id} />
                 </div>
             </div>
-            <div className="max-w-6xl mx-auto mt-2">
+            
+            <div className="max-w-6xl mx-auto mt-2 ">
                 <Suspense fallback={<div>로딩 중...</div>}>
                     <FreeList boardType="free" />
                 </Suspense>
