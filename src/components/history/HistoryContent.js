@@ -76,7 +76,7 @@ const HistoryContent = ({ userInfo }) => {
                 <div className=" p-1 basis-6/12 card border-black dark:border-white dark:bg-[#0a0b0c]" >
                     <Tabs defaultValue="game" className="w-full dark:bg-[#0a0b0c]">
                         <TabsList className="grid w-full grid-cols-2">
-                            <TabsTrigger value="mate">게임 메이트</TabsTrigger>
+                            {/* <TabsTrigger value="mate">게임 메이트</TabsTrigger> */}
                             <TabsTrigger value="game">최근 플레이 게임</TabsTrigger>
                         </TabsList>
                         <TabsContent value="mate" className="m-1">

@@ -4,10 +4,10 @@ import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, Chart } from "chart.js";
 import { useEffect } from "react";
 
-// Chart.js에 필요한 요소 등록
+
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-// 🔥 가운데 텍스트 플러그인 추가
+// 가운데 텍스트 플러그인 추가
 const centerTextPlugin = {
     id: "centerText",
     beforeDraw: (chart) => {
@@ -45,11 +45,6 @@ const centerTextPlugin = {
          ctx.textBaseline = "middle";
          ctx.fillText("플레이", x, y + titleYOffset);
         
-        
-
-       
-
-
         ctx.save();
     },
 };
