@@ -54,7 +54,7 @@ export default function MainSwiper() {
             <img src='/2.png' />
           </Link>
         </SwiperSlide>
-        <SwiperSlide><img src='/3.png' /></SwiperSlide>
+        <SwiperSlide><Link href="https://brand.naver.com/asmodeekorea/products/11519633055?nl-query=%EC%8B%9C%ED%8B%B0%EC%A6%88+%EB%B3%B4%EB%93%9C%EA%B2%8C%EC%9E%84&nl-ts-pid=i9YZRdqVN8CssZAxeohssssstlN-024070&NaPm=ct%3Dm8h1922o%7Cci%3Da38ce7900e4b88bfda2fbfee4ed6b74d3b5de780%7Ctr%3Dsls%7Csn%3D2983750%7Chk%3D944ba5353e56a6a6775e7c6c11cd94db257f4c61"><img src='/3.png' /></Link></SwiperSlide>
         {/* <SwiperSlide>Slide 6</SwiperSlide>
         <SwiperSlide>Slide 7</SwiperSlide>
         <SwiperSlide>Slide 8</SwiperSlide>

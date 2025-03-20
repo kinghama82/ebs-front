@@ -1,6 +1,7 @@
 "use client";
 import { getGames } from "@/api/game/gameapi";
 import LogoutButton from "@/components/LogoutButton";
+import NewestGames from "@/components/main/NewestGames";
 import BasicMenu from "@/components/menus/BasicMenu";
 import CategoryIcons from "@/components/menus/CategoryIcons";
 import MainSwiper from "@/components/menus/MainSwiper";
@@ -109,6 +110,10 @@ export default function Home() {
             {/* 캐로주얼 */}
             <div className="rounded max-w-6xl mx-auto mt-2"> 
                 <MainSwiper />
+            </div>
+            {/* 최신등록게임 */}
+            <div className="max-w-6xl mx-auto mt-2 ">
+                <NewestGames></NewestGames>
             </div>
 
             {/* 아래 게시판 추가 공간 */}
