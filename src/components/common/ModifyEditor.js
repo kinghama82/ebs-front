@@ -15,6 +15,9 @@ import Color from '@tiptap/extension-color'
 import { Mark, mergeAttributes } from '@tiptap/core';
 import { SketchPicker } from 'react-color'
 import YouTube from '@/components/common/Youtube'
+import {API_SERVER_HOST} from "@/api/publicapi";
+import {useCustomCookie} from "@/components/common/useCustomCookie";
+import {useRouter} from "next/navigation";
 
 // 글자 크기 확장 정의
 export const FontSize = Mark.create({
@@ -65,6 +68,9 @@ const ModifyEditor = ({ postId, initialContent, initialTitle }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false); // 드롭다운 보이기/숨기기 상태
   const dropdownRef = useRef(null);
   const buttonRef = useRef(null); // 글자 크기 버튼에 대한 참조 추가
+  const [youtubeLink, setYoutubeLink] = useState('');
+  const userInfo = useCustomCookie();
+  const router = useRouter();
 
   // 글자 크기 드롭다운 위치 조정
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
@@ -96,6 +102,24 @@ const ModifyEditor = ({ postId, initialContent, initialTitle }) => {
     }
   }, [editor, initialContent]);
 
+  const extractVideoId = (url) => {
+    const match = url.match(/(?:https?:\/\/(?:www\.)?youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=))([^"&?\/\s]{11})/);
+    return match ? match[1] : null;
+  }
+
+  const insertYouTube = (link) => {
+    if (link) {
+      const videoId = extractVideoId(link);
+      if (videoId) {
+        const iframeHtml = `<iframe width="560" height="315" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+        editor.commands.insertContent(iframeHtml);
+        setYoutubeLink(link);
+      } else {
+        alert('유효한 유튜브 URL을 입력해주세요.');
+      }
+    }
+  };
+
   const updatePost = async () => {
     const updatedContent = editor.getHTML(); // 수정된 콘텐츠 가져오기
     console.log("수정된 콘텐츠:", updatedContent);
@@ -105,25 +129,26 @@ const ModifyEditor = ({ postId, initialContent, initialTitle }) => {
       return;
     }
 
-    const formData = new FormData();
-
-    // 수정된 content를 JSON 형태로 formData에 추가
     const rulebookData = {
-      title: title,
-      content: updatedContent
+      title,
+      content: editor.getHTML(),
+      nickname: userInfo.nickname,
+      writerId: userInfo.id,
+      imageUrls: imageUrl ? [imageUrl] : [],
+      youtubeLinks: youtubeLink ? [youtubeLink] : [],
     };
-
-    formData.append('rulebook', new Blob([JSON.stringify(rulebookData)], { type: 'application/json' }));
 
     try {
       // 서버에 게시글 데이터 전송
-      const response = await axios.put(`http://localhost:8080/rulebook/modify/${postId}`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+      const response = await axios.put(`${API_SERVER_HOST}/rulebook/modify/${postId}`, rulebookData, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
 
       alert('게시글 수정 완료');
 
-      window.location.href = '/rulebook';
+      router.push('/rulebook');
 
     } catch (err) {
       console.error('게시글 수정 오류', err.response || err);

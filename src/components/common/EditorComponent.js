@@ -255,7 +255,7 @@ const EditorComponent = () => {
       <div
           style={{ maxWidth: '800px', margin: '0 auto', padding: '20px', backgroundColor: 'transparent', borderRadius: '8px' }}
       >
-        <h1 style={{ textAlign: 'center', fontSize: '24px', marginBottom: '20px', marginTop: '50px' }}>게시글 수정</h1>
+        <h1 style={{ textAlign: 'center', fontSize: '24px', marginBottom: '20px', marginTop: '50px' }}>게시글 작성</h1>
 
         {/* 제목 입력 */}
         <input
