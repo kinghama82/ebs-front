@@ -1,5 +1,6 @@
 "use client"
 import { getRecentGames } from "@/api/history/historyApi";
+import { API_SERVER_HOST } from "@/api/publicapi";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -24,7 +25,7 @@ const RecentGameComponent = ({ gamerid }) => {
                         {/* 게임 이미지 */}
                         {game.img ? (
                             <span className=" ms-2 border-2">
-                                <img src={`http://43.202.30.85${game.img}`}
+                                <img src={`${API_SERVER_HOST}${game.img}`}
                                      alt={game.gameName}
                                      className="w-[25px] h-[25px] object-cover rounded-md"/>
                             </span>
