@@ -3,6 +3,7 @@ import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { API_SERVER_HOST } from "@/api/publicapi";
 import { searchGames } from "@/api/game/gameapi"; // ✅ 게임 검색 API 추가
+import { useRouter } from "next/navigation";
 
 const GameBookmarks = ({ userId }) => {
     const [bookmarks, setBookmarks] = useState([]);
@@ -11,6 +12,7 @@ const GameBookmarks = ({ userId }) => {
     const [selectedGameId, setSelectedGameId] = useState(null); // ✅ 선택된 게임 ID
     const [hasFetched, setHasFetched] = useState(false);
     const searchRef = useRef(null);
+    const router = useRouter();
 
     // ✅ 북마크 목록 가져오기 (중복 요청 방지)
     useEffect(() => {
@@ -133,7 +135,16 @@ const GameBookmarks = ({ userId }) => {
                                     className="w-8 h-8 object-cover rounded mr-3"
                                 />
                             )}
-                            <span className="font-medium">{bookmark.gameName}</span>
+                            <span
+                                className="text-gray-700 cursor-pointer hover:underline"
+                                onClick={(e) => {
+                                    e.stopPropagation(); // 부모 `li`의 이벤트 방지
+                                    router.push(`/games?game=item-${bookmark.gameId}`);
+                                }}
+                            >
+                                {bookmark.gameName}
+                            </span>
+                            {/*<span className="font-medium">{bookmark.gameName}</span>*/}
                         </div>
                         <button
                             onClick={() => removeBookmark(bookmark.id)}
