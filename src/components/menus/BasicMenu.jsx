@@ -147,7 +147,7 @@ const BasicMenu = () => {
                 </button>
 
 
-                {/* 🔥 검색 결과 드롭다운 (검색창 아래로 위치하도록 수정) */}
+                {/*  검색 결과 드롭다운 (검색창 아래로 위치하도록 수정) */}
                 {isSearchOpen && searchResults.length > 0 && (
                     <ul className="absolute left-0 top-full mt-1 w-60 bg-white border border-gray-300 shadow-lg rounded-md z-50">
                       {searchResults.map((game) => (

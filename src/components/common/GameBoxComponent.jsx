@@ -48,12 +48,6 @@ const GameBoxComponent = ({ id }) => {
                 <div className="m-8 p-2">
                     {game.img && game.img !== "" ? (
                         <img
-                            // src={`http://43.202.30.85:8080${game.img}`}
-                            // alt={game.gameName}
-                            // width={200}
-                            // height={200}
-                            // className="rounded-md"
-
                             src={`${API_SERVER_HOST}${game.img}`}
                         alt={game.gameName}
                             className="w-[150px] h-[150px] object rounded-md"

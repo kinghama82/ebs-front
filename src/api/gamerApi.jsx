@@ -11,19 +11,6 @@ export const getGamer = async (email) => {
     return response.data;
 };
 
-/*export const getGamer = async () => {
-    try {
-        const user = useCustomCookie(); // 쿠키에서 사용자 정보 가져오기
-        if (!user || !user.email) throw new Error("로그인된 사용자의 이메일이 없습니다.");
-
-        const response = await axios.get(`${API_SERVER_HOST}/api/gamer/detail?email=${user.email}`);
-        return response.data;
-    } catch (error) {
-        console.error("사용자 정보를 불러오는데 실패했습니다:", error);
-        throw error;
-    }
-};*/
-
 
 // 로그인된 사용자의 이메일을 받아오는 함수 (쿠키 또는 localStorage 활용 가능)
 const getLoggedInUserEmail = () => {
@@ -146,7 +133,6 @@ export const loginUser = async (email, password) => {
 
         // 응답 데이터 확인
         const data = response.data;
-
         // 로그인 성공 시, 쿠키 저장
         if (data.accessToken && data.refreshToken) {
             Cookies.set("gamerCooki", data.accessToken, { expires: 1, path: "/" });
@@ -158,8 +144,20 @@ export const loginUser = async (email, password) => {
         console.error("로그인 실패:", error.response?.data?.msg || error.message);
         throw error;
     }
-
 };
+
+export const deleteGamer = async (email) => {
+    try {
+        const response = await axios.delete(`${API_SERVER_HOST}/api/gamer/delete`, {
+            params: { email },  // 쿼리 파라미터로 전달
+        });
+        return response.data;
+    } catch (error) {
+        console.error("회원탈퇴 실패:", error.response?.data?.msg || error.message);
+        throw error;
+    }
+};
+
 
 
 
