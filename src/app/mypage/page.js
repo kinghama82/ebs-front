@@ -75,13 +75,12 @@ const MyPage = () => {
         const file = e.target.files[0];
         if (!file || !gamer?.email) return;
 
-        setSelectedFile(file); // 선택된 파일을 상태로 저장 (선택적)
+        setSelectedFile(file); // 선택된 파일을 상태로 저장
 
         try {
             const res = await uploadProfileImage(gamer.email, file);
             console.log("업로드 결과:", res);
-
-            // 서버에서 삭제 후 새 이미지 업로드 완료 -> 새 데이터 가져오기
+            // 기존 파일 삭제 후 새 파일로 업로드
             const updatedUser = await getGamer(gamer.email);
             setUser(updatedUser);
         } catch (error) {
@@ -224,6 +223,8 @@ const MyPage = () => {
                                                 </div>
                                             </div>
                                         )}
+
+                                        <DeleteAccountButton/>
                                     </div>
                                 </div>
 

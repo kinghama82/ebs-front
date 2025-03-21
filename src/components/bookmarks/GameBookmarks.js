@@ -123,7 +123,7 @@ const GameBookmarks = ({ userId }) => {
                 </button>
             </div>
 
-            {/* ✅ 북마크 목록 (조건문 없이 스크롤 적용) */}
+            {/* ✅ 북마크 목록 */}
             <ul className="mt-3 space-y-2  ">
                 {bookmarks.map((bookmark) => (
                     <li key={bookmark.id} className="py-0.5 px-4 bg-white rounded shadow-md flex justify-between items-center">
