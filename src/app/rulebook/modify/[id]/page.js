@@ -2,6 +2,7 @@
 import React from 'react';
 import ModifyEditor from '@/components/common/ModifyEditor';
 import axios from 'axios';
+import {API_SERVER_HOST} from "@/api/publicapi";
 
 // Server Component: 서버에서 게시글 데이터를 가져옵니다.
 async function fetchPostData(postId) {

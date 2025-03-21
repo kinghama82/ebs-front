@@ -211,7 +211,7 @@ export default function ListComponent() {
 
             {/* 일반게시판 */}
             <div className="w-full" style={{ borderTop: '3px solid #000'}}>
-                <div className="flex" style={{ marginBottom: '5px' }}>
+                <div className="flex" style={{ marginBottom: '5px' , backgroundColor: '#8C7A65'}}>
                     <div className="p-2 flex items-center justify-center" style={{ flex: 1 }}>글 번호</div>
                     <div className="p-2 flex items-center justify-center" style={{ flex: 3 }}>제목</div>
                     <div className="p-2 flex items-center justify-center" style={{ flex: 1 }}>작성자</div>

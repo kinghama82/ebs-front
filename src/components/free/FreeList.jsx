@@ -111,7 +111,7 @@ const FreeList = ({ boardType }) => {
                              className="flex items-center justify-between w-full p-2 border-b border-black ">
                             <span className="w-1/12 text-center ">{startNumber - index}</span>
                             <span className="w-1/12 text-center ">{free.category || []}</span>
-                            <span className="w-4/12 text-center " >
+                            <span className="w-4/12 text-start " >
                                 <Link href={`/${boardType}/read/${free.id}`}
                                       onClick={(e) => {
                                           e.preventDefault()
